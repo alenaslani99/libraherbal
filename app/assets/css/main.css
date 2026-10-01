@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — taken from Figma (design/assets/*.png).
+ * Change colors/fonts here only; components use these tokens.
+ */
+@theme {
+  --font-sans: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Fraunces", ui-serif, Georgia, serif;
+
+  /* Figma: Foundation/Off-Black */
+  --color-ink: #1b1b1b;
+  /* Figma: Foundation/Accent Pale Beige */
+  --color-pale-beige: #e8e2d0;
+  /* Figma: Foundation/Honey/honey-500 */
+  --color-sun: #ffc30b;
+  --color-sun-dark: #e6af00;
+  /* Hero CTA Button hover */
+  --color-sun-hover: #ffd95e;
+  --color-sun-light: #ffdf80;
+  --color-forest: #2d3a1f;
+  --color-forest-dark: #232d17;
+  /* Figma: Category block bg, Foundation/Brown/brown-200 */
+  --color-linen: #f4eee2;
+  /* Figma: Foundation/Main Beige — Product Card bg */
+  --color-main-beige: #ded6c1;
+  --color-brown-200: #9a918d;
+  --color-cream: #e9e3d1;
+  /* Figma: Foundation/Off-white — Review Card bg */
+  --color-paper: #f4f1e8;
+  --color-muted: #5f6152;
+  --color-line: #d8d1bb;
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-cream font-sans text-ink antialiased;
+  }
+
+  h1, h2, h3 {
+    @apply font-heading font-semibold;
+  }
+}
