@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { popularProducts } from '~/data/home-mock'
+
 useSeoMeta({
   title: 'Prirodno rešenje vaših problema',
   description: 'Libra Herbal — med, čajevi i biljni preparati od lekovitih biljaka. Dostava širom Srbije, plaćanje pouzećem.',
@@ -12,7 +14,11 @@ useSeoMeta({
     <HomeHero />
     <HomeFeatures />
     <HomeCategories />
-    <HomePopularProducts />
+    <ProductShowcase
+      title="Popularni artikli"
+      subtitle="Pogledajte naše kategorije proizvoda."
+      :products="popularProducts"
+    />
     <CtaSection
       eyebrow="Proširite svoje znanje"
       title="Kako prirodnim putem do zdravlja?"
