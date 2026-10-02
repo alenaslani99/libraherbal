@@ -90,6 +90,7 @@ function scrollToTop() {
             />
             <BaseButton type="submit" size="lg" class="w-full">
               Prijavite se
+              <Icon name="lucide:arrow-right" class="size-4 transition-transform duration-200 group-hover:translate-x-1" />
             </BaseButton>
           </form>
         </div>
