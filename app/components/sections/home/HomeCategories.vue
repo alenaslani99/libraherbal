@@ -23,7 +23,7 @@ import { homeCategories } from '~/data/home-mock'
           :key="category.slug"
           :name="category.name"
           :icon="category.icon"
-          :to="`/prodavnica?kategorija=${category.slug}`"
+          :to="`/proizvodi?kategorija=${category.slug}`"
         />
       </nav>
     </div>

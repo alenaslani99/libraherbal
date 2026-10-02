@@ -4,7 +4,7 @@ export const footerAbout = 'Kao mala porodična proizvodnja nastala 2025. godine
 
 export const footerNav: NavLink[] = [
   { label: 'Glavna stranica', to: '/' },
-  { label: 'Proizvodi', to: '/prodavnica' },
+  { label: 'Proizvodi', to: '/proizvodi' },
   { label: 'Korpa', to: '/korpa' },
   { label: 'O nama', to: '/o-nama' },
   { label: 'Česta pitanja', to: '/cesta-pitanja' },

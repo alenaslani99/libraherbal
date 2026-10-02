@@ -28,7 +28,7 @@
         </p>
 
         <div class="mt-10 flex flex-col gap-3 sm:mt-12 sm:flex-row lg:mt-16">
-          <BaseButton to="/prodavnica" size="lg" class="font-medium">
+          <BaseButton to="/proizvodi" size="lg" class="font-medium">
             Istražite proizvode
             <Icon name="lucide:arrow-right" class="size-4 transition-transform duration-200 group-hover:translate-x-1" />
           </BaseButton>

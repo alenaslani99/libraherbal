@@ -4,7 +4,7 @@ export interface NavLink {
 }
 
 export const mainNav: NavLink[] = [
-  { label: 'Prodavnica', to: '/prodavnica' },
+  { label: 'Prodavnica', to: '/proizvodi' },
   { label: 'O nama', to: '/o-nama' },
   { label: 'Blog', to: '/blog' },
   { label: 'Kontakt', to: '/kontakt' },
