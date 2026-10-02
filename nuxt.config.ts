@@ -50,6 +50,8 @@ export default defineNuxtConfig({
   // Static content pages (/o-nama, /kontakt, /dostava, /blog/**) get `prerender: true` once they exist
   routeRules: {
     '/korpa': { ssr: false },
+    '/placanje': { ssr: false },
+    '/hvala': { ssr: false },
     '/porudzbina/**': { ssr: false },
     '/nalog/**': { ssr: false },
     '/admin/**': { ssr: false },
