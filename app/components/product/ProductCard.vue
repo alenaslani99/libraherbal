@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import type { Product } from '~/data/home-mock'
 
-defineProps<{ product: Product }>()
+const props = defineProps<{ product: Product }>()
+
+const cart = useCart()
+
+function addToCart() {
+  const { variantId, slug, name, weight, price, image } = props.product
+  cart.add({ variantId, slug, name, variantLabel: weight, price, image })
+}
 </script>
 
 <!--
@@ -10,7 +17,7 @@ defineProps<{ product: Product }>()
 -->
 <template>
   <article class="group relative flex flex-col gap-3 rounded-2xl bg-main-beige px-2 pt-2 pb-4">
-    <NuxtLink :to="`/proizvod/${product.slug}`" class="block" tabindex="-1" aria-hidden="true">
+    <NuxtLink :to="`/proizvodi/${product.slug}`" class="block" tabindex="-1" aria-hidden="true">
       <NuxtImg
         :src="product.image"
         :alt="product.name"
@@ -28,7 +35,7 @@ defineProps<{ product: Product }>()
         {{ product.category }} • <span class="normal-case">{{ product.weight }}</span>
       </p>
       <h3 class="mt-1 font-heading text-lg font-semibold leading-6 text-forest">
-        <NuxtLink :to="`/proizvod/${product.slug}`" class="after:absolute after:inset-0 after:rounded-2xl">
+        <NuxtLink :to="`/proizvodi/${product.slug}`" class="after:absolute after:inset-0 after:rounded-2xl">
           {{ product.name }}
         </NuxtLink>
       </h3>
@@ -36,7 +43,7 @@ defineProps<{ product: Product }>()
         <p class="text-sm font-semibold leading-none text-ink">
           {{ product.price }} <span class="text-[10px]">RSD</span>
         </p>
-        <AddToCartButton :product-name="product.name" />
+        <AddToCartButton :product-name="product.name" @add="addToCart" />
       </div>
     </div>
   </article>

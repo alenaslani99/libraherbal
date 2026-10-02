@@ -2,8 +2,8 @@
 const props = withDefaults(defineProps<{
   to?: string
   variant?: 'sun' | 'forest' | 'outline-light'
-  // md: generic; lg: Figma button (Newsletter CTA) — 44px tall, regular weight
-  size?: 'md' | 'lg'
+  // sm: 36px (product page buy button); md: generic; lg: Figma button (Newsletter CTA) — 44px tall, regular weight
+  size?: 'sm' | 'md' | 'lg'
   type?: 'button' | 'submit'
 }>(), {
   variant: 'sun',
@@ -20,6 +20,7 @@ const variants = {
 }
 
 const sizes = {
+  sm: 'h-9 px-5 text-sm',
   md: 'px-6 py-3 text-sm font-semibold',
   lg: 'h-11 px-5 text-base',
 }
@@ -30,7 +31,7 @@ const sizes = {
     :is="props.to ? NuxtLink : 'button'"
     :to="props.to"
     :type="props.to ? undefined : props.type"
-    class="group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sun"
+    class="group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sun disabled:cursor-not-allowed disabled:opacity-50"
     :class="[variants[props.variant], sizes[props.size]]"
   >
     <slot />
