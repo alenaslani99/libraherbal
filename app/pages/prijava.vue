@@ -30,7 +30,7 @@ function onSubmit() {
         Podaci za prijavu
       </h2>
 
-      <div class="mt-6 space-y-5">
+      <div class="mt-6 space-y-3">
         <FormField
           v-model="form.email"
           label="Email adresa"
@@ -51,7 +51,7 @@ function onSubmit() {
         />
       </div>
 
-      <div class="mt-5 flex flex-wrap items-center justify-between gap-3">
+      <div class="mt-1 flex flex-wrap items-center justify-between gap-3">
         <FormCheckbox v-model="form.remember">
           Zapamti me
         </FormCheckbox>

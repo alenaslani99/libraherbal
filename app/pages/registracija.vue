@@ -43,7 +43,7 @@ function onSubmit() {
       <h2 class="text-2xl leading-tight text-ink">
         Lični podaci
       </h2>
-      <div class="mt-6 grid gap-x-6 gap-y-5 sm:grid-cols-2">
+      <div class="mt-6 grid gap-x-6 gap-y-3 sm:grid-cols-2">
         <FormField
           v-model="form.firstName"
           label="Ime"
@@ -85,7 +85,7 @@ function onSubmit() {
       <h2 class="mt-12 text-2xl leading-tight text-ink">
         Lozinka
       </h2>
-      <div class="mt-6 grid gap-x-6 gap-y-5 sm:grid-cols-2">
+      <div class="mt-6 grid gap-x-6 gap-y-3 sm:grid-cols-2">
         <FormField
           v-model="form.password"
           label="Lozinka"
