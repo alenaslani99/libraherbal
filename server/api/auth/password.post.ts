@@ -1,7 +1,7 @@
 import { changePasswordSchema } from '#shared/schemas/auth'
 
 // POST /api/auth/password — needs the current password; signs out every other device.
-// TODO: rate-limit attempts together with login
+// Guessing the current password is limited per IP by RL_AUTH (00.ratelimit.ts).
 export default defineEventHandler(async (event) => {
   const user = await requireUser(event)
   const { currentPassword, newPassword } = await readValidatedForm(event, changePasswordSchema)
