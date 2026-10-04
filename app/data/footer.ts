@@ -2,18 +2,31 @@ import type { NavLink } from './navigation'
 
 export const footerAbout = 'Kao mala porodična proizvodnja nastala 2025. godine, pomažemo ljudima da se lakše nose sa svakodnevnim problemima uz pomoć prirodnih preparata.'
 
-export const footerNav: NavLink[] = [
-  { label: 'Glavna stranica', to: '/' },
-  { label: 'Proizvodi', to: '/proizvodi' },
-  { label: 'Korpa', to: '/korpa' },
-  { label: 'O nama', to: '/o-nama' },
-  { label: 'Česta pitanja', to: '/cesta-pitanja' },
+export const footerColumns: { title: string, links: NavLink[] }[] = [
+  {
+    title: 'Informacije',
+    links: [
+      { label: 'O nama', to: '/o-nama' },
+      { label: 'Kontakt', to: '/kontakt' },
+      { label: 'Česta pitanja', to: '/cesta-pitanja' },
+    ],
+  },
+  {
+    title: 'Navigacija',
+    links: [
+      { label: 'Glavna stranica', to: '/' },
+      { label: 'Proizvodi', to: '/proizvodi' },
+      { label: 'Korpa', to: '/korpa' },
+      { label: 'Nalog', to: '/nalog' },
+    ],
+  },
 ]
 
-// bottom bar, next to the copyright
+// bottom bar, next to the copyright; cookies are a section of the privacy policy
 export const footerLegal: NavLink[] = [
   { label: 'Politika privatnosti', to: '/politika-privatnosti' },
   { label: 'Uslovi korišćenja', to: '/uslovi-koriscenja' },
+  { label: 'Politika kolačića', to: '/politika-privatnosti#kolacici' },
 ]
 
 const address = {

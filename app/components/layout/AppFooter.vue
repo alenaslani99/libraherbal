@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { contact, footerAbout, footerLegal, footerNav, socials } from '~/data/footer'
+import { contact, footerColumns, footerLegal, socials } from '~/data/footer'
 
 const year = new Date().getFullYear()
 const email = ref('')
@@ -32,23 +32,14 @@ function scrollToTop() {
     </div>
 
     <div class="border-b border-white/30">
-      <div class="mx-auto grid max-w-[1440px] gap-10 px-4 py-9 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-16 xl:px-[88px]">
-        <div>
+      <!-- phones: Informacije and Navigacija side by side, Kontakt and Newsletter full width -->
+      <div class="mx-auto grid max-w-[1440px] grid-cols-2 gap-x-4 gap-y-10 px-4 py-9 sm:gap-10 sm:px-6 lg:grid-cols-4 lg:px-16 xl:px-[88px]">
+        <div v-for="column in footerColumns" :key="column.title">
           <h3 class="font-sans text-2xl font-semibold leading-none text-sun sm:text-[28px]">
-            Informacije
+            {{ column.title }}
           </h3>
-          <p class="mt-6 text-xs leading-4 sm:max-w-[210px]">
-            {{ footerAbout }}
-          </p>
-        </div>
-
-        <div>
-          <h3 class="font-sans text-2xl font-semibold leading-none text-sun sm:text-[28px]">
-            Navigacija
-          </h3>
-          <!-- phones: links in 2 columns to keep the footer short -->
-          <ul class="mt-5 grid grid-cols-2 gap-x-4 gap-y-2 text-base sm:block sm:space-y-2">
-            <li v-for="link in footerNav" :key="link.to">
+          <ul class="mt-5 space-y-2 text-base">
+            <li v-for="link in column.links" :key="link.to">
               <NuxtLink :to="link.to" class="transition-colors duration-200 hover:text-sun">
                 {{ link.label }}
               </NuxtLink>
@@ -56,7 +47,7 @@ function scrollToTop() {
           </ul>
         </div>
 
-        <div>
+        <div class="col-span-2 sm:col-span-1">
           <h3 class="font-sans text-2xl font-semibold leading-none text-sun sm:text-[28px]">
             Kontakt
           </h3>
@@ -76,7 +67,7 @@ function scrollToTop() {
           </ul>
         </div>
 
-        <div>
+        <div class="col-span-2 sm:col-span-1">
           <h3 class="font-sans text-2xl font-semibold leading-none text-sun sm:text-[28px]">
             Newsletter
           </h3>
