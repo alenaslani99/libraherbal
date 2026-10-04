@@ -1,17 +1,13 @@
 <script setup lang="ts">
-// Thank-you page after a successful order — reached from /placanje with ?broj=LH-2481
+// Thank-you page after a successful order — the order-placed middleware lets only a just-placed order in
+definePageMeta({ middleware: 'order-placed' })
 useSeoMeta({
   title: 'Hvala na porudžbini',
   robots: 'noindex',
 })
 
-const route = useRoute()
-
-// only show something that looks like our order number, never arbitrary query text
-const orderNumber = computed(() => {
-  const value = route.query.broj
-  return typeof value === 'string' && /^LH-\d{1,10}$/.test(value) ? value : null
-})
+// the middleware already checked it against ORDER_NUMBER_PATTERN
+const orderNumber = useLastOrder()
 </script>
 
 <!-- Figma "Main": padding 72/553 (narrow centered column), gap 64, centered content -->

@@ -143,6 +143,7 @@ const link = 'font-semibold text-forest underline underline-offset-4 transition-
         variant="dot"
         :items="[
           { term: 'Kolačić sesije', text: 'čuva vašu prijavu na nalog; briše se odjavom ili istekom sesije.' },
+          { term: 'Kolačić porudžbine', text: 'pamti broj upravo poslate porudžbine za stranicu zahvalnosti; briše se posle 30 minuta.' },
           { term: 'Lokalno skladište pregledača', text: 'pamti sadržaj korpe na vašem uređaju.' },
         ]"
       />
