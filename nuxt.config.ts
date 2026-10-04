@@ -19,11 +19,16 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: 'sr' },
       title: 'Libra Herbal',
-      titleTemplate: '%s · Libra Herbal',
+      titleTemplate: '%s | Libra Herbal',
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'theme-color', content: '#2d3a1f' },
         { name: 'apple-mobile-web-app-title', content: 'Libra Herbal' },
+        // page-specific title, description, og:url, og:image and canonical come from usePageSeo()
+        { property: 'og:site_name', content: 'Libra Herbal' },
+        { property: 'og:locale', content: 'sr_RS' },
+        { property: 'og:type', content: 'website' },
+        { name: 'twitter:card', content: 'summary_large_image' },
       ],
       // Icon set generated from design/assets/favicon-source.png (node scripts/generate-icons.mjs)
       link: [
@@ -34,6 +39,14 @@ export default defineNuxtConfig({
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
         { rel: 'manifest', href: '/site.webmanifest' },
       ],
+    },
+  },
+
+  // Absolute URLs for canonical, og:url, og:image, sitemap and robots.txt.
+  // Switch domains with NUXT_PUBLIC_SITE_URL (wrangler.jsonc "vars") — no trailing slash.
+  runtimeConfig: {
+    public: {
+      siteUrl: 'https://libraherbal.aslani-alen29.workers.dev',
     },
   },
 

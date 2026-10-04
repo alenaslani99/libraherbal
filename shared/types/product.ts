@@ -44,6 +44,8 @@ export interface ProductIngredient {
 }
 
 export interface ProductDetail extends Product {
+  // categories.slug (med, caj, melem): links the product to its category page
+  categorySlug: string
   // eyebrow: "MED • DISANJE"
   purpose: string
   description: string

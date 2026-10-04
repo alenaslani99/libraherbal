@@ -1,15 +1,21 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: 'Proizvodi',
-  description: 'Med, čajevi i biljni preparati Libra Herbal — birajte po biljci, ukusu ili potrebi. Dostava širom Srbije, plaćanje pouzećem.',
-  ogTitle: 'Proizvodi · Libra Herbal',
-  ogDescription: 'Med, čajevi i biljni preparati od lekovitih biljaka.',
-})
+import { categoryBySlug } from '~/data/categories'
+import { productsPage } from '~/data/products-page'
+
+// Old filter links (/proizvodi?vrsta=caj) → the category's own page, keeping the other filters
+const route = useRoute()
+const legacyType = typeof route.query.vrsta === 'string' ? categoryBySlug(route.query.vrsta) : undefined
+if (legacyType) {
+  const { vrsta: _, ...query } = route.query
+  await navigateTo({ path: legacyType.path, query }, { redirectCode: 301 })
+}
+
+useCategorySeo()
 </script>
 
 <template>
   <div>
-    <ProductsHero />
+    <ProductsHero :hero="productsPage.hero" />
     <ProductsCatalog />
     <NewsletterSection />
   </div>

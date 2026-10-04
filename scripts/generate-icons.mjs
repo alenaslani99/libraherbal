@@ -1,4 +1,5 @@
-// One-off: builds the favicon / app icon set in public/ from the 1080×1080 source mark.
+// One-off: builds the favicon / app icon set in public/ from the 1080×1080 source mark,
+// plus the default social preview image (og-image.jpg) from the logo.
 // Run after changing the source: node scripts/generate-icons.mjs
 import { writeFile } from 'node:fs/promises'
 import sharp from 'sharp'
@@ -27,6 +28,14 @@ async function maskable(size) {
     .toBuffer()
   // composite always adds an alpha channel; drop it in a second pass
   return sharp(canvas).removeAlpha().png({ compressionLevel: 9 })
+}
+
+// Social preview (Facebook, Viber, WhatsApp): the wordmark logo centred on beige, 1200×630
+async function ogImage() {
+  const logo = await sharp('public/assets/img/logo.svg', { density: 300 }).resize({ width: 760 }).png().toBuffer()
+  return sharp({ create: { width: 1200, height: 630, channels: 3, background: BEIGE } })
+    .composite([{ input: logo, gravity: 'center' }])
+    .jpeg({ quality: 88, mozjpeg: true })
 }
 
 // .ico with PNG entries (supported by every current browser)
@@ -62,6 +71,7 @@ await Promise.all([
   png(192).toFile(`${OUT}/web-app-manifest-192x192.png`),
   png(512).toFile(`${OUT}/web-app-manifest-512x512.png`),
   maskable(512).then(img => img.toFile(`${OUT}/web-app-manifest-maskable-512x512.png`)),
+  ogImage().then(img => img.toFile(`${OUT}/og-image.jpg`)),
 ])
 
 console.log('Icons written to public/')

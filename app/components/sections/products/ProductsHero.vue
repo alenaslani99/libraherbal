@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { productsHero as hero } from '~/data/products-page'
+import type { CategoryHero } from '~/data/categories'
+
+// /proizvodi and every category page share this hero; only the copy and photos change
+defineProps<{ hero: CategoryHero }>()
 </script>
 
-<!-- Figma Hero Section (/proizvodi): bg Main Green, padding 72/128, space-between, two bottom-aligned images right -->
+<!-- Figma Hero Section (/proizvodi, /med, /cajevi, /melemi): bg Main Green, padding 72/128, space-between, two bottom-aligned images right -->
 <template>
   <section class="bg-forest">
     <div class="mx-auto flex max-w-[1440px] flex-col gap-12 px-4 py-14 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-16 xl:px-32 lg:py-[72px]">
@@ -23,7 +26,7 @@ import { productsHero as hero } from '~/data/products-page'
       <div class="flex w-full max-w-[603px] shrink-0 items-end gap-3 sm:gap-6 lg:w-[52%]">
         <NuxtImg
           :src="hero.images[0]"
-          alt="Med sa koprivom"
+          :alt="`${hero.eyebrow} — Libra Herbal`"
           width="314"
           height="392"
           format="webp"
@@ -34,7 +37,7 @@ import { productsHero as hero } from '~/data/products-page'
         />
         <NuxtImg
           :src="hero.images[1]"
-          alt="Čaj za imunitet"
+          :alt="`${hero.titleLine1} ${hero.titleLine2}`"
           width="265"
           height="353"
           format="webp"

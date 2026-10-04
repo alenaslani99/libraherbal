@@ -50,6 +50,7 @@ export default defineEventHandler(async (event): Promise<ProductDetail> => {
 
   return {
     ...toProduct(product),
+    categorySlug: product.category_slug,
     purpose: (purpose!.results[0] as { name: string } | undefined)?.name ?? '',
     description: product.description ?? '',
     rating: product.rating_avg,

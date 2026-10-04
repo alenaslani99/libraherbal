@@ -12,7 +12,7 @@ export const sortOptions: FilterOption[] = [
   { value: 'naziv', label: 'Naziv: A–Z' },
 ]
 
-// A filter value that lives in the URL (?vrsta=med&kategorija=imunitet&sortiraj=naziv&strana=2),
+// A filter value that lives in the URL (/cajevi?kategorija=imunitet&sortiraj=naziv&strana=2),
 // so filtered views are linkable and the home page category blocks land pre-filtered.
 // The default value is left out of the URL to keep it clean.
 // Changing a filter or the sort drops ?strana, so the list starts again from page 1.
@@ -37,12 +37,14 @@ function useQueryParam(key: string, fallback: string, { resetsPage = true } = {}
   })
 }
 
-// Filter state for /proizvodi. Filtering, sorting and paging happen on the server: pass `query` to GET /api/products.
-export function useProductFilters() {
+// Filter state for /proizvodi and the category pages. Filtering, sorting and paging happen on the server:
+// pass `query` to GET /api/products. The product type is not a query param: each type has its own page
+// (/med, /cajevi, /melemi — see app/data/categories.ts), so `category` comes from the page.
+export function useProductFilters(category?: string) {
   const route = useRoute()
   const router = useRouter()
 
-  const type = useQueryParam('vrsta', ALL)
+  const type = computed(() => category ?? ALL)
   const purpose = useQueryParam('kategorija', ALL)
   const sort = useQueryParam('sortiraj', DEFAULT_SORT)
   const pageParam = useQueryParam(PAGE_KEY, '1', { resetsPage: false })
@@ -59,11 +61,11 @@ export function useProductFilters() {
   })
 
   const query = computed(() => ({ vrsta: type.value, kategorija: purpose.value, sortiraj: sort.value, strana: page.value }))
-  const isFiltered = computed(() => type.value !== ALL || purpose.value !== ALL)
+  const isFiltered = computed(() => purpose.value !== ALL)
 
-  // one navigation, so clearing both filters can't race on a stale route.query
+  // the category page itself stays; only the purpose filter and the page number are cleared
   function resetFilters() {
-    router.replace({ query: { ...route.query, vrsta: undefined, kategorija: undefined, [PAGE_KEY]: undefined } })
+    router.replace({ query: { ...route.query, kategorija: undefined, [PAGE_KEY]: undefined } })
   }
 
   return { type, purpose, sort, page, query, isFiltered, resetFilters }

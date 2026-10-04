@@ -15,13 +15,7 @@ if (!product.value) {
   throw createError({ statusCode: 404, statusMessage: 'Proizvod nije pronađen', fatal: true })
 }
 
-useSeoMeta({
-  title: () => product.value?.name,
-  description: () => product.value?.description,
-  ogTitle: () => `${product.value?.name} · Libra Herbal`,
-  ogDescription: () => product.value?.description,
-  ogImage: () => product.value?.images[0]?.src,
-})
+useProductSeo(product)
 
 const cart = useCart()
 
