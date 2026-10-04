@@ -8,6 +8,10 @@ export const footerNav: NavLink[] = [
   { label: 'Korpa', to: '/korpa' },
   { label: 'O nama', to: '/o-nama' },
   { label: 'Česta pitanja', to: '/cesta-pitanja' },
+]
+
+// bottom bar, next to the copyright
+export const footerLegal: NavLink[] = [
   { label: 'Politika privatnosti', to: '/politika-privatnosti' },
   { label: 'Uslovi korišćenja', to: '/uslovi-koriscenja' },
 ]

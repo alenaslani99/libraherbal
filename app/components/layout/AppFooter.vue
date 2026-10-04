@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { contact, footerAbout, footerNav, socials } from '~/data/footer'
+import { contact, footerAbout, footerLegal, footerNav, socials } from '~/data/footer'
 
 const year = new Date().getFullYear()
 const email = ref('')
@@ -97,19 +97,26 @@ function scrollToTop() {
       </div>
     </div>
 
-    <!-- phones: arrow on top, copyright centered below -->
-    <div class="mx-auto flex max-w-[1440px] flex-col-reverse items-center gap-4 px-4 py-8 text-center sm:grid sm:grid-cols-[1fr_auto_1fr] sm:py-10 sm:text-left sm:px-6 lg:px-16 xl:px-[72px]">
-      <p class="text-xs">
+    <!-- phones: arrow on top, legal links, copyright centered below · sm+: copyright | arrow | legal links -->
+    <div class="mx-auto flex max-w-[1440px] flex-col items-center gap-4 px-4 py-8 text-center sm:grid sm:grid-cols-[1fr_auto_1fr] sm:py-10 sm:text-left sm:px-6 lg:px-16 xl:px-[72px]">
+      <p class="order-3 text-xs sm:order-none">
         © {{ year }} LibraHerbal. Sva prava zadržana.
       </p>
       <button
         type="button"
-        class="text-sun transition-transform duration-200 hover:-translate-y-1"
+        class="order-1 text-sun transition-transform duration-200 hover:-translate-y-1 sm:order-none"
         aria-label="Nazad na vrh"
         @click="scrollToTop"
       >
         <Icon name="lucide:chevron-up" class="size-7" />
       </button>
+      <ul class="order-2 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs sm:order-none sm:justify-end">
+        <li v-for="link in footerLegal" :key="link.to">
+          <NuxtLink :to="link.to" class="transition-colors duration-200 hover:text-sun">
+            {{ link.label }}
+          </NuxtLink>
+        </li>
+      </ul>
     </div>
   </footer>
 </template>
