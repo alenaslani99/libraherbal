@@ -54,3 +54,12 @@ export interface ProductDetail extends Product {
   info: ProductInfoSection[]
   ingredients: ProductIngredient[]
 }
+
+// GET /api/products — one page of the filtered, sorted listing
+export interface ProductPage {
+  items: Product[]
+  // all matches across pages ("19 proizvoda")
+  total: number
+  page: number
+  pageCount: number
+}

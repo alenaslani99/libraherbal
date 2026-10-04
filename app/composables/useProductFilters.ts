@@ -2,6 +2,7 @@ import type { FilterOption } from '#shared/types/product'
 
 export const ALL = 'sve'
 const DEFAULT_SORT = 'popularnost'
+export const PAGE_KEY = 'strana'
 
 // Sort keys GET /api/products understands
 export const sortOptions: FilterOption[] = [
@@ -11,10 +12,11 @@ export const sortOptions: FilterOption[] = [
   { value: 'naziv', label: 'Naziv: A–Z' },
 ]
 
-// A filter value that lives in the URL (?vrsta=med&kategorija=imunitet&sortiraj=naziv),
+// A filter value that lives in the URL (?vrsta=med&kategorija=imunitet&sortiraj=naziv&strana=2),
 // so filtered views are linkable and the home page category blocks land pre-filtered.
 // The default value is left out of the URL to keep it clean.
-function useQueryParam(key: string, fallback: string) {
+// Changing a filter or the sort drops ?strana, so the list starts again from page 1.
+function useQueryParam(key: string, fallback: string, { resetsPage = true } = {}) {
   const route = useRoute()
   const router = useRouter()
 
@@ -24,24 +26,45 @@ function useQueryParam(key: string, fallback: string) {
       return typeof value === 'string' && value ? value : fallback
     },
     set: (value: string) => {
-      router.replace({ query: { ...route.query, [key]: value === fallback ? undefined : value } })
+      router.replace({
+        query: {
+          ...route.query,
+          ...(resetsPage ? { [PAGE_KEY]: undefined } : {}),
+          [key]: value === fallback ? undefined : value,
+        },
+      })
     },
   })
 }
 
-// Filter state for /proizvodi. Filtering and sorting happen on the server: pass `query` to GET /api/products.
+// Filter state for /proizvodi. Filtering, sorting and paging happen on the server: pass `query` to GET /api/products.
 export function useProductFilters() {
+  const route = useRoute()
+  const router = useRouter()
+
   const type = useQueryParam('vrsta', ALL)
   const purpose = useQueryParam('kategorija', ALL)
   const sort = useQueryParam('sortiraj', DEFAULT_SORT)
+  const pageParam = useQueryParam(PAGE_KEY, '1', { resetsPage: false })
 
-  const query = computed(() => ({ vrsta: type.value, kategorija: purpose.value, sortiraj: sort.value }))
+  // anything that isn't a positive whole number counts as page 1
+  const page = computed({
+    get: () => {
+      const n = Number(pageParam.value)
+      return Number.isInteger(n) && n >= 1 ? n : 1
+    },
+    set: (value: number) => {
+      pageParam.value = String(value)
+    },
+  })
+
+  const query = computed(() => ({ vrsta: type.value, kategorija: purpose.value, sortiraj: sort.value, strana: page.value }))
   const isFiltered = computed(() => type.value !== ALL || purpose.value !== ALL)
 
+  // one navigation, so clearing both filters can't race on a stale route.query
   function resetFilters() {
-    type.value = ALL
-    purpose.value = ALL
+    router.replace({ query: { ...route.query, vrsta: undefined, kategorija: undefined, [PAGE_KEY]: undefined } })
   }
 
-  return { type, purpose, sort, query, isFiltered, resetFilters }
+  return { type, purpose, sort, page, query, isFiltered, resetFilters }
 }
