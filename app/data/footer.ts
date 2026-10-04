@@ -9,6 +9,7 @@ export const footerNav: NavLink[] = [
   { label: 'O nama', to: '/o-nama' },
   { label: 'Česta pitanja', to: '/cesta-pitanja' },
   { label: 'Politika privatnosti', to: '/politika-privatnosti' },
+  { label: 'Uslovi korišćenja', to: '/uslovi-koriscenja' },
 ]
 
 const address = {
