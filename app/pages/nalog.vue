@@ -48,13 +48,14 @@ async function onLogout() {
         </div>
       </div>
 
-      <nav aria-label="Moj nalog" class="mt-10 overflow-x-auto border-b border-line lg:mt-14">
+      <!-- the gray baseline is an inset shadow: tabs don't need to overlap a border, so nothing overflows vertically (no scrollbar) -->
+      <nav aria-label="Moj nalog" class="mt-10 overflow-x-auto shadow-[inset_0_-1px_0_var(--color-line)] lg:mt-14">
         <ul class="flex min-w-max gap-8">
           <li v-for="tab in tabs" :key="tab.to">
             <NuxtLink
               :to="tab.to"
               exact-active-class="is-active"
-              class="-mb-px flex items-center gap-2 border-b-2 border-transparent pb-3 text-sm text-ink transition-colors hover:text-forest [&.is-active]:border-forest [&.is-active]:font-semibold [&.is-active]:text-forest"
+              class="flex items-center gap-2 border-b-2 border-transparent pb-3 text-sm text-ink transition-colors hover:text-forest [&.is-active]:border-forest [&.is-active]:font-semibold [&.is-active]:text-forest"
             >
               <Icon :name="tab.icon" class="size-4" />
               {{ tab.label }}
