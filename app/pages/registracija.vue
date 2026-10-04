@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { registerSchema } from '#shared/schemas/auth'
+
 useSeoMeta({
   title: 'Registracija',
   description: 'Napravite Libra Herbal nalog za brže poručivanje i praćenje porudžbina.',
@@ -15,18 +17,13 @@ const form = reactive({
   terms: false,
   newsletter: false,
 })
-const errors = reactive<Record<string, string>>({})
+const errors = ref<Record<string, string>>({})
 const notice = ref('')
 
 function validate() {
-  errors.firstName = form.firstName.trim() ? '' : 'Unesite ime.'
-  errors.lastName = form.lastName.trim() ? '' : 'Unesite prezime.'
-  errors.email = /^\S+@\S+\.\S+$/.test(form.email) ? '' : 'Unesite ispravnu email adresu.'
-  errors.phone = /^[+\d][\d\s/-]{5,}$/.test(form.phone.trim()) ? '' : 'Unesite ispravan broj telefona.'
-  errors.password = form.password.length >= 8 ? '' : 'Lozinka mora imati najmanje 8 karaktera.'
-  errors.passwordConfirm = form.passwordConfirm === form.password ? '' : 'Lozinke se ne poklapaju.'
-  errors.terms = form.terms ? '' : 'Morate prihvatiti uslove korišćenja.'
-  return Object.values(errors).every(e => !e)
+  const result = registerSchema.safeParse(form)
+  errors.value = result.success ? {} : fieldErrors(result.error)
+  return result.success
 }
 
 function onSubmit() {

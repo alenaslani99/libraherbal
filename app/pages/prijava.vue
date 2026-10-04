@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { loginSchema } from '#shared/schemas/auth'
+
 useSeoMeta({
   title: 'Prijava',
   description: 'Prijavite se na svoj Libra Herbal nalog.',
@@ -6,13 +8,13 @@ useSeoMeta({
 })
 
 const form = reactive({ email: '', password: '', remember: false })
-const errors = reactive<Record<string, string>>({})
+const errors = ref<Record<string, string>>({})
 const notice = ref('')
 
 function validate() {
-  errors.email = /^\S+@\S+\.\S+$/.test(form.email) ? '' : 'Unesite ispravnu email adresu.'
-  errors.password = form.password ? '' : 'Unesite lozinku.'
-  return !errors.email && !errors.password
+  const result = loginSchema.safeParse(form)
+  errors.value = result.success ? {} : fieldErrors(result.error)
+  return result.success
 }
 
 function onSubmit() {
