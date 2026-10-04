@@ -1,4 +1,7 @@
-// /robots.txt — private and transactional pages stay out of search; points crawlers to the sitemap
+// /robots.txt — only the API is off limits; points crawlers to the sitemap.
+// Private and transactional pages (korpa, placanje, nalog, admin…) stay crawlable on purpose: they carry
+// a noindex meta tag, and Google can only see it if it may fetch the page. Disallowing them here would
+// hide the noindex and let their bare URLs show up in results.
 export default defineEventHandler((event) => {
   const siteUrl = useRuntimeConfig(event).public.siteUrl.replace(/\/$/, '')
 
@@ -8,13 +11,6 @@ export default defineEventHandler((event) => {
   return [
     'User-agent: *',
     'Allow: /',
-    'Disallow: /korpa',
-    'Disallow: /placanje',
-    'Disallow: /hvala',
-    'Disallow: /prijava',
-    'Disallow: /registracija',
-    'Disallow: /nalog/',
-    'Disallow: /admin/',
     'Disallow: /api/',
     '',
     `Sitemap: ${siteUrl}/sitemap.xml`,
