@@ -58,6 +58,8 @@ export function useProductSeo(product: Ref<ProductDetail | null | undefined>) {
         'priceCurrency': 'RSD',
         'availability': p.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
         'itemCondition': 'https://schema.org/NewCondition',
+        // promotion end: Google shows the sale price only until then
+        ...(p.regularPrice && p.saleEndsAt && { priceValidUntil: p.saleEndsAt.slice(0, 10) }),
       },
       // only with real, approved reviews: Google penalises made-up ratings
       ...(p.reviewCount > 0 && {

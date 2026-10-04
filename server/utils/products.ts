@@ -29,6 +29,10 @@ export function toProduct(row: ProductCardRow): Product {
     weight: row.weight_label ?? '',
     // stored in para (1 RSD = 100)
     price: (row.final_price ?? 0) / 100,
+    // sale_price is only set while the promotion is running (v_product_current_price)
+    ...(row.sale_price !== null && row.regular_price !== null && row.regular_price > row.sale_price
+      ? { regularPrice: row.regular_price / 100 }
+      : {}),
     image: row.primary_image ?? '',
   }
 }

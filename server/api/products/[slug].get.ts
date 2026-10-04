@@ -12,14 +12,17 @@ export default defineEventHandler(async (event): Promise<ProductDetail> => {
   const db = useDb(event)
 
   const product = await db.prepare(`
-    SELECT v.*, p.description, p.usage_instructions, p.nutrition_info
+    SELECT v.*, p.description, p.usage_instructions, p.nutrition_info,
+           CASE WHEN cp.sale_price IS NOT NULL THEN cp.sale_ends_at END AS sale_ends_at
     FROM v_product_card v
     JOIN products p ON p.id = v.id
+    LEFT JOIN v_product_current_price cp ON cp.product_id = v.id
     WHERE v.slug = ?1
   `).bind(slug).first<ProductCardRow & {
     description: string | null
     usage_instructions: string | null
     nutrition_info: string | null
+    sale_ends_at: string | null
   }>()
 
   if (!product) {
@@ -51,6 +54,8 @@ export default defineEventHandler(async (event): Promise<ProductDetail> => {
   return {
     ...toProduct(product),
     categorySlug: product.category_slug,
+    // D1 stores 'YYYY-MM-DD HH:MM:SS' in UTC
+    saleEndsAt: product.sale_ends_at ? `${product.sale_ends_at.replace(' ', 'T')}Z` : null,
     purpose: (purpose!.results[0] as { name: string } | undefined)?.name ?? '',
     description: product.description ?? '',
     rating: product.rating_avg,

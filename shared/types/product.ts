@@ -11,6 +11,8 @@ export interface Product {
   weight: string
   // RSD, e.g. 1490 — the UI prints it as "1490,00 RSD"
   price: number
+  // only while a promotion is active: the price before the discount (RSD), shown struck through
+  regularPrice?: number
   image: string
 }
 
@@ -46,6 +48,8 @@ export interface ProductIngredient {
 export interface ProductDetail extends Product {
   // categories.slug (med, caj, melem): links the product to its category page
   categorySlug: string
+  // last moment of the promotion, ISO date-time (UTC); null = no end date or no promotion
+  saleEndsAt: string | null
   // eyebrow: "MED • DISANJE"
   purpose: string
   description: string

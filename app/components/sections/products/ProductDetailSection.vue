@@ -21,6 +21,8 @@ defineEmits<{ add: [quantity: number] }>()
           :price="product.price"
           :weight="product.weight"
           :in-stock="product.inStock"
+          :regular-price="product.regularPrice"
+          :sale-ends-at="product.saleEndsAt"
           class="mt-10"
           @add="$emit('add', $event)"
         />
