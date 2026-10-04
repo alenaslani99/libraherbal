@@ -12,7 +12,6 @@ const locative: Record<string, string> = {
   Med: 'medu',
   Čaj: 'čaju',
   Melem: 'melemu',
-  Set: 'setu',
 }
 
 const eyebrow = computed(() => {
@@ -21,7 +20,10 @@ const eyebrow = computed(() => {
 })
 </script>
 
-<!-- Figma "Ingredients": bg Main Green, padding 72/128, gap 64; three numbered columns -->
+<!--
+  Figma "Ingredients": bg Main Green, padding 72/128, gap 64; numbered columns.
+  From lg all ingredients sit in one row (one column each, --cols = count); below that they wrap.
+-->
 <template>
   <section v-if="ingredients.length" class="bg-forest text-white">
     <div class="mx-auto flex max-w-[1440px] flex-col gap-10 px-4 py-14 sm:px-6 lg:gap-16 lg:px-16 xl:px-32 lg:py-[72px]">
@@ -34,7 +36,10 @@ const eyebrow = computed(() => {
         </h2>
       </div>
 
-      <ol class="grid gap-8 sm:grid-cols-3 sm:gap-6">
+      <ol
+        class="grid gap-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-[repeat(var(--cols),minmax(0,1fr))]"
+        :style="{ '--cols': ingredients.length }"
+      >
         <li v-for="(ingredient, i) in ingredients" :key="ingredient.name">
           <h3 class="flex items-baseline gap-1.5 text-2xl font-normal leading-tight">
             <span class="font-sans text-xl font-semibold text-sun">{{ String(i + 1).padStart(2, '0') }}</span>
