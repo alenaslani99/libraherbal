@@ -5,6 +5,16 @@ import type { NuxtError } from '#app'
 const props = defineProps<{ error: NuxtError }>()
 
 const messages: Record<number, { icon: string, title: string, text: string }> = {
+  401: {
+    icon: 'lucide:lock',
+    title: 'Potrebna je prijava',
+    text: 'Prijavite se na svoj nalog da biste videli ovu stranicu.',
+  },
+  403: {
+    icon: 'lucide:shield-x',
+    title: 'Pristup nije dozvoljen',
+    text: 'Nemate dozvolu da vidite ovu stranicu.',
+  },
   404: {
     icon: 'lucide:frown',
     title: 'Stranica nije pronađena',
@@ -16,14 +26,20 @@ const messages: Record<number, { icon: string, title: string, text: string }> = 
     text: 'Poslali ste previše zahteva za kratko vreme. Sačekajte minut, pa pokušajte ponovo.',
   },
 }
-const fallback = {
+// any other 4xx: something about the request; 5xx: our side
+const clientFallback = {
+  icon: 'lucide:frown',
+  title: 'Zahtev nije moguće obraditi',
+  text: 'Proverite adresu stranice ili se vratite na početnu.',
+}
+const serverFallback = {
   icon: 'lucide:frown',
   title: 'Nešto nije u redu',
   text: 'Došlo je do greške na našoj strani. Pokušajte ponovo za nekoliko trenutaka.',
 }
 
 const status = computed(() => props.error.statusCode || 500)
-const message = computed(() => messages[status.value] ?? fallback)
+const message = computed(() => messages[status.value] ?? (status.value < 500 ? clientFallback : serverFallback))
 
 useSeoMeta({
   title: () => message.value.title,
