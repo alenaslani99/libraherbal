@@ -27,3 +27,15 @@ export interface OrderRequest {
   // only ids + quantities: the server looks up current prices itself
   items: { productId: number, quantity: number }[]
 }
+
+export type OrderStatus = 'received' | 'preparing' | 'in_transit' | 'delivered' | 'cancelled'
+
+// One order in "Istorija porudžbina" (GET /api/account/orders); amounts in RSD
+export interface OrderHistoryItem {
+  orderNumber: string
+  status: OrderStatus
+  // ISO date the order was placed
+  placedAt: string
+  total: number
+  items: { name: string, quantity: number, lineTotal: number }[]
+}

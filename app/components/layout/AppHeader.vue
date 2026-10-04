@@ -3,6 +3,7 @@ import { mainNav } from '~/data/navigation'
 
 const menuOpen = ref(false)
 const { count: cartCount } = useCart()
+const { loggedIn } = useAuth()
 
 // Section match, so "Prodavnica" stays underlined on /proizvodi/<slug> (and Blog on /blog/<slug>)
 const route = useRoute()
@@ -43,7 +44,14 @@ const isActive = (to: string) => route.path === to || route.path.startsWith(`${t
       </nav>
 
       <div class="flex items-center gap-5">
-        <AccountMenu />
+        <NuxtLink
+          :to="loggedIn ? '/nalog' : '/prijava'"
+          class="relative transition-colors hover:text-forest"
+          :aria-label="loggedIn ? 'Moj nalog' : 'Prijava'"
+        >
+          <Icon name="lucide:user" class="size-6" />
+          <span v-if="loggedIn" class="absolute -right-0.5 -bottom-0.5 size-2.5 rounded-full border-2 border-pale-beige bg-forest" aria-hidden="true" />
+        </NuxtLink>
         <NuxtLink to="/korpa" class="relative transition-colors hover:text-forest" aria-label="Korpa">
           <Icon name="lucide:shopping-cart" class="size-6" />
           <!-- the cart lives in localStorage: render the badge only in the browser so SSR/SSG HTML stays identical for everyone -->

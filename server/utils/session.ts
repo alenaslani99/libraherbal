@@ -106,10 +106,20 @@ export async function deleteSession(event: H3Event) {
   event.context.user = null
 }
 
-// Signs the user out everywhere: password change, "odjavi se sa svih uređaja", role change by an admin.
-// After a password change, call createSession() again to keep the current device signed in.
+// Signs the user out everywhere: "odjavi se sa svih uređaja", role change by an admin.
 export async function deleteUserSessions(event: H3Event, userId: number) {
   await useDb(event).prepare('DELETE FROM sessions WHERE user_id = ?1').bind(userId).run()
+}
+
+// Password change: every other device is signed out, this one gets a fresh session
+// with the same "Zapamti me" choice.
+export async function renewUserSessions(event: H3Event, userId: number) {
+  const token = getCookie(event, COOKIE)
+  const current = token
+    ? await useDb(event).prepare('SELECT remember FROM sessions WHERE id = ?1').bind(await sha256(token)).first<{ remember: number }>()
+    : null
+  await deleteUserSessions(event, userId)
+  await createSession(event, userId, current?.remember === 1)
 }
 
 export async function requireUser(event: H3Event): Promise<AuthUser> {

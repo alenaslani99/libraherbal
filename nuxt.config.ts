@@ -86,6 +86,7 @@ export default defineNuxtConfig({
     '/placanje': { ssr: false },
     '/hvala': { ssr: false },
     '/porudzbina/**': { ssr: false },
+    '/nalog': { ssr: false },
     '/nalog/**': { ssr: false },
     '/admin/**': { ssr: false },
   },
