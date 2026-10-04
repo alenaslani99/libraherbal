@@ -11,7 +11,7 @@ export function usePlaceOrder() {
     try {
       // Backend: const { orderNumber } = await $fetch<OrderConfirmation>('/api/orders', { method: 'POST', body: order })
       void order
-      const { orderNumber }: OrderConfirmation = { orderNumber: `LH-${Math.floor(1000 + Math.random() * 9000)}` }
+      const { orderNumber }: OrderConfirmation = { orderNumber: `LH-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 1e8)).padStart(8, '0')}` }
 
       // lets the order-placed middleware open /hvala
       lastOrder.value = orderNumber

@@ -17,7 +17,7 @@ export interface ShippingDetails {
 
 // What POST /api/orders answers with on success
 export interface OrderConfirmation {
-  // shown to the customer, e.g. "LH-2481"
+  // shown to the customer, e.g. "LH-2026-48213907"
   orderNumber: string
 }
 
@@ -29,6 +29,20 @@ export interface OrderRequest {
 }
 
 export type OrderStatus = 'received' | 'preparing' | 'in_transit' | 'delivered' | 'cancelled'
+
+// GET /api/orders/track — an order looked up by its number on /prati-porudzbinu; amounts in RSD.
+// No name, address or phone: the number alone is enough to see this, so it holds nothing personal.
+export interface OrderTracking {
+  orderNumber: string
+  status: OrderStatus
+  // ISO time each status was reached; null = not reached yet, or skipped by the shop
+  dates: Record<OrderStatus, string | null>
+  items: { name: string, quantity: number, lineTotal: number }[]
+  subtotal: number
+  // 0 = free shipping
+  shipping: number
+  total: number
+}
 
 // One order in "Istorija porudžbina" (GET /api/account/orders); amounts in RSD
 export interface OrderHistoryItem {

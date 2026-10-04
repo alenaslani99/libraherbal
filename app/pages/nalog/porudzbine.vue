@@ -1,23 +1,11 @@
 <script setup lang="ts">
-import type { OrderHistoryItem, OrderStatus } from '#shared/types/order'
+import type { OrderHistoryItem } from '#shared/types/order'
 
 // "Istorija porudžbina" tab
 const { data: orders, status, refresh } = await useFetch<OrderHistoryItem[]>('/api/account/orders', {
   key: 'account-orders',
   default: () => [],
 })
-
-const statuses: Record<OrderStatus, { label: string, class: string }> = {
-  received: { label: 'Primljena', class: 'bg-sun-light text-ink' },
-  preparing: { label: 'U pripremi', class: 'bg-sun text-ink' },
-  in_transit: { label: 'Na putu', class: 'bg-forest/15 text-forest' },
-  delivered: { label: 'Isporučena', class: 'bg-forest text-white' },
-  cancelled: { label: 'Otkazana', class: 'bg-red-700/10 text-red-700' },
-}
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('sr-Latn-RS', { day: 'numeric', month: 'long', year: 'numeric' })
-}
 </script>
 
 <template>
@@ -55,11 +43,11 @@ function formatDate(iso: string) {
               #{{ order.orderNumber }}
             </p>
             <p class="mt-0.5 text-xs text-brown-200">
-              {{ formatDate(order.placedAt) }}
+              {{ formatOrderDate(order.placedAt) }}
             </p>
           </div>
-          <span class="rounded-full px-3 py-1 text-xs font-semibold" :class="statuses[order.status].class">
-            {{ statuses[order.status].label }}
+          <span class="rounded-full px-3 py-1 text-xs font-semibold" :class="orderStatuses[order.status].class">
+            {{ orderStatuses[order.status].label }}
           </span>
         </div>
 

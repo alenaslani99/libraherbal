@@ -42,9 +42,17 @@ const orderNumber = useLastOrder()
           Isporuka za 1–3 radna dana
         </p>
 
-        <BaseButton to="/" size="lg" class="mt-8 font-medium">
-          Nazad na početnu
+        <BaseButton
+          :to="`/prati-porudzbinu?broj=${encodeURIComponent(orderNumber ?? '')}`"
+          size="lg"
+          class="mt-8 font-medium"
+        >
+          Prati porudžbinu
+          <Icon name="lucide:arrow-right" class="size-4 transition-transform duration-200 group-hover:translate-x-1" />
         </BaseButton>
+        <NuxtLink to="/" class="mt-4 text-sm text-ink underline underline-offset-4 transition-colors hover:text-forest">
+          Nazad na početnu
+        </NuxtLink>
       </div>
     </section>
     <NewsletterSection />

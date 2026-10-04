@@ -9,6 +9,7 @@ export const footerColumns: { title: string, links: NavLink[] }[] = [
       { label: 'O nama', to: '/o-nama' },
       { label: 'Kontakt', to: '/kontakt' },
       { label: 'Česta pitanja', to: '/cesta-pitanja' },
+      { label: 'Prati porudžbinu', to: '/prati-porudzbinu' },
     ],
   },
   {
