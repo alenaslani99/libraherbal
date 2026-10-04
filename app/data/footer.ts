@@ -22,8 +22,6 @@ export const contact = {
   phone: '+381 62 607444',
   email: 'info@libraherbal.rs',
   address,
-  // Google Maps search for the address: the /kontakt map embed and its "Otvori u Google mapama" link
-  mapsQuery: encodeURIComponent(`${address.street}, ${address.postalCode} ${address.city}, Srbija`),
 }
 
 // Brand logos come from Simple Icons (Lucide has no brand logos)

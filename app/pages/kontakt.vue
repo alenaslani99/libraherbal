@@ -57,17 +57,19 @@ async function onSubmit() {
     pending.value = false
   }
 }
-
-const addressLine = `${contact.address.street}, ${contact.address.postalCode} ${contact.address.city}`
 </script>
 
 <template>
   <div>
+    <section class="bg-forest">
+      <div class="mx-auto max-w-[1440px] px-4 py-12 sm:px-6 lg:px-16 lg:py-[72px] xl:px-32">
+        <PageHeading eyebrow="Kontakt" title="Tu smo" title-italic="za vas." light />
+      </div>
+    </section>
+
     <section class="bg-pale-beige">
       <div class="mx-auto max-w-[1440px] px-4 pt-12 pb-16 sm:px-6 lg:px-16 lg:pt-[72px] lg:pb-24 xl:px-32">
-        <PageHeading eyebrow="Kontakt" title="Tu smo" title-italic="za vas." />
-
-        <div class="mt-10 grid gap-10 lg:mt-14 lg:grid-cols-[minmax(0,643px)_minmax(300px,448px)] lg:justify-between lg:gap-16">
+        <div class="grid gap-10 lg:grid-cols-[minmax(0,643px)_minmax(300px,448px)] lg:justify-between lg:gap-16">
           <form novalidate @submit.prevent="onSubmit">
             <h2 class="text-2xl leading-tight text-ink">
               Pošaljite nam poruku
@@ -200,32 +202,6 @@ const addressLine = `${contact.address.street}, ${contact.address.postalCode} ${
               </ul>
             </div>
           </aside>
-        </div>
-
-        <div class="mt-16 lg:mt-24">
-          <div class="flex flex-wrap items-end justify-between gap-4">
-            <h2 class="text-2xl leading-tight text-ink">
-              Gde se nalazimo
-            </h2>
-            <a
-              :href="`https://www.google.com/maps/search/?api=1&query=${contact.mapsQuery}`"
-              target="_blank"
-              rel="noopener"
-              class="flex items-center gap-2 text-sm text-ink underline underline-offset-4 hover:text-forest"
-            >
-              <Icon name="lucide:external-link" class="size-4" />
-              Otvori u Google mapama
-            </a>
-          </div>
-          <div class="mt-6 overflow-hidden rounded-xl border border-line">
-            <iframe
-              :src="`https://maps.google.com/maps?q=${contact.mapsQuery}&z=15&output=embed`"
-              :title="`Mapa: ${addressLine}`"
-              class="block h-[320px] w-full sm:h-[420px]"
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-            />
-          </div>
         </div>
       </div>
     </section>
