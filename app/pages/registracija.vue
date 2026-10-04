@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { registerSchema } from '#shared/schemas/auth'
 
+definePageMeta({ middleware: 'guest' })
+
 useSeoMeta({
   title: 'Registracija',
   description: 'Napravite Libra Herbal nalog za brže poručivanje i praćenje porudžbina.',
@@ -19,18 +21,37 @@ const form = reactive({
 })
 const errors = ref<Record<string, string>>({})
 const notice = ref('')
+const pending = ref(false)
 
+const route = useRoute()
+const { register } = useAuth()
+
+// the parsed data (trimmed, email lowercased) is what gets sent
 function validate() {
   const result = registerSchema.safeParse(form)
   errors.value = result.success ? {} : fieldErrors(result.error)
-  return result.success
+  return result.data
 }
 
-function onSubmit() {
+// signs the new account in right away
+async function onSubmit() {
   notice.value = ''
-  if (!validate()) return
-  // TODO: POST /api/auth/register once the backend (Worker + D1) is connected
-  notice.value = 'Registracija još nije povezana sa serverom — biće aktivna uskoro.'
+  if (pending.value) return
+  const data = validate()
+  if (!data) return
+  pending.value = true
+  try {
+    await register(data)
+    await navigateTo(safeRedirect(route.query.redirect))
+  }
+  catch (error) {
+    const { fields, message } = apiError(error)
+    errors.value = fields
+    notice.value = message
+  }
+  finally {
+    pending.value = false
+  }
 }
 </script>
 
@@ -115,18 +136,23 @@ function onSubmit() {
         </FormCheckbox>
       </div>
 
-      <p v-if="notice" class="mt-6 rounded-md border border-sun bg-sun-light/60 px-4 py-3 text-sm text-ink" role="status">
+      <p v-if="notice" class="mt-6 rounded-md border border-sun bg-sun-light/60 px-4 py-3 text-sm text-ink" role="alert">
         {{ notice }}
       </p>
 
-      <BaseButton type="submit" size="lg" class="mt-8 w-full font-medium">
-        Napravite nalog
-        <Icon name="lucide:user-plus" class="size-4" />
+      <BaseButton type="submit" size="lg" class="mt-8 w-full font-medium" :disabled="pending" :aria-busy="pending">
+        <template v-if="pending">
+          Pravimo nalog…
+        </template>
+        <template v-else>
+          Napravite nalog
+          <Icon name="lucide:user-plus" class="size-4" />
+        </template>
       </BaseButton>
 
       <p class="mt-6 text-center text-sm text-ink">
         Već imate nalog?
-        <NuxtLink to="/prijava" class="font-semibold underline underline-offset-4 hover:text-forest">
+        <NuxtLink :to="{ path: '/prijava', query: route.query }" class="font-semibold underline underline-offset-4 hover:text-forest">
           Prijavite se
         </NuxtLink>
       </p>

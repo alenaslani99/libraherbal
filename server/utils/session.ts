@@ -13,13 +13,6 @@ function lifetime(remember: boolean) {
   return remember ? 30 * DAY : DAY
 }
 
-declare module 'h3' {
-  interface H3EventContext {
-    // undefined = not looked up yet, null = signed out
-    user?: AuthUser | null
-  }
-}
-
 export interface UserRow {
   id: number
   email: string

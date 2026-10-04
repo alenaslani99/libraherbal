@@ -43,9 +43,7 @@ const isActive = (to: string) => route.path === to || route.path.startsWith(`${t
       </nav>
 
       <div class="flex items-center gap-5">
-        <NuxtLink to="/prijava" class="transition-colors hover:text-forest" aria-label="Moj nalog">
-          <Icon name="lucide:user" class="size-6" />
-        </NuxtLink>
+        <AccountMenu />
         <NuxtLink to="/korpa" class="relative transition-colors hover:text-forest" aria-label="Korpa">
           <Icon name="lucide:shopping-cart" class="size-6" />
           <!-- the cart lives in localStorage: render the badge only in the browser so SSR/SSG HTML stays identical for everyone -->
