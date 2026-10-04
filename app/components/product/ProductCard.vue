@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { Product } from '~/data/home-mock'
+import type { Product } from '#shared/types/product'
 
 const props = defineProps<{ product: Product }>()
 
 const cart = useCart()
 
 function addToCart() {
-  const { variantId, slug, name, weight, price, image } = props.product
-  cart.add({ variantId, slug, name, variantLabel: weight, price, image })
+  const { id, slug, name, weight, price, image } = props.product
+  cart.add({ productId: id, slug, name, weight, price, image })
 }
 </script>
 
@@ -41,7 +41,7 @@ function addToCart() {
       </h3>
       <div class="mt-auto flex items-end justify-between pt-1">
         <p class="text-sm font-semibold leading-none text-ink">
-          {{ product.price }} <span class="text-[10px]">RSD</span>
+          {{ product.price }},00 <span class="text-[10px]">RSD</span>
         </p>
         <AddToCartButton :product-name="product.name" @add="addToCart" />
       </div>

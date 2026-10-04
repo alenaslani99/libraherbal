@@ -2,7 +2,7 @@
 import type { ProductDetail } from '#shared/types/product'
 
 defineProps<{ product: ProductDetail }>()
-defineEmits<{ add: [payload: { variantId: number, quantity: number }] }>()
+defineEmits<{ add: [quantity: number] }>()
 </script>
 
 <!--
@@ -18,8 +18,9 @@ defineEmits<{ add: [payload: { variantId: number, quantity: number }] }>()
         <ProductSummary :product="product" />
         <ProductPurchase
           :key="product.id"
-          :variants="product.variants"
-          :default-variant-id="product.defaultVariantId"
+          :price="product.price"
+          :weight="product.weight"
+          :in-stock="product.inStock"
           class="mt-10"
           @add="$emit('add', $event)"
         />

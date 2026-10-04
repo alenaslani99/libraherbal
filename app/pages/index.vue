@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { popularProducts } from '~/data/home-mock'
+import type { Product } from '#shared/types/product'
+
+const { data: popularProducts } = await useFetch<Product[]>('/api/products/popular', { default: () => [] })
 
 useSeoMeta({
   title: 'Prirodno rešenje vaših problema',

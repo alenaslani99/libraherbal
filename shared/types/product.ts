@@ -1,18 +1,34 @@
-// Product page contract — the shape GET /api/products/:slug will return.
+// Catalog contracts — the shapes the /api/products* routes return.
 // Lives in shared/ so the server routes and the app use the same types.
+
+// A product card (listings, home "Popularni artikli", "Preporučeni proizvodi")
+export interface Product {
+  id: number
+  slug: string
+  name: string
+  // eyebrow: "MED • 500g"
+  category: string
+  weight: string
+  // RSD, e.g. 1490 — the UI prints it as "1490,00 RSD"
+  price: number
+  image: string
+}
+
+// One option in a filter group or the sort dropdown
+export interface FilterOption {
+  value: string
+  label: string
+}
+
+// GET /api/filters — "Vrsta proizvoda" (categories) and "Svrha" (purposes)
+export interface CatalogFilters {
+  types: FilterOption[]
+  purposes: FilterOption[]
+}
 
 export interface ProductImage {
   src: string
   alt: string
-}
-
-// One purchasable size of a product (250 g, 500 g, 1 kg) — price and stock are per variant
-export interface ProductVariant {
-  id: number
-  label: string
-  // display price as the backend sends it, e.g. "1.490"
-  price: string
-  inStock: boolean
 }
 
 // One accordion block on the product page (Način upotrebe, Nutritivna vrednost, Dostava)
@@ -27,19 +43,14 @@ export interface ProductIngredient {
   description: string
 }
 
-export interface ProductDetail {
-  id: number
-  slug: string
-  name: string
+export interface ProductDetail extends Product {
   // eyebrow: "MED • DISANJE"
-  category: string
   purpose: string
   description: string
   rating: number
   reviewCount: number
+  inStock: boolean
   images: ProductImage[]
-  variants: ProductVariant[]
-  defaultVariantId: number
   info: ProductInfoSection[]
   ingredients: ProductIngredient[]
 }

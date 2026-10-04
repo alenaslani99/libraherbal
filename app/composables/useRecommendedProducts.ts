@@ -1,13 +1,10 @@
-import type { Product } from '~/data/home-mock'
-import { shopProducts } from '~/data/products-mock'
+import type { Product } from '#shared/types/product'
 
 // "Preporučeni proizvodi" on the product page: up to 4 products, never the one being viewed.
-// To wire the backend, swap the handler for:
-//   () => $fetch<Product[]>(`/api/products/${toValue(slug)}/recommended`)
 export function useRecommendedProducts(slug: MaybeRefOrGetter<string>) {
   return useAsyncData(
     () => `recommended-${toValue(slug)}`,
-    async (): Promise<Product[]> => shopProducts.filter(p => p.slug !== toValue(slug)).slice(0, 4),
+    () => $fetch<Product[]>(`/api/products/${encodeURIComponent(toValue(slug))}/recommended`),
     { default: () => [] },
   )
 }

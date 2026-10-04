@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { sortOptions } from '~/data/products-mock'
+import { sortOptions } from '~/composables/useProductFilters'
 
 const props = defineProps<{ count: number }>()
 const sort = defineModel<string>('sort', { required: true })

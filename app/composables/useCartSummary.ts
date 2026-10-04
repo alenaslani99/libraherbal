@@ -1,28 +1,27 @@
-import type { CartSummary } from '#shared/types/cart'
+import type { CartQuoteRequest, CartSummary } from '#shared/types/cart'
 
-const FREE_SHIPPING_FROM = 4000
-const SHIPPING_PRICE = 350
-
-// Mock-only number helpers: the backend will price the cart (e.g. POST /api/cart/quote) and return
-// CartSummary with ready display strings, so the browser never computes what the customer pays.
-const toNumber = (price: string) => Number(price.replace(/\./g, ''))
-const toDisplay = (value: number) => String(value).replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-
+// Totals for the cart and checkout pages, priced by the server (POST /api/cart/quote).
+// Re-fetches whenever the cart changes; the last quote stays on screen while the next one loads.
 export function useCartSummary() {
-  const { items, count } = useCart()
+  const { items } = useCart()
 
-  return computed<CartSummary>(() => {
-    const subtotal = items.value.reduce((sum, item) => sum + toNumber(item.price) * item.quantity, 0)
-    const freeShipping = subtotal >= FREE_SHIPPING_FROM
-    const shipping = freeShipping ? 0 : SHIPPING_PRICE
+  const body = computed<CartQuoteRequest>(() => ({
+    items: items.value.map(({ productId, quantity }) => ({ productId, quantity })),
+  }))
 
-    return {
-      itemCount: count.value,
-      subtotal: toDisplay(subtotal),
-      shipping: freeShipping ? null : toDisplay(shipping),
-      total: toDisplay(subtotal + shipping),
-      remainingForFreeShipping: freeShipping ? null : toDisplay(FREE_SHIPPING_FROM - subtotal),
-      freeShippingProgress: Math.min(1, subtotal / FREE_SHIPPING_FROM),
-    }
+  const { data } = useFetch('/api/cart/quote', {
+    method: 'POST',
+    body,
+    watch: [body],
+    default: (): CartSummary => ({
+      itemCount: 0,
+      subtotal: 0,
+      shipping: null,
+      total: 0,
+      remainingForFreeShipping: null,
+      freeShippingProgress: 0,
+    }),
   })
+
+  return data
 }

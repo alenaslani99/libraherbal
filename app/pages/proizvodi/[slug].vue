@@ -2,11 +2,15 @@
 const route = useRoute()
 const slug = computed(() => String(route.params.slug))
 
-const [{ data: product }, { data: recommended }] = await Promise.all([
+const [{ data: product, error }, { data: recommended }] = await Promise.all([
   useProduct(slug),
   useRecommendedProducts(slug),
 ])
 
+// useProduct gives null for an unknown slug; any other failure (DB down) is a real error, not a 404
+if (error.value) {
+  throw createError({ statusCode: error.value.statusCode ?? 500, message: 'Proizvod trenutno nije dostupan', fatal: true })
+}
 if (!product.value) {
   throw createError({ statusCode: 404, statusMessage: 'Proizvod nije pronađen', fatal: true })
 }
@@ -21,17 +25,16 @@ useSeoMeta({
 
 const cart = useCart()
 
-function onAdd({ variantId, quantity }: { variantId: number, quantity: number }) {
+function onAdd(quantity: number) {
   const p = product.value
-  const variant = p?.variants.find(v => v.id === variantId)
-  if (!p || !variant) return
+  if (!p) return
   cart.add({
-    variantId,
+    productId: p.id,
     slug: p.slug,
     name: p.name,
-    variantLabel: variant.label,
-    price: variant.price,
-    image: p.images[0]?.src ?? '',
+    weight: p.weight,
+    price: p.price,
+    image: p.images[0]?.src ?? p.image,
   }, quantity)
 }
 </script>

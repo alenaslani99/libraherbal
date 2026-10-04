@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
-  modules: ['@nuxt/fonts', '@nuxt/icon', '@nuxt/image', '@nuxt/content'],
+  modules: ['@nuxt/fonts', '@nuxt/icon', '@nuxt/image', '@nuxt/content', 'nitro-cloudflare-dev'],
 
   css: ['~/assets/css/main.css'],
 
@@ -44,6 +44,14 @@ export default defineNuxtConfig({
 
   content: {
     experimental: { sqliteConnector: 'native' },
+    // On Workers there's no native sqlite: Nuxt Content shares the D1 binding
+    database: { type: 'd1', bindingName: 'DB' },
+  },
+
+  // Cloudflare Workers. Bindings (D1 as `DB`) are declared in wrangler.jsonc;
+  // nitro-cloudflare-dev exposes the local ones in `nuxt dev` (state in .wrangler/)
+  nitro: {
+    preset: 'cloudflare_module',
   },
 
   // Storefront: SSR (SEO), private pages and admin: SPA

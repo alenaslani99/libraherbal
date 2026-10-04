@@ -10,7 +10,7 @@ export function useCart() {
   const count = computed(() => items.value.reduce((sum, item) => sum + item.quantity, 0))
 
   function add(item: Omit<CartItem, 'quantity'>, quantity = 1) {
-    const existing = items.value.find(i => i.variantId === item.variantId)
+    const existing = items.value.find(i => i.productId === item.productId)
     if (existing) {
       existing.quantity = Math.min(CART_MAX_QUANTITY, existing.quantity + quantity)
     }
@@ -19,13 +19,13 @@ export function useCart() {
     }
   }
 
-  function setQuantity(variantId: number, quantity: number) {
-    const item = items.value.find(i => i.variantId === variantId)
+  function setQuantity(productId: number, quantity: number) {
+    const item = items.value.find(i => i.productId === productId)
     if (item) item.quantity = Math.min(CART_MAX_QUANTITY, Math.max(1, quantity))
   }
 
-  function remove(variantId: number) {
-    items.value = items.value.filter(i => i.variantId !== variantId)
+  function remove(productId: number) {
+    items.value = items.value.filter(i => i.productId !== productId)
   }
 
   function clear() {

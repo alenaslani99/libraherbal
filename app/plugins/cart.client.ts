@@ -1,6 +1,7 @@
 import type { CartItem } from '#shared/types/cart'
 
-const STORAGE_KEY = 'libraherbal:cart'
+// v2: items are keyed by productId (v1 carts held variant ids and are dropped)
+const STORAGE_KEY = 'libraherbal:cart:v2'
 
 // Restores the guest cart from localStorage and saves every change back.
 // Client-only: SSR pages render without the cart (the header badge is <ClientOnly>), so no hydration mismatch.

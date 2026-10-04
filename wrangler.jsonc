@@ -1,0 +1,22 @@
+// Cloudflare Worker config. Workers Builds (GitHub) deploys with this file, so bindings
+// live here, not in the dashboard: a dashboard-only binding is dropped on the next push.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "libraherbal",
+  "main": ".output/server/index.mjs",
+  "compatibility_date": "2025-07-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".output/public",
+    "binding": "ASSETS"
+  },
+  "observability": { "enabled": true },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "libraherbal_db",
+      "database_id": "9ee5772c-1d11-4747-b6da-6eb60330e002",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FilterOption } from '~/data/products-mock'
+import type { FilterOption } from '#shared/types/product'
 import { ALL } from '~/composables/useProductFilters'
 
 defineProps<{

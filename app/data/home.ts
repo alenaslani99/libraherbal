@@ -1,23 +1,4 @@
-// Mock data until the backend exists — shaped like future API responses
-
-export interface Product {
-  id: number
-  // variant the card's "+" button adds to the cart (the size shown on the card)
-  variantId: number
-  slug: string
-  name: string
-  category: string
-  weight: string
-  price: string
-  image: string
-}
-
-export const popularProducts: Product[] = [
-  { id: 1, variantId: 12, slug: 'bronhi-med', name: 'Bronhi Med', category: 'Med', weight: '500g', price: '1.490', image: '/assets/img/med-kopriva.jpg' },
-  { id: 2, variantId: 20, slug: 'cisto-med', name: 'Cisto Med', category: 'Med', weight: '500g', price: '1.200', image: '/assets/img/cisto-med.jpg' },
-  { id: 3, variantId: 30, slug: 'urobalans', name: 'UroBalans', category: 'Čaj', weight: '100g', price: '700', image: '/assets/img/uro-balans.jpg' },
-  { id: 4, variantId: 40, slug: 'opustise', name: 'OpustiSe', category: 'Čaj', weight: '100g', price: '700', image: '/assets/img/opusti-se.jpg' },
-]
+// Static home page content (catalog data comes from the API)
 
 export const heroFeatures = [
   { icon: 'lucide:leaf', title: '100% domaći med', text: 'od proverenih pčelara' },

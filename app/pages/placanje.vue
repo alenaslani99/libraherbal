@@ -56,7 +56,7 @@ async function onSubmit() {
   const order: OrderRequest = {
     shipping: { ...shipping },
     paymentMethod: paymentMethod.value,
-    items: items.value.map(({ variantId, quantity }) => ({ variantId, quantity })),
+    items: items.value.map(({ productId, quantity }) => ({ productId, quantity })),
   }
 
   try {

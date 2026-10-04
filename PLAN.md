@@ -35,7 +35,7 @@ app/
     sections/              CtaSection, NewsletterSection (reusable)
       home/                HomeHero, HomeFeatures, HomeFinder, HomePopularProducts, HomeTestimonials
     product/               ProductCard
-  data/                    navigation, footer, home-mock
+  data/                    navigation, footer, home (static copy)
   layouts/default.vue
   pages/index.vue
 content/                   Nuxt Content (later)

@@ -38,7 +38,7 @@ const quantity = computed({
             </NuxtLink>
           </h2>
           <p class="text-xs text-ink">
-            {{ item.variantLabel }}
+            {{ item.weight }}
           </p>
         </div>
         <button
@@ -52,7 +52,7 @@ const quantity = computed({
       </div>
 
       <p class="mt-3 text-sm font-semibold leading-none text-ink">
-        {{ item.price }} <span class="text-[10px]">RSD</span>
+        {{ item.price }},00 <span class="text-[10px]">RSD</span>
       </p>
       <QuantityStepper v-model="quantity" :max="CART_MAX_QUANTITY" class="mt-4 self-start" />
     </div>

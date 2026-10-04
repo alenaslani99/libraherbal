@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { homeCategories } from '~/data/home-mock'
+import { homeCategories } from '~/data/home'
 </script>
 
 <!-- Figma "Category": 1440 wide, hug 395px, padding 72/128, gap 40, bg Accent Pale Beige -->

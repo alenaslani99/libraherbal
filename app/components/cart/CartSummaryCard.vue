@@ -27,7 +27,7 @@ withDefaults(defineProps<{
 
     <!-- checkout: what is being ordered -->
     <ul v-if="items.length" class="mt-5 space-y-3 border-b border-white/20 pb-5" aria-label="Proizvodi u porudžbini">
-      <li v-for="item in items" :key="item.variantId" class="flex items-center gap-3">
+      <li v-for="item in items" :key="item.productId" class="flex items-center gap-3">
         <div class="relative shrink-0">
           <NuxtImg :src="item.image" alt="" width="48" height="48" format="webp" sizes="xs:48px sm:48px md:48px lg:48px" class="size-12 rounded-lg object-cover" />
           <span class="absolute -top-1.5 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-sun px-1 text-[10px] font-bold leading-none text-ink">
@@ -39,7 +39,7 @@ withDefaults(defineProps<{
             {{ item.name }}
           </p>
           <p class="text-[11px] leading-4 text-white/70">
-            {{ item.variantLabel }} · {{ item.quantity }} × {{ item.price }} RSD
+            {{ item.weight }} · {{ item.quantity }} × {{ item.price }},00 RSD
           </p>
         </div>
       </li>
@@ -57,7 +57,7 @@ withDefaults(defineProps<{
     </div>
     <p class="mt-3 text-[11px] leading-4">
       <template v-if="summary.remainingForFreeShipping">
-        Još <strong class="font-semibold">{{ summary.remainingForFreeShipping }} RSD</strong> do besplatne dostave
+        Još <strong class="font-semibold">{{ summary.remainingForFreeShipping }},00 RSD</strong> do besplatne dostave
       </template>
       <template v-else>
         <strong class="font-semibold text-sun">Ostvarili ste besplatnu dostavu!</strong>
@@ -67,12 +67,12 @@ withDefaults(defineProps<{
     <dl class="mt-5 space-y-2 text-xs">
       <div class="flex justify-between gap-4">
         <dt>Proizvodi ({{ summary.itemCount }})</dt>
-        <dd>{{ summary.subtotal }} <span class="text-[9px]">RSD</span></dd>
+        <dd>{{ summary.subtotal }},00 <span class="text-[9px]">RSD</span></dd>
       </div>
       <div class="flex justify-between gap-4">
         <dt>Dostava</dt>
         <dd v-if="summary.shipping">
-          {{ summary.shipping }} <span class="text-[9px]">RSD</span>
+          {{ summary.shipping }},00 <span class="text-[9px]">RSD</span>
         </dd>
         <dd v-else class="text-sun">
           Besplatno
@@ -82,7 +82,7 @@ withDefaults(defineProps<{
 
     <div class="mt-6 flex justify-between gap-4 border-t border-white/30 pt-6 text-sm font-semibold">
       <span>Ukupno</span>
-      <span>{{ summary.total }} <span class="text-[10px]">RSD</span></span>
+      <span>{{ summary.total }},00 <span class="text-[10px]">RSD</span></span>
     </div>
 
     <!-- checkout: what happens next -->

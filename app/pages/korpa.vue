@@ -22,13 +22,13 @@ const summary = useCartSummary()
           <ul aria-label="Proizvodi u korpi">
             <li
               v-for="item in items"
-              :key="item.variantId"
+              :key="item.productId"
               class="border-b border-ink/40 py-8 first:pt-0 last:border-b-0 last:pb-0 sm:py-10"
             >
               <CartItemRow
                 :item="item"
-                @update:quantity="setQuantity(item.variantId, $event)"
-                @remove="remove(item.variantId)"
+                @update:quantity="setQuantity(item.productId, $event)"
+                @remove="remove(item.productId)"
               />
             </li>
           </ul>

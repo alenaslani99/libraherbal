@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { heroFeatures } from '~/data/home-mock'
+import { heroFeatures } from '~/data/home'
 </script>
 
 <!--

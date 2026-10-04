@@ -8,7 +8,11 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "db:migrate:local": "wrangler d1 migrations apply libraherbal_db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply libraherbal_db --remote",
+    "db:seed:local": "wrangler d1 execute libraherbal_db --local --file db/seed.sql",
+    "deploy": "nuxt build && wrangler d1 migrations apply libraherbal_db --remote && wrangler deploy"
   },
   "dependencies": {
     "@iconify-json/hugeicons": "^1.2.35",
@@ -22,13 +26,20 @@
     "nuxt": "^4.5.2",
     "tailwindcss": "^4.3.3",
     "vue": "^3.5.43",
-    "vue-router": "^5.3.1"
+    "vue-router": "^5.3.1",
+    "zod": "^4.6.5"
   },
   "allowScripts": {
-    "esbuild@0.28.2": true
+    "esbuild@0.27.2": true,
+    "esbuild@0.28.1": true,
+    "esbuild@0.28.2": true,
+    "workerd@1.20261001.1": true
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261004.1",
+    "nitro-cloudflare-dev": "^0.2.2",
     "typescript": "^6.0.3",
-    "vue-tsc": "^3.3.11"
+    "vue-tsc": "^3.3.11",
+    "wrangler": "^4.147.0"
   }
 }

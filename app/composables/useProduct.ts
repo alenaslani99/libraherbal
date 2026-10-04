@@ -1,12 +1,18 @@
 import type { ProductDetail } from '#shared/types/product'
-import { getMockProductDetail } from '~/data/product-detail-mock'
 
-// Product page data. To wire the backend, swap the handler for:
-//   () => $fetch<ProductDetail>(`/api/products/${toValue(slug)}`)
-// (the API should answer 404 for unknown slugs; the page already handles a missing product)
+// Product page data. The API answers 404 for unknown slugs; that becomes null here
+// and the page throws its own 404.
 export function useProduct(slug: MaybeRefOrGetter<string>) {
   return useAsyncData(
     () => `product-${toValue(slug)}`,
-    async (): Promise<ProductDetail | null> => getMockProductDetail(toValue(slug)),
+    async (): Promise<ProductDetail | null> => {
+      try {
+        return await $fetch<ProductDetail>(`/api/products/${encodeURIComponent(toValue(slug))}`)
+      }
+      catch (error) {
+        if ((error as { statusCode?: number }).statusCode === 404) return null
+        throw error
+      }
+    },
   )
 }

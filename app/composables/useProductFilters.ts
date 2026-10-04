@@ -1,7 +1,15 @@
-import type { ShopProduct } from '~/data/products-mock'
+import type { FilterOption } from '#shared/types/product'
 
 export const ALL = 'sve'
 const DEFAULT_SORT = 'popularnost'
+
+// Sort keys GET /api/products understands
+export const sortOptions: FilterOption[] = [
+  { value: 'popularnost', label: 'Popularnost' },
+  { value: 'cena-rastuce', label: 'Cena: od najniže' },
+  { value: 'cena-opadajuce', label: 'Cena: od najviše' },
+  { value: 'naziv', label: 'Naziv: A–Z' },
+]
 
 // A filter value that lives in the URL (?vrsta=med&kategorija=imunitet&sortiraj=naziv),
 // so filtered views are linkable and the home page category blocks land pre-filtered.
@@ -21,29 +29,13 @@ function useQueryParam(key: string, fallback: string) {
   })
 }
 
-// Mock-only: prices come as display strings ("1.200"). The backend will sort on its numeric column.
-const priceValue = (product: ShopProduct) => Number(product.price.replace(/\./g, ''))
-
-const sorters: Record<string, (a: ShopProduct, b: ShopProduct) => number> = {
-  'popularnost': (a, b) => b.popularity - a.popularity,
-  'cena-rastuce': (a, b) => priceValue(a) - priceValue(b),
-  'cena-opadajuce': (a, b) => priceValue(b) - priceValue(a),
-  'naziv': (a, b) => a.name.localeCompare(b.name, 'sr'),
-}
-
-export function useProductFilters(products: MaybeRefOrGetter<ShopProduct[]>) {
+// Filter state for /proizvodi. Filtering and sorting happen on the server: pass `query` to GET /api/products.
+export function useProductFilters() {
   const type = useQueryParam('vrsta', ALL)
   const purpose = useQueryParam('kategorija', ALL)
   const sort = useQueryParam('sortiraj', DEFAULT_SORT)
 
-  const results = computed(() => {
-    const sorter = sorters[sort.value] ?? sorters[DEFAULT_SORT]!
-    return toValue(products)
-      .filter(p => type.value === ALL || p.type === type.value)
-      .filter(p => purpose.value === ALL || p.purposes.includes(purpose.value))
-      .sort(sorter)
-  })
-
+  const query = computed(() => ({ vrsta: type.value, kategorija: purpose.value, sortiraj: sort.value }))
   const isFiltered = computed(() => type.value !== ALL || purpose.value !== ALL)
 
   function resetFilters() {
@@ -51,5 +43,5 @@ export function useProductFilters(products: MaybeRefOrGetter<ShopProduct[]>) {
     purpose.value = ALL
   }
 
-  return { type, purpose, sort, results, isFiltered, resetFilters }
+  return { type, purpose, sort, query, isFiltered, resetFilters }
 }

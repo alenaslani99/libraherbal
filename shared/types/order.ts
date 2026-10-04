@@ -25,5 +25,5 @@ export interface OrderRequest {
   shipping: ShippingDetails
   paymentMethod: PaymentMethod
   // only ids + quantities: the server looks up current prices itself
-  items: { variantId: number, quantity: number }[]
+  items: { productId: number, quantity: number }[]
 }

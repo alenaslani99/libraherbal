@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { testimonials } from '~/data/home-mock'
+import { testimonials } from '~/data/home'
 </script>
 
 <!-- Figma "User Reviews": 1440 wide, hug 452px, padding 72/128, gap 56, bg Accent Pale Beige -->

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Product } from '~/data/home-mock'
+import type { Product } from '#shared/types/product'
 
 withDefaults(defineProps<{
   title: string
