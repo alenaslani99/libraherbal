@@ -3,8 +3,10 @@ import { z } from 'zod'
 // Auth forms, validated with the same rules in the browser (instant field errors)
 // and on the server (readValidatedBody) — the server never trusts what the form already checked.
 
-const email = z.string().trim().toLowerCase()
+// also used by the contact form (shared/schemas/contact.ts)
+export const emailSchema = z.string().trim().toLowerCase()
   .pipe(z.email('Unesite ispravnu email adresu.').max(254, 'Email adresa je predugačka.'))
+export const PHONE_PATTERN = /^[+\d][\d\s/-]{5,24}$/
 
 // rules for a password being set (register, change); signing in only checks the stored hash
 const newPassword = z.string()
@@ -31,7 +33,7 @@ function confirms<T extends Record<string, unknown>>(
 }
 
 export const loginSchema = z.object({
-  email,
+  email: emailSchema,
   // no length rules on login: only the stored hash decides
   password: z.string().min(1, 'Unesite lozinku.').max(128, 'Pogrešan email ili lozinka.'),
   remember: z.boolean().default(false),
@@ -40,8 +42,8 @@ export const loginSchema = z.object({
 const registerFields = z.object({
   firstName: z.string().trim().min(1, 'Unesite ime.').max(50, 'Ime može imati najviše 50 karaktera.'),
   lastName: z.string().trim().min(1, 'Unesite prezime.').max(50, 'Prezime može imati najviše 50 karaktera.'),
-  email,
-  phone: z.string().trim().regex(/^[+\d][\d\s/-]{5,24}$/, 'Unesite ispravan broj telefona.'),
+  email: emailSchema,
+  phone: z.string().trim().regex(PHONE_PATTERN, 'Unesite ispravan broj telefona.'),
   password: newPassword,
   passwordConfirm: z.string(),
   terms: z.literal(true, 'Morate prihvatiti uslove korišćenja.'),

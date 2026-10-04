@@ -20,6 +20,13 @@ useJsonLd('organization', {
   'description': footerAbout,
   'email': contact.email,
   'telephone': contact.phone.replace(/\s/g, ''),
+  'address': {
+    '@type': 'PostalAddress',
+    'streetAddress': contact.address.street,
+    'addressLocality': contact.address.city,
+    'postalCode': contact.address.postalCode,
+    'addressCountry': contact.address.country,
+  },
   'areaServed': 'RS',
 })
 useJsonLd('website', {

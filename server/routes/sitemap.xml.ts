@@ -1,6 +1,6 @@
 // /sitemap.xml — every indexable page: home, listings, category pages and all active products from D1.
 // Add new public pages (/o-nama, /kontakt, /blog…) to STATIC_PATHS once they exist.
-const STATIC_PATHS = ['/', '/proizvodi', '/med', '/cajevi', '/melemi']
+const STATIC_PATHS = ['/', '/proizvodi', '/med', '/cajevi', '/melemi', '/kontakt']
 
 const escapeXml = (value: string) => value
   .replace(/&/g, '&amp;')
