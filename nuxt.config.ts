@@ -20,8 +20,20 @@ export default defineNuxtConfig({
       htmlAttrs: { lang: 'sr' },
       title: 'Libra Herbal',
       titleTemplate: '%s · Libra Herbal',
-      meta: [{ name: 'viewport', content: 'width=device-width, initial-scale=1' }],
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+      meta: [
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'theme-color', content: '#2d3a1f' },
+        { name: 'apple-mobile-web-app-title', content: 'Libra Herbal' },
+      ],
+      // Icon set generated from design/assets/favicon-source.png (node scripts/generate-icons.mjs)
+      link: [
+        { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
+        { rel: 'icon', type: 'image/png', href: '/favicon-96x96.png', sizes: '96x96' },
+        { rel: 'icon', type: 'image/png', href: '/favicon-32x32.png', sizes: '32x32' },
+        { rel: 'icon', type: 'image/png', href: '/favicon-16x16.png', sizes: '16x16' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
+        { rel: 'manifest', href: '/site.webmanifest' },
+      ],
     },
   },
 
