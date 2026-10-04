@@ -62,8 +62,10 @@ async function onSubmit() {
   try {
     await placeOrder(order)
   }
-  catch {
-    notice.value = 'Porudžbina nije poslata. Proverite internet vezu i pokušajte ponovo.'
+  catch (error) {
+    // the form is checked above, so a server 400 is rare: show its first message
+    const { fields, message } = apiError(error)
+    notice.value = message || Object.values(fields)[0] || 'Porudžbina nije poslata. Pokušajte ponovo.'
   }
 }
 </script>
