@@ -23,7 +23,7 @@ export const adminNav: { title?: string, items: AdminNavItem[] }[] = [
   {
     title: 'Sadržaj',
     items: [
-      { label: 'Blog', to: '/admin/blog', icon: 'lucide:newspaper', soon: true },
+      { label: 'Blog', to: '/admin/blog', icon: 'lucide:newspaper' },
     ],
   },
   {
