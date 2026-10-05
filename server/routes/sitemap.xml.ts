@@ -5,7 +5,7 @@ import { queryCollection } from '@nuxt/content/server'
 // and published blog posts (Nuxt Content).
 // Add new public pages (/o-nama, /kontakt, /blog…) to STATIC_PATHS once they exist.
 
-const STATIC_PATHS = ['/', '/proizvodi', '/med', '/cajevi', '/melemi', '/kontakt', '/o-nama', '/cesta-pitanja','/uslovi-koriscenja', '/politika-privatnosti', '/prati-porudzbinu']
+const STATIC_PATHS = ['/', '/proizvodi', '/med', '/cajevi', '/melemi', '/kontakt', '/o-nama', '/cesta-pitanja', '/blog', '/uslovi-koriscenja', '/politika-privatnosti', '/prati-porudzbinu']
 
 const escapeXml = (value: string) => value
   .replace(/&/g, '&amp;')

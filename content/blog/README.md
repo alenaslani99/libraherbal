@@ -15,7 +15,7 @@ description: Kratak opis, 1–2 rečenice (prikazuje se ispod naslova i na Googl
 date: 2026-10-05
 author: Libra Herbal tim              # opciono
 tags: [Ishrana, Saveti, Med]
-image: /blog/kopriva-u-svakodnevnoj-ishrani.jpg
+image: /assets/blog/kopriva-u-svakodnevnoj-ishrani.jpg
 imageAlt: Šta se vidi na slici        # za slepe korisnike i Google
 featured: true                        # opciono: velika kartica na vrhu /blog
 products: [gvozdje-med, imuno-med]    # opciono: "Preporučeni proizvodi" (slug iz adrese proizvoda)
@@ -23,7 +23,7 @@ draft: true                           # opciono: objava je sakrivena dok ne obri
 ---
 ```
 
-Slike stavite u `public/blog/` i navedite ih kao `/blog/ime-slike.jpg`.
+Slike stavite u `public/assets/blog/` i navedite ih kao `/assets/blog/ime-slike.jpg`.
 
 ## Tekst
 
@@ -42,5 +42,5 @@ Tekst u tamnozelenoj kutiji.
 - stavka liste
 - još jedna stavka
 
-![Opis slike](/blog/slika.jpg)
+![Opis slike](/assets/blog/slika.jpg)
 ```

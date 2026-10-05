@@ -4,7 +4,7 @@ description: Kako se ova poznata biljka tradicionalno koristi i zašto je cenjen
 date: 2026-10-05
 author: Libra Herbal tim
 tags: [Ishrana, Saveti, Med]
-image: /blog/kopriva-u-svakodnevnoj-ishrani.jpg
+image: /assets/blog/kopriva-u-svakodnevnoj-ishrani.jpg
 imageAlt: Tegla meda Libra Herbal među listovima koprive na šumskom proplanku
 featured: true
 products: [gvozdje-med, imuno-med]
