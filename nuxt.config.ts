@@ -13,7 +13,11 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
   },
 
-  components: [{ path: '~/components', pathPrefix: false }],
+  // components/content first: global, so Markdown can use them (::note in a blog post)
+  components: [
+    { path: '~/components/content', global: true, pathPrefix: false },
+    { path: '~/components', pathPrefix: false },
+  ],
 
   app: {
     head: {

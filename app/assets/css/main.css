@@ -47,3 +47,59 @@
     @apply font-heading font-semibold;
   }
 }
+
+/*
+ * Blog post body (Figma "Blog Post"): Markdown rendered by <ContentRenderer class="blog-prose">.
+ * Direct children only, so blocks like ::note keep their own styles.
+ */
+@layer components {
+  .blog-prose > * + * {
+    @apply mt-4;
+  }
+
+  .blog-prose > h2 {
+    @apply mt-10 text-2xl leading-tight text-forest;
+  }
+
+  .blog-prose > h3 {
+    @apply mt-8 text-xl leading-tight text-forest;
+  }
+
+  .blog-prose > p,
+  .blog-prose > ul,
+  .blog-prose > ol {
+    @apply text-sm leading-6 text-ink;
+  }
+
+  .blog-prose > ul {
+    @apply list-disc pl-5;
+  }
+
+  .blog-prose > ol {
+    @apply list-decimal pl-5;
+  }
+
+  .blog-prose a {
+    @apply text-forest underline underline-offset-2 transition-colors hover:text-sun-dark;
+  }
+
+  .blog-prose strong {
+    @apply font-semibold;
+  }
+
+  .blog-prose > blockquote {
+    @apply my-8 border-l-2 border-sun pl-4 font-heading text-lg leading-snug font-semibold italic text-ink;
+  }
+
+  .blog-prose > blockquote p {
+    @apply m-0;
+  }
+
+  .blog-prose img {
+    @apply my-8 w-full rounded-2xl;
+  }
+
+  .blog-prose > hr {
+    @apply my-10 border-line;
+  }
+}
