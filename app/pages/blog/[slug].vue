@@ -1,22 +1,17 @@
 <script setup lang="ts">
-import type { Product } from '#shared/types/product'
+import type { BlogPost } from '#shared/types/blog'
 
 const route = useRoute()
+const slug = String(route.params.slug)
 
-const { data: post } = await useAsyncData(`blog-${route.path}`, () =>
-  queryCollection('blog').path(route.path).first())
+const { data: post, error } = await useFetch<BlogPost>(`/api/blog/${encodeURIComponent(slug)}`, { key: `blog-${slug}` })
 
-if (!post.value || post.value.draft) {
+if (error.value?.statusCode === 404) {
   throw createError({ statusCode: 404, statusMessage: 'Objava nije pronađena', fatal: true })
 }
-
-const slugs = (post.value.products ?? []).join(',')
-const { data: products } = await useFetch<Product[]>('/api/products/by-slugs', {
-  key: `blog-products-${slugs}`,
-  query: { slugs },
-  immediate: slugs.length > 0,
-  default: () => [],
-})
+if (error.value || !post.value) {
+  throw createError({ statusCode: error.value?.statusCode ?? 500, message: 'Objava trenutno nije dostupna', fatal: true })
+}
 
 const absolute = useAbsoluteUrl()
 const url = absolute(route.path)
@@ -63,7 +58,7 @@ async function copyLink() {
     <!-- Figma "Blog Post" hero: bg Main Green, tag pills, title, excerpt, author row -->
     <section class="bg-forest text-white">
       <div class="mx-auto max-w-[1440px] px-4 py-12 sm:px-6 lg:px-16 lg:py-[72px] xl:px-32">
-        <ul v-if="post.tags?.length" class="flex flex-wrap gap-2">
+        <ul v-if="post.tags.length" class="flex flex-wrap gap-2">
           <li v-for="tag in post.tags" :key="tag" class="rounded-full bg-brown-200 px-3 py-1 text-[11px] leading-none text-ink">
             {{ tag }}
           </li>
@@ -80,7 +75,7 @@ async function copyLink() {
           </span>
           <span>{{ post.author }}</span>
           <span aria-hidden="true">•</span>
-          <time :datetime="post.date.slice(0, 10)">{{ date }}</time>
+          <time :datetime="post.date">{{ date }}</time>
         </div>
       </div>
     </section>
@@ -88,26 +83,25 @@ async function copyLink() {
     <section class="bg-pale-beige">
       <div class="mx-auto grid max-w-[1440px] gap-12 px-4 py-12 sm:px-6 lg:grid-cols-[minmax(0,765px)_224px] lg:justify-between lg:gap-16 lg:px-16 lg:py-[72px] xl:px-32">
         <article>
-          <NuxtImg
+          <BlogImage
             :src="post.image"
             :alt="post.imageAlt"
-            width="765"
-            height="450"
+            :width="765"
+            :height="450"
             sizes="xs:100vw sm:100vw md:100vw lg:765px"
-            format="webp"
-            fetchpriority="high"
+            priority
             class="aspect-[17/10] w-full rounded-2xl object-cover"
           />
-          <ContentRenderer :value="post" class="blog-prose mt-10" />
+          <MDC :value="post.body" tag="div" class="blog-prose mt-10" />
         </article>
 
         <aside class="space-y-10 lg:sticky lg:top-24 lg:self-start">
-          <div v-if="products.length">
+          <div v-if="post.products.length">
             <h2 class="text-xl leading-tight text-ink">
               Preporučeni proizvodi
             </h2>
             <ul class="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-1">
-              <li v-for="product in products" :key="product.id">
+              <li v-for="product in post.products" :key="product.id">
                 <ProductCard :product="product" />
               </li>
             </ul>

@@ -1,20 +1,16 @@
 <script setup lang="ts">
+import type { BlogPostCard } from '#shared/types/blog'
+
 // 9 = three full rows of the 3-column grid
 const PAGE_SIZE = 9
 
 const route = useRoute()
 
-const { data: posts } = await useAsyncData('blog-list', () =>
-  queryCollection('blog')
-    .select('path', 'title', 'description', 'date', 'tags', 'image', 'imageAlt', 'featured', 'draft')
-    .order('date', 'DESC')
-    .all(), { default: () => [] })
+const { data: posts } = await useFetch<BlogPostCard[]>('/api/blog', { key: 'blog-list', default: () => [] })
 
-const published = computed(() => posts.value.filter(post => !post.draft))
-
-// the post marked featured: true (newest one if several), otherwise simply the newest post
-const featured = computed(() => published.value.find(post => post.featured) ?? published.value[0])
-const rest = computed(() => published.value.filter(post => post !== featured.value))
+// the post marked featured (newest one if several), otherwise simply the newest post
+const featured = computed(() => posts.value.find(post => post.featured) ?? posts.value[0])
+const rest = computed(() => posts.value.filter(post => post !== featured.value))
 
 const pageCount = computed(() => Math.max(1, Math.ceil(rest.value.length / PAGE_SIZE)))
 const page = computed(() => {
@@ -33,10 +29,10 @@ useJsonLd('blog', () => ({
   '@type': 'Blog',
   'url': absolute('/blog'),
   'name': 'Blog | Libra Herbal',
-  'blogPost': published.value.map(post => ({
+  'blogPost': posts.value.map(post => ({
     '@type': 'BlogPosting',
     'headline': post.title,
-    'url': absolute(post.path),
+    'url': absolute(`/blog/${post.slug}`),
     'datePublished': post.date,
   })),
 }))
@@ -64,7 +60,7 @@ useJsonLd('blog', () => ({
           <BlogFeaturedCard v-if="featured && page === 1" :post="featured" />
 
           <ul v-if="pagePosts.length" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8" :class="{ 'mt-10 lg:mt-12': featured && page === 1 }">
-            <li v-for="post in pagePosts" :key="post.path" class="flex">
+            <li v-for="post in pagePosts" :key="post.slug" class="flex">
               <BlogCard :post="post" class="w-full" />
             </li>
           </ul>

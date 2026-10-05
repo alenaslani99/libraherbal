@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
-  modules: ['@nuxt/fonts', '@nuxt/icon', '@nuxt/image', '@nuxt/content', 'nuxt-studio', 'nitro-cloudflare-dev'],
+  modules: ['@nuxt/fonts', '@nuxt/icon', '@nuxt/image', '@nuxtjs/mdc', 'nitro-cloudflare-dev'],
 
   css: ['~/assets/css/main.css'],
 
@@ -71,21 +71,11 @@ export default defineNuxtConfig({
     },
   },
 
-  content: {
-    experimental: { sqliteConnector: 'native' },
-    // On Workers there's no native sqlite: Nuxt Content shares the D1 binding
-    database: { type: 'd1', bindingName: 'DB' },
-  },
-
-  // Nuxt Studio: visual blog editor at /_studio on the live site. Publishing commits to main,
-  // Workers Builds deploys. Login keys are Worker secrets (NUXT_STUDIO_AUTH_*), see content/blog/README.md
-  studio: {
-    repository: {
-      provider: 'github',
-      owner: 'alenaslani99',
-      repo: 'libraherbal',
-      branch: 'main',
-    },
+  // Blog post bodies are Markdown from D1, rendered at request time with <MDC>.
+  // No code highlighting (keeps Shiki out of the Worker), no # links inside headings.
+  mdc: {
+    highlight: false,
+    headings: { anchorLinks: false },
   },
 
   // Cloudflare Workers. Bindings (D1 as `DB`) are declared in wrangler.jsonc;

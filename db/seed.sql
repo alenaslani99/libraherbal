@@ -211,3 +211,46 @@ INSERT INTO product_ingredients (product_id, ingredient_id, sort_order) VALUES
 -- ---------------------------------------------------------------------
 INSERT INTO popular_products (product_id, sort_order) VALUES
   (1, 1), (2, 2), (14, 3), (17, 4);
+
+-- ---------------------------------------------------------------------
+--  Blog: primer objave (sadrži sve vrste blokova)
+-- ---------------------------------------------------------------------
+INSERT INTO blog_posts (slug, title, description, body, image, image_alt, tags, featured, status, published_at) VALUES
+  ('kopriva-u-svakodnevnoj-ishrani', 'Kopriva u svakodnevnoj ishrani',
+   'Kako se ova poznata biljka tradicionalno koristi i zašto je cenjena generacijama.',
+   'Kopriva raste svuda oko nas: uz puteve, na rubovima šume i u svakom dvorištu koje malo zapustimo. Upravo zato je lako zaboravimo, iako je generacijama bila jedna od prvih zelenih namirnica posle zime.
+
+## Zašto baš kopriva
+
+Mladi listovi koprive bogati su gvožđem, kalcijumom, magnezijumom i vitaminom C. U narodnoj tradiciji koristila se kao prolećna „čistka", za jačanje posle bolesti i kao zamena za spanać u pitama i čorbama.
+
+## Kako je brati
+
+Berite samo mlade vrhove, pre cvetanja, daleko od puteva i njiva koje se prskaju. Obavezno nosite rukavice, a žarenje nestaje čim se listovi kratko prokuvaju ili osuše.
+
+> Najbolja kopriva je ona koju uberete u aprilu i maju, dok su listovi mekani i svetlo zeleni.
+
+## Kopriva na tanjiru
+
+Blanširani listovi mogu se dodati u čorbe, rižoto, pite i omlete. Osušena kopriva je odlična kao čaj: kašičica listova prelije se šoljom vrele vode i ostavi da odstoji pet do sedam minuta.
+
+::note{title="Napomena"}
+Kopriva može da utiče na dejstvo nekih lekova (npr. za razređivanje krvi ili pritisak). Ako koristite terapiju, pre redovne upotrebe se posavetujte sa lekarom.
+::
+
+## Kopriva i med
+
+Med ublažava travnati ukus koprivinog čaja i čini ga prijatnijim za svakodnevno pijenje. Nekoliko jednostavnih kombinacija:
+
+- Čaj od koprive sa kašičicom meda, kada se malo prohladi
+- Kopriva, limun i med, kao osvežavajući hladni čaj leti
+- Pesto od blanširane koprive, oraha i maslinovog ulja, sa kapljicom meda',
+   '/assets/blog/kopriva-u-svakodnevnoj-ishrani.jpg', 'Tegla meda Libra Herbal među listovima koprive na šumskom proplanku',
+   '["Ishrana","Saveti","Med"]', 1, 'published', '2026-10-05');
+
+INSERT INTO blog_post_products (post_id, product_id, sort_order)
+SELECT b.id, p.id, x.sort_order
+FROM blog_posts b
+JOIN (SELECT 'gvozdje-med' AS slug, 1 AS sort_order UNION ALL SELECT 'imuno-med', 2) x
+JOIN products p ON p.slug = x.slug
+WHERE b.slug = 'kopriva-u-svakodnevnoj-ishrani';
