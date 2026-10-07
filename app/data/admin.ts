@@ -29,7 +29,6 @@ export const adminNav: { title?: string, items: AdminNavItem[] }[] = [
   {
     title: 'Kupci',
     items: [
-      { label: 'Korisnici', to: '/admin/korisnici', icon: 'lucide:users', soon: true },
       { label: 'Poruke', to: '/admin/poruke', icon: 'lucide:mail' },
     ],
   },

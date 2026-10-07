@@ -33,7 +33,8 @@ async function onLogout() {
 
 <!-- Admin shell: own look (neutral zinc), not the storefront design. Sidebar left, content right. -->
 <template>
-  <div class="min-h-screen bg-zinc-50 font-sans text-zinc-900">
+  <!-- headings too: main.css gives h1–h3 the storefront's serif -->
+  <div class="min-h-screen bg-zinc-50 font-sans text-zinc-900 [&_:is(h1,h2,h3)]:font-sans">
     <!-- mobile backdrop -->
     <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" enter-active-class="transition-opacity" leave-active-class="transition-opacity">
       <div v-if="open" class="fixed inset-0 z-30 bg-zinc-900/40 lg:hidden" aria-hidden="true" @click="open = false" />

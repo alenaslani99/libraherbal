@@ -11,7 +11,9 @@ const { data: ingredients, refresh } = await useFetch<AdminIngredient[]>('/api/a
 const missing = (i: AdminIngredient) => !i.description || /^lorem ipsum/i.test(i.description)
 
 type Filter = 'all' | 'missing' | 'unused'
-const filter = ref<Filter>('all')
+// ?filter=missing: the dashboard's "sastojci bez opisa" link
+const FILTERS: Filter[] = ['all', 'missing', 'unused']
+const filter = ref<Filter>(FILTERS.find(f => f === useRoute().query.filter) ?? 'all')
 const search = ref('')
 const tests: Record<Filter, (i: AdminIngredient) => boolean> = {
   all: () => true,

@@ -19,7 +19,9 @@ function problems(p: AdminProductListItem) {
 }
 
 type Filter = 'all' | 'active' | 'hidden' | 'problems'
-const filter = ref<Filter>('all')
+// ?filter=problems: the dashboard's "proizvodi za proveru" link
+const FILTERS: Filter[] = ['all', 'active', 'hidden', 'problems']
+const filter = ref<Filter>(FILTERS.find(f => f === useRoute().query.filter) ?? 'all')
 const search = ref('')
 const category = ref('')
 
