@@ -4,7 +4,7 @@ export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
 
 // Image fields take a URL for now (no upload storage): a site path (/assets/blog/x.jpg) or an https:// link
-const imageUrl = z.string().trim()
+export const imageUrl = z.string().trim()
   .min(1, 'Unesite adresu slike.')
   .max(500, 'Adresa slike je predugačka.')
   .refine(v => v.startsWith('/') || /^https:\/\/\S+$/.test(v), 'Adresa mora počinjati sa / ili https://')

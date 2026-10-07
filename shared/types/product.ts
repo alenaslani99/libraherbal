@@ -69,3 +69,59 @@ export interface ProductPage {
   page: number
   pageCount: number
 }
+
+// ---------------------------------------------------------------------
+//  Admin (/admin/proizvodi); prices in RSD, dates ISO
+// ---------------------------------------------------------------------
+
+// One row of the admin product list
+export interface AdminProductListItem {
+  id: number
+  name: string
+  slug: string
+  weight: string
+  category: string
+  // null = no price yet (the product can't be shown or bought)
+  price: number | null
+  // set only while a promotion is running
+  salePrice: number | null
+  stock: number
+  image: string
+  isActive: boolean
+  popular: boolean
+  unitsSold: number
+  updatedAt: string
+}
+
+// GET /api/admin/products/:id — the edit form (same fields as adminProductSchema) + read-only extras
+export interface AdminProduct {
+  id: number
+  name: string
+  slug: string
+  categoryId: number
+  weightLabel: string
+  isActive: boolean
+  popular: boolean
+  description: string
+  usageInstructions: string
+  nutritionInfo: string
+  price: number | null
+  salePrice: number | null
+  saleStartsAt: string
+  saleEndsAt: string
+  stock: number
+  images: { src: string, alt: string }[]
+  purposeIds: number[]
+  ingredientIds: number[]
+  recommendedIds: number[]
+  unitsSold: number
+  createdAt: string
+  updatedAt: string
+}
+
+// GET /api/admin/catalog/options — choices for the product form
+export interface AdminCatalogOptions {
+  categories: { id: number, name: string, isActive: boolean }[]
+  purposes: { id: number, name: string }[]
+  ingredients: { id: number, name: string }[]
+}
