@@ -15,7 +15,7 @@ export const adminNav: { title?: string, items: AdminNavItem[] }[] = [
   {
     title: 'Prodavnica',
     items: [
-      { label: 'Porudžbine', to: '/admin/porudzbine', icon: 'lucide:shopping-bag', soon: true },
+      { label: 'Porudžbine', to: '/admin/porudzbine', icon: 'lucide:shopping-bag' },
       { label: 'Proizvodi', to: '/admin/proizvodi', icon: 'lucide:package', soon: true },
       { label: 'Kategorije', to: '/admin/kategorije', icon: 'lucide:folder-tree', soon: true },
     ],

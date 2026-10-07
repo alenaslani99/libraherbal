@@ -53,3 +53,47 @@ export interface OrderHistoryItem {
   total: number
   items: { name: string, quantity: number, lineTotal: number }[]
 }
+
+// ---------------------------------------------------------------------
+//  Admin (/admin/porudzbine); amounts in RSD, dates ISO
+// ---------------------------------------------------------------------
+
+export interface AdminOrderListItem {
+  id: number
+  orderNumber: string
+  status: OrderStatus
+  placedAt: string
+  customer: string
+  city: string
+  itemCount: number
+  total: number
+}
+
+// GET /api/admin/orders — one page of orders plus how many there are per status (for the filter tabs)
+export interface AdminOrderList {
+  orders: AdminOrderListItem[]
+  // orders matching status + search
+  total: number
+  page: number
+  pageSize: number
+  // per status for the current search; `all` = every status
+  counts: Record<OrderStatus | 'all', number>
+}
+
+// GET /api/admin/orders/:id
+export interface AdminOrder {
+  id: number
+  orderNumber: string
+  status: OrderStatus
+  dates: Record<OrderStatus, string | null>
+  // null = guest checkout
+  userId: number | null
+  shipping: ShippingDetails
+  items: { productId: number | null, name: string, unitPrice: number, regularPrice: number, quantity: number, lineTotal: number }[]
+  subtotal: number
+  // 0 = free shipping
+  shippingCost: number
+  total: number
+  adminNote: string
+  updatedAt: string
+}

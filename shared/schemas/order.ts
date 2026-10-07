@@ -22,3 +22,9 @@ export const orderSchema = z.object({
     quantity: z.number().int().min(1).max(99),
   })).min(1, 'Korpa je prazna.').max(100),
 })
+
+// Body of PATCH /api/admin/orders/:id — status and/or the internal note
+export const adminOrderUpdateSchema = z.object({
+  status: z.enum(['received', 'preparing', 'in_transit', 'delivered', 'cancelled'], 'Nepoznat status porudžbine.').optional(),
+  adminNote: z.string().trim().max(1000, 'Beleška može imati najviše 1000 karaktera.').optional(),
+})
