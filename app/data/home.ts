@@ -1,4 +1,5 @@
-// Static home page content (catalog data comes from the API)
+// Static home page content (catalog data comes from the API).
+// The hero lives in D1 and is edited in /admin/pocetna.
 
 export const heroFeatures = [
   { icon: 'lucide:leaf', title: '100% domaći med', text: 'od proverenih pčelara' },

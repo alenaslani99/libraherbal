@@ -23,6 +23,7 @@ export const adminNav: { title?: string, items: AdminNavItem[] }[] = [
   {
     title: 'Sadržaj',
     items: [
+      { label: 'Početna strana', to: '/admin/pocetna', icon: 'lucide:panel-top' },
       { label: 'Blog', to: '/admin/blog', icon: 'lucide:newspaper' },
       { label: 'Utisci kupaca', to: '/admin/utisci', icon: 'lucide:quote' },
     ],

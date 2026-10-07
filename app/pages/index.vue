@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { Product } from '#shared/types/product'
+import type { Hero } from '#shared/types/site'
 import { contact, footerAbout } from '~/data/footer'
 
+// written in /admin/pocetna
+const { data: hero } = await useFetch<Hero>('/api/hero', { key: 'home-hero' })
 const { data: popularProducts } = await useFetch<Product[]>('/api/products/popular', { default: () => [] })
 
 usePageSeo({
@@ -39,7 +42,7 @@ useJsonLd('website', {
 
 <template>
   <div>
-    <HomeHero />
+    <HomeHero v-if="hero" :hero="hero" />
     <HomeFeatures />
     <HomeCategories />
     <ProductShowcase
