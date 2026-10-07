@@ -38,6 +38,7 @@ function onAdd(quantity: number) {
     <template v-if="product">
       <ProductDetailSection :product="product" @add="onAdd" />
       <ProductIngredients :ingredients="product.ingredients" :category="product.category" />
+      <ProductReviews :slug="product.slug" :product-name="product.name" />
     </template>
     <ProductShowcase title="Preporučeni proizvodi" :products="recommended" />
     <NewsletterSection />

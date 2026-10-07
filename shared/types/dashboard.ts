@@ -34,6 +34,7 @@ export interface DashboardData {
     received: number
     preparing: number
     newMessages: number
+    pendingReviews: number
     productProblems: number
     ingredientsMissing: number
   }

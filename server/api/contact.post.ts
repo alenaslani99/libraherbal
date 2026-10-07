@@ -2,7 +2,7 @@ import { contactSchema } from '#shared/schemas/contact'
 
 // POST /api/contact — stores a /kontakt message for the admin.
 // Rate limited in the strict tier (00.ratelimit.ts) against spam.
-// TODO: email notification to the shop via Resend
+// TODO: email notification to the shop via Resend (PLAN.md, TODO)
 export default defineEventHandler(async (event) => {
   const { name, email, phone, message, website } = await readValidatedForm(event, contactSchema)
 

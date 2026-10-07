@@ -75,6 +75,7 @@ export default defineEventHandler(async (event): Promise<DashboardData> => {
         (SELECT COUNT(*) FROM orders WHERE status = 'received') AS received,
         (SELECT COUNT(*) FROM orders WHERE status = 'preparing') AS preparing,
         (SELECT COUNT(*) FROM contact_messages WHERE status = 'new') AS new_messages,
+        (SELECT COUNT(*) FROM reviews WHERE is_approved = 0) AS pending_reviews,
         (SELECT COUNT(*) FROM products p
           LEFT JOIN v_product_current_price cp ON cp.product_id = p.id
           WHERE p.is_active = 1
@@ -119,6 +120,7 @@ export default defineEventHandler(async (event): Promise<DashboardData> => {
     received: number
     preparing: number
     new_messages: number
+    pending_reviews: number
     product_problems: number
     ingredients_missing: number
   }
@@ -133,6 +135,7 @@ export default defineEventHandler(async (event): Promise<DashboardData> => {
       received: todo.received,
       preparing: todo.preparing,
       newMessages: todo.new_messages,
+      pendingReviews: todo.pending_reviews,
       productProblems: todo.product_problems,
       ingredientsMissing: todo.ingredients_missing,
     },

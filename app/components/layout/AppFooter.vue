@@ -2,7 +2,7 @@
 import { contact, footerColumns, footerLegal, socials } from '~/data/footer'
 
 const year = new Date().getFullYear()
-const email = ref('')
+const { email, website, error, pending, done, submit } = useNewsletter('footer')
 
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -71,7 +71,11 @@ function scrollToTop() {
           <h3 class="font-sans text-2xl font-semibold leading-none text-sun sm:text-[28px]">
             Newsletter
           </h3>
-          <form class="mt-6 flex flex-col gap-3 sm:max-w-[280px]" @submit.prevent>
+          <p v-if="done" class="mt-6 flex items-start gap-2 text-sm sm:max-w-[280px]" role="status">
+            <Icon name="lucide:circle-check" class="mt-0.5 size-4 shrink-0 text-sun" />
+            Hvala! Prijavili ste se na naš newsletter.
+          </p>
+          <form v-else class="relative mt-6 flex flex-col gap-3 sm:max-w-[280px]" novalidate @submit.prevent="submit">
             <BaseInput
               v-model="email"
               type="email"
@@ -79,9 +83,20 @@ function scrollToTop() {
               placeholder="Vaša email adresa"
               input-class="h-10 bg-white/50 text-white placeholder:text-white"
             />
-            <BaseButton type="submit" size="lg" class="w-full">
+            <!-- honeypot: off-screen and skipped by keyboard and screen readers; only bots fill it -->
+            <div class="absolute -left-[9999px] size-px overflow-hidden" aria-hidden="true">
+              <label>Website <input v-model="website" type="text" name="website" tabindex="-1" autocomplete="off"></label>
+            </div>
+            <p v-if="error" class="-mt-1 px-5 text-xs text-sun" role="alert">
+              {{ error }}
+            </p>
+            <BaseButton type="submit" size="lg" class="w-full" :disabled="pending">
               Prijavite se
-              <Icon name="lucide:arrow-right" class="size-4 transition-transform duration-200 group-hover:translate-x-1" />
+              <Icon
+                :name="pending ? 'lucide:loader-circle' : 'lucide:arrow-right'"
+                class="size-4 transition-transform duration-200"
+                :class="pending ? 'animate-spin' : 'group-hover:translate-x-1'"
+              />
             </BaseButton>
           </form>
         </div>

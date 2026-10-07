@@ -34,6 +34,9 @@ export default defineEventHandler(async (event): Promise<AuthUser> => {
   }
   if (!row) throw createError({ statusCode: 500, message: 'Registracija nije uspela.' })
 
+  // "Želim da primam novosti" → the same list as the newsletter forms
+  if (input.newsletter) await subscribe(event, row.email, 'register', row.id)
+
   await createSession(event, row.id, false)
   return toAuthUser(row)
 })

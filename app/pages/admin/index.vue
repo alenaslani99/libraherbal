@@ -32,6 +32,7 @@ const todo = computed(() => {
     { count: t.received, label: plural(t.received, 'nova porudžbina', 'nove porudžbine', 'novih porudžbina'), icon: 'lucide:shopping-bag', to: '/admin/porudzbine?status=received' },
     { count: t.preparing, label: 'u pripremi', icon: 'lucide:package-open', to: '/admin/porudzbine?status=preparing' },
     { count: t.newMessages, label: plural(t.newMessages, 'nova poruka', 'nove poruke', 'novih poruka'), icon: 'lucide:mail', to: '/admin/poruke?status=new' },
+    { count: t.pendingReviews, label: plural(t.pendingReviews, 'recenzija čeka', 'recenzije čekaju', 'recenzija čeka'), icon: 'lucide:star', to: '/admin/recenzije' },
     { count: t.productProblems, label: plural(t.productProblems, 'proizvod za proveru', 'proizvoda za proveru', 'proizvoda za proveru'), icon: 'lucide:triangle-alert', to: '/admin/proizvodi?filter=problems' },
     { count: t.ingredientsMissing, label: plural(t.ingredientsMissing, 'sastojak bez opisa', 'sastojka bez opisa', 'sastojaka bez opisa'), icon: 'lucide:leaf', to: '/admin/kategorije?tab=sastojci&filter=missing' },
   ]
@@ -87,7 +88,7 @@ const todayLabel = new Date().toLocaleDateString('sr-Latn-RS', { weekday: 'long'
         <h2 id="todo-title" class="text-sm font-semibold text-zinc-900">
           Za obradu
         </h2>
-        <ul class="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
+        <ul class="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-6">
           <li v-for="item in todo" :key="item.to">
             <NuxtLink
               :to="item.to"

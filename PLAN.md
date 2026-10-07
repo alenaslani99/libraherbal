@@ -53,3 +53,13 @@ design/                    Figma exports (reference only)
 - [ ] 6. Admin SPA UI
 - [ ] 7. Backend: Cloudflare Worker preset, D1 + Drizzle, API, auth, R2, SWR cache, then replace the mocks
 - [ ] 8. Deploy
+
+## TODO
+- [ ] **Emails via Resend** (API key as a Worker secret, e.g. `RESEND_API_KEY`; sender on a verified domain)
+  - Newsletter: welcome email with an unsubscribe link → set `newsletter_subscribers.status = 'unsubscribed'` + `unsubscribed_at` (columns already exist, see `server/api/newsletter.post.ts`)
+  - Order confirmation to the customer (number, items, total, COD note, link to /prati-porudzbinu)
+  - New-order alert to the shop
+  - Contact form: notify the shop of a new message (`server/api/contact.post.ts`)
+  - Shared HTML email template (logo, colors, footer with company details)
+- [ ] **Social links**: real Facebook / Instagram / TikTok profile URLs in `app/data/footer.ts` (now generic facebook.com etc.)
+- Stock stays manual on purpose: orders don't reduce `products.stock`; 0 = "Nema na stanju"

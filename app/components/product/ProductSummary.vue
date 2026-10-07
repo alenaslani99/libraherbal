@@ -27,12 +27,12 @@ function reviewsLabel(n: number) {
       {{ product.name }}
     </h1>
     <!-- hidden until the product has approved reviews -->
-    <div v-if="product.reviewCount" class="mt-4 flex items-center gap-3">
+    <a v-if="product.reviewCount" href="#recenzije" class="group mt-4 flex w-fit items-center gap-3">
       <RatingStars :rating="product.rating" />
-      <p class="text-xs tracking-[0.04em] text-ink">
+      <span class="text-xs tracking-[0.04em] text-ink underline-offset-2 group-hover:underline">
         {{ String(product.rating).replace('.', ',') }} · {{ reviewsLabel(product.reviewCount) }}
-      </p>
-    </div>
+      </span>
+    </a>
     <p class="mt-6 max-w-[460px] text-sm leading-5 text-ink">
       {{ product.description }}
     </p>

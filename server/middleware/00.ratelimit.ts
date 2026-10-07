@@ -2,11 +2,12 @@ import type { RateLimiter } from '../utils/rateLimit'
 
 // Every /api/** call is rate limited per IP, in three tiers (limits in wrangler.jsonc):
 //   RL_AUTH   — strict: sign in / sign up / password change (guessing, account spam), contact form (spam),
-//               order tracking (guessing order numbers)
+//               order tracking (guessing order numbers), newsletter sign-up and writing a review (spam)
 //   RL_WRITE  — other POST/PUT/PATCH/DELETE (cart quote, logout, orders)
 //   RL_READ   — GET (products, filters, me)
 // Login is additionally limited per email (login.post.ts).
-const STRICT_ROUTES = new Set(['/api/auth/login', '/api/auth/register', '/api/auth/password', '/api/contact', '/api/orders/track'])
+const STRICT_ROUTES = new Set(['/api/auth/login', '/api/auth/register', '/api/auth/password', '/api/contact', '/api/orders/track', '/api/newsletter'])
+const REVIEW_ROUTE = /^\/api\/products\/[^/]+\/reviews$/
 
 export default defineEventHandler(async (event) => {
   const path = event.path.split('?')[0]!
@@ -16,7 +17,8 @@ export default defineEventHandler(async (event) => {
   // isn't calling them, and without a real IP they would all share one bucket.
   if (!event.context.cloudflare) return
 
-  const limiter: RateLimiter = STRICT_ROUTES.has(path)
+  const strict = STRICT_ROUTES.has(path) || (event.method !== 'GET' && REVIEW_ROUTE.test(path))
+  const limiter: RateLimiter = strict
     ? 'RL_AUTH'
     : event.method === 'GET' || event.method === 'HEAD' ? 'RL_READ' : 'RL_WRITE'
 

@@ -24,12 +24,15 @@ export const adminNav: { title?: string, items: AdminNavItem[] }[] = [
     title: 'Sadržaj',
     items: [
       { label: 'Blog', to: '/admin/blog', icon: 'lucide:newspaper' },
+      { label: 'Utisci kupaca', to: '/admin/utisci', icon: 'lucide:quote' },
     ],
   },
   {
     title: 'Kupci',
     items: [
       { label: 'Poruke', to: '/admin/poruke', icon: 'lucide:mail' },
+      { label: 'Recenzije', to: '/admin/recenzije', icon: 'lucide:star' },
+      { label: 'Newsletter', to: '/admin/newsletter', icon: 'lucide:send' },
     ],
   },
 ]
