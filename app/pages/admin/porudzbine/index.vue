@@ -4,51 +4,24 @@ import type { AdminOrderList, OrderStatus } from '#shared/types/order'
 definePageMeta({ middleware: 'admin', layout: 'admin' })
 useSeoMeta({ title: 'Porudžbine' })
 
-const route = useRoute()
-const router = useRouter()
-
-// filters live in the URL (?status=&q=&page=), so back from an order returns to the same list
-const status = computed(() => (typeof route.query.status === 'string' ? route.query.status : ''))
-const q = computed(() => (typeof route.query.q === 'string' ? route.query.q : ''))
-const page = computed(() => Math.max(1, Number(route.query.page) || 1))
+const { status, q, page, search, setQuery } = useAdminListQuery()
 
 const { data, status: fetchStatus, error } = await useFetch<AdminOrderList>('/api/admin/orders', {
   key: 'admin-orders',
   query: { status, q, page },
 })
 
-function setQuery(next: { status?: string, q?: string, page?: number }) {
-  const merged = { status: status.value, q: q.value, page: page.value, ...next }
-  router.replace({
-    query: {
-      ...(merged.status ? { status: merged.status } : {}),
-      ...(merged.q ? { q: merged.q } : {}),
-      ...(merged.page > 1 ? { page: String(merged.page) } : {}),
-    },
-  })
-}
+const STATUS_TABS: (OrderStatus | '')[] = ['', 'received', 'preparing', 'in_transit', 'delivered', 'cancelled']
+const tabs = computed(() => STATUS_TABS.map(id => ({
+  id,
+  label: id ? orderStatuses[id].label : 'Sve',
+  count: data.value?.counts[id || 'all'] ?? 0,
+})))
 
-// search box: typed text goes to the URL after a short pause
-const search = ref(q.value)
-let timer: ReturnType<typeof setTimeout> | undefined
-watch(search, (value) => {
-  clearTimeout(timer)
-  timer = setTimeout(() => setQuery({ q: value.trim(), page: 1 }), 300)
+const statusModel = computed({
+  get: () => status.value,
+  set: value => setQuery({ status: value, page: 1 }),
 })
-onBeforeUnmount(() => clearTimeout(timer))
-
-const tabs: { id: OrderStatus | '', label: string }[] = [
-  { id: '', label: 'Sve' },
-  { id: 'received', label: orderStatuses.received.label },
-  { id: 'preparing', label: orderStatuses.preparing.label },
-  { id: 'in_transit', label: orderStatuses.in_transit.label },
-  { id: 'delivered', label: orderStatuses.delivered.label },
-  { id: 'cancelled', label: orderStatuses.cancelled.label },
-]
-
-const pages = computed(() => (data.value ? Math.max(1, Math.ceil(data.value.total / data.value.pageSize)) : 1))
-const from = computed(() => (data.value?.total ? (page.value - 1) * data.value.pageSize + 1 : 0))
-const to = computed(() => Math.min(page.value * (data.value?.pageSize ?? 0), data.value?.total ?? 0))
 </script>
 
 <template>
@@ -62,33 +35,14 @@ const to = computed(() => Math.min(page.value * (data.value?.pageSize ?? 0), dat
       </p>
     </div>
 
-    <div class="mt-6 flex flex-wrap items-center gap-3">
-      <div class="inline-flex max-w-full overflow-x-auto rounded-md border border-zinc-200 bg-white p-0.5 text-sm" role="tablist" aria-label="Filter po statusu">
-        <button
-          v-for="tab in tabs"
-          :key="tab.id"
-          type="button"
-          role="tab"
-          :aria-selected="status === tab.id"
-          class="shrink-0 rounded px-3 py-1.5 font-medium whitespace-nowrap"
-          :class="status === tab.id ? 'bg-zinc-900 text-white' : 'text-zinc-600 hover:text-zinc-900'"
-          @click="setQuery({ status: tab.id, page: 1 })"
-        >
-          {{ tab.label }}
-          <span class="ml-1 text-xs" :class="status === tab.id ? 'text-white/70' : 'text-zinc-400'">{{ data?.counts[tab.id || 'all'] ?? 0 }}</span>
-        </button>
-      </div>
-      <div class="relative min-w-[220px] flex-1 sm:max-w-xs">
-        <Icon name="lucide:search" class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400" />
-        <input
-          v-model="search"
-          type="search"
-          placeholder="Broj, ime, email ili telefon…"
-          aria-label="Pretraži porudžbine"
-          class="w-full rounded-md border border-zinc-300 bg-white py-2 pr-3 pl-9 text-sm focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 focus:outline-none"
-        >
-      </div>
-    </div>
+    <AdminListToolbar
+      v-model:status="statusModel"
+      v-model:search="search"
+      :tabs="tabs"
+      placeholder="Broj, ime, email ili telefon…"
+      label="Pretraži porudžbine"
+      class="mt-6"
+    />
 
     <p v-if="error" class="mt-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
       {{ apiError(error).message || 'Porudžbine nisu učitane.' }}
@@ -156,28 +110,6 @@ const to = computed(() => Math.min(page.value * (data.value?.pageSize ?? 0), dat
       </table>
     </div>
 
-    <div v-if="data && data.total > data.pageSize" class="mt-4 flex items-center justify-between gap-3 text-sm text-zinc-600">
-      <span>{{ from }}–{{ to }} od {{ data.total }}</span>
-      <div class="flex gap-2">
-        <button
-          type="button"
-          :disabled="page <= 1"
-          class="inline-flex items-center gap-1 rounded-md border border-zinc-300 bg-white px-3 py-1.5 font-medium hover:bg-zinc-50 disabled:opacity-40"
-          @click="setQuery({ page: page - 1 })"
-        >
-          <Icon name="lucide:chevron-left" class="size-4" />
-          Prethodna
-        </button>
-        <button
-          type="button"
-          :disabled="page >= pages"
-          class="inline-flex items-center gap-1 rounded-md border border-zinc-300 bg-white px-3 py-1.5 font-medium hover:bg-zinc-50 disabled:opacity-40"
-          @click="setQuery({ page: page + 1 })"
-        >
-          Sledeća
-          <Icon name="lucide:chevron-right" class="size-4" />
-        </button>
-      </div>
-    </div>
+    <AdminPagination v-if="data" :page="page" :page-size="data.pageSize" :total="data.total" @change="p => setQuery({ page: p })" />
   </div>
 </template>

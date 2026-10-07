@@ -12,10 +12,10 @@ export default defineEventHandler(async (event): Promise<AdminOrderList> => {
   const query = getQuery(event)
   const status = STATUSES.includes(query.status as OrderStatus) ? query.status as OrderStatus : ''
   const q = typeof query.q === 'string' ? query.q.trim().slice(0, 100) : ''
-  const page = Math.max(1, Math.min(10_000, Number.parseInt(String(query.page ?? 1), 10) || 1))
+  const page = pageParam(query.page)
 
-  // LIKE pattern with % and _ taken literally; phones are also compared without spaces and dashes
-  const like = q ? `%${q.replace(/[\\%_]/g, '\\$&')}%` : ''
+  // phones are also compared without spaces and dashes
+  const like = likePattern(q)
   const digits = q.replace(/[\s\-/]/g, '')
   const phoneLike = /^\+?\d{3,}$/.test(digits) ? `%${digits}%` : ''
 

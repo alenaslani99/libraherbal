@@ -15,3 +15,8 @@ export const contactSchema = z.object({
 })
 
 export type ContactInput = z.input<typeof contactSchema>
+
+// Body of PATCH /api/admin/messages/:id
+export const contactMessageUpdateSchema = z.object({
+  status: z.enum(['new', 'read', 'answered'], 'Nepoznat status poruke.'),
+})
