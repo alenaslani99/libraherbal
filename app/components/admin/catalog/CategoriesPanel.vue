@@ -12,6 +12,8 @@ const { data: categories, refresh } = await useFetch<AdminCategory[]>('/api/admi
 const drafts = reactive<Record<number, string>>({})
 watch(categories, list => list.forEach(c => (drafts[c.id] = c.name)), { immediate: true })
 
+const { page, pageSize, items: pageItems } = usePagedList(categories)
+
 const errors = ref<Record<number, string>>({})
 const saving = ref<number | null>(null)
 const savedId = ref<number | null>(null)
@@ -64,7 +66,7 @@ async function save(category: AdminCategory) {
           </tr>
         </thead>
         <tbody class="divide-y divide-zinc-100">
-          <tr v-for="c in categories" :key="c.id">
+          <tr v-for="c in pageItems" :key="c.id">
             <td class="px-4 py-3">
               <form class="flex max-w-sm items-center gap-2" novalidate @submit.prevent="save(c)">
                 <input
@@ -111,5 +113,7 @@ async function save(category: AdminCategory) {
         </tbody>
       </table>
     </div>
+
+    <AdminPagination :page="page" :page-size="pageSize" :total="categories.length" @change="p => (page = p)" />
   </div>
 </template>

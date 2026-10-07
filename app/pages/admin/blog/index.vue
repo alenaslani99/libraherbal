@@ -25,6 +25,8 @@ const visible = computed(() => {
     && (!q || p.title.toLowerCase().includes(q) || p.slug.includes(q)))
 })
 
+const { page, pageSize, items: pageItems } = usePagedList(visible, { resetOn: [filter, search] })
+
 const filters = [
   { id: 'all', label: 'Sve' },
   { id: 'published', label: 'Objavljene' },
@@ -142,7 +144,7 @@ function formatUpdated(value: string) {
           </tr>
         </thead>
         <tbody class="divide-y divide-zinc-100">
-          <tr v-for="post in visible" :key="post.id" class="group hover:bg-zinc-50">
+          <tr v-for="post in pageItems" :key="post.id" class="group hover:bg-zinc-50">
             <td class="max-w-0 px-4 py-3">
               <NuxtLink :to="`/admin/blog/${post.id}`" class="block truncate font-medium text-zinc-900 hover:underline">
                 {{ post.title }}
@@ -197,5 +199,7 @@ function formatUpdated(value: string) {
         </tbody>
       </table>
     </div>
+
+    <AdminPagination :page="page" :page-size="pageSize" :total="visible.length" @change="p => (page = p)" />
   </div>
 </template>

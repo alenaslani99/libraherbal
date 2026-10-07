@@ -356,14 +356,14 @@ const iconButton = 'rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-
           <div class="grid gap-4 sm:grid-cols-2">
             <div>
               <label for="product-category" :class="label">Kategorija</label>
-              <select id="product-category" v-model="form.categoryId" :class="[input, inputBorder('categoryId')]">
-                <option :value="null" disabled>
-                  Izaberite…
-                </option>
-                <option v-for="c in options.categories" :key="c.id" :value="c.id">
-                  {{ c.name }}{{ c.isActive ? '' : ' (skrivena)' }}
-                </option>
-              </select>
+              <AdminSelect
+                id="product-category"
+                v-model="form.categoryId"
+                :options="options.categories.map(c => ({ value: c.id, label: c.name, hint: c.isActive ? '' : 'skrivena' }))"
+                label="Kategorija"
+                placeholder="Izaberite…"
+                :invalid="Boolean(errors.categoryId)"
+              />
               <p v-if="errors.categoryId" class="mt-1 text-xs text-red-600">
                 {{ errors.categoryId }}
               </p>

@@ -24,29 +24,34 @@ const backTo = computed(() => {
 const FLOW = ['received', 'preparing', 'in_transit', 'delivered'] as const
 const STATUSES: OrderStatus[] = [...FLOW, 'cancelled']
 
-// the usual next step, offered as the main button
-const nextStatus = computed<OrderStatus | null>(() => {
-  const i = FLOW.indexOf(order.value?.status as typeof FLOW[number])
-  return i >= 0 && i < FLOW.length - 1 ? FLOW[i + 1]! : null
-})
-
-const chosenStatus = ref<OrderStatus>(order.value!.status)
 const note = ref(order.value!.adminNote)
 watch(order, (o) => {
-  if (!o) return
-  chosenStatus.value = o.status
-  note.value = o.adminNote
+  if (o) note.value = o.adminNote
 })
 
 const saving = ref<'status' | 'note' | null>(null)
+// the status being saved, for its spinner
+const pendingStatus = ref<OrderStatus | null>(null)
 const notice = ref('')
 const success = ref('')
 
-async function update(body: { status?: OrderStatus, adminNote?: string }, what: 'status' | 'note') {
-  if (body.status === 'cancelled' && !window.confirm(`Otkazati porudžbinu ${order.value!.orderNumber}?`)) {
-    chosenStatus.value = order.value!.status
+// Status radios save on click. A declined "cancel?" puts the radio back on the current status.
+async function pickStatus(event: Event, status: OrderStatus) {
+  const radio = event.target as HTMLInputElement
+  if (status === order.value!.status) return
+  if (status === 'cancelled' && !window.confirm(`Otkazati porudžbinu ${order.value!.orderNumber}?`)) {
+    radio.checked = false
+    document.querySelector<HTMLInputElement>(`input[name="order-status"][value="${order.value!.status}"]`)!.checked = true
     return
   }
+  pendingStatus.value = status
+  await update({ status }, 'status')
+  pendingStatus.value = null
+  // failed: show the saved status again
+  document.querySelector<HTMLInputElement>(`input[name="order-status"][value="${order.value!.status}"]`)!.checked = true
+}
+
+async function update(body: { status?: OrderStatus, adminNote?: string }, what: 'status' | 'note') {
   notice.value = ''
   success.value = ''
   saving.value = what
@@ -203,52 +208,40 @@ const savings = computed(() => order.value?.items.reduce((sum, item) => sum + (i
             Status
           </h2>
 
-          <button
-            v-if="nextStatus"
-            type="button"
-            :disabled="saving !== null"
-            class="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
-            @click="update({ status: nextStatus }, 'status')"
-          >
-            <Icon :name="saving === 'status' ? 'lucide:loader-circle' : 'lucide:arrow-right'" class="size-4" :class="{ 'animate-spin': saving === 'status' }" />
-            Označi: {{ orderStatuses[nextStatus].label }}
-          </button>
-
-          <div class="mt-3 flex gap-2">
-            <label for="order-status" class="sr-only">Status porudžbine</label>
-            <select
-              id="order-status"
-              v-model="chosenStatus"
-              class="min-w-0 flex-1 rounded-md border border-zinc-300 bg-white px-2.5 py-2 text-sm focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 focus:outline-none"
-            >
-              <option v-for="s in STATUSES" :key="s" :value="s">
-                {{ orderStatuses[s].label }}
-              </option>
-            </select>
-            <button
-              type="button"
-              :disabled="saving !== null || chosenStatus === order.status"
-              class="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-medium hover:bg-zinc-50 disabled:opacity-40"
-              @click="update({ status: chosenStatus }, 'status')"
-            >
-              Sačuvaj
-            </button>
-          </div>
-          <p class="mt-2 text-xs text-zinc-500">
-            Kupac vidi status i datume na stranici „Prati porudžbinu".
+          <p class="mt-1 text-xs text-zinc-500">
+            Klik menja status odmah. Kupac ga vidi na stranici „Prati porudžbinu".
           </p>
 
-          <ol class="mt-4 space-y-3 border-t border-zinc-100 pt-4 text-sm">
-            <li v-for="s in STATUSES" :key="s" class="flex items-start gap-2.5" :class="order.dates[s] ? 'text-zinc-900' : 'text-zinc-400'">
-              <Icon
-                :name="order.dates[s] ? (s === 'cancelled' ? 'lucide:circle-x' : 'lucide:circle-check') : 'lucide:circle'"
-                class="mt-0.5 size-4 shrink-0"
-                :class="order.dates[s] ? (s === 'cancelled' ? 'text-red-600' : 'text-emerald-600') : ''"
-              />
-              <span class="flex-1">{{ orderStatuses[s].label }}</span>
-              <span class="text-xs whitespace-nowrap text-zinc-500">{{ order.dates[s] ? formatAdminDateTime(order.dates[s]!) : '' }}</span>
-            </li>
-          </ol>
+          <fieldset class="mt-3" :disabled="saving === 'status'">
+            <legend class="sr-only">Status porudžbine</legend>
+            <div class="space-y-1.5">
+              <label
+                v-for="s in STATUSES"
+                :key="s"
+                class="flex cursor-pointer items-center gap-3 rounded-md border px-3 py-2.5 text-sm transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-zinc-900"
+                :class="order.status === s
+                  ? (s === 'cancelled' ? 'border-red-300 bg-red-50' : 'border-zinc-900 bg-zinc-50')
+                  : 'border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50'"
+              >
+                <input
+                  type="radio"
+                  name="order-status"
+                  :value="s"
+                  :checked="order.status === s"
+                  class="size-4 shrink-0 accent-zinc-900"
+                  @change="pickStatus($event, s)"
+                >
+                <span class="flex-1" :class="order.status === s ? 'font-medium text-zinc-900' : 'text-zinc-700'">
+                  {{ orderStatuses[s].label }}
+                </span>
+                <Icon v-if="pendingStatus === s" name="lucide:loader-circle" class="size-4 animate-spin text-zinc-500" />
+                <span v-else-if="order.dates[s]" class="flex items-center gap-1 text-xs whitespace-nowrap" :class="s === 'cancelled' ? 'text-red-600' : 'text-zinc-500'">
+                  <Icon :name="s === 'cancelled' ? 'lucide:circle-x' : 'lucide:circle-check'" class="size-3.5" :class="s === 'cancelled' ? '' : 'text-emerald-600'" />
+                  {{ formatAdminDateTime(order.dates[s]!) }}
+                </span>
+              </label>
+            </div>
+          </fieldset>
         </section>
 
         <!-- internal note -->

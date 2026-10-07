@@ -36,6 +36,8 @@ const visible = computed(() => {
   return ingredients.value.filter(i => tests[filter.value](i) && (!q || i.name.toLowerCase().includes(q)))
 })
 
+const { page, pageSize, items: pageItems, reveal } = usePagedList(visible, { resetOn: [filter, search] })
+
 // ----- one editor: id null = new, undefined = closed -----------------------------------
 const editing = ref<number | null | undefined>(undefined)
 const form = reactive({ name: '', description: '' })
@@ -45,6 +47,7 @@ const busy = ref(false)
 
 function open(ingredient?: AdminIngredient) {
   editing.value = ingredient ? ingredient.id : null
+  if (ingredient) reveal(visible.value.findIndex(i => i.id === ingredient.id))
   form.name = ingredient?.name ?? search.value.trim()
   form.description = ingredient && !missing(ingredient) ? ingredient.description : ''
   errors.value = {}
@@ -186,7 +189,7 @@ const input = 'block w-full rounded-md border bg-white px-3 py-2 text-sm text-zi
       </p>
 
       <ul v-else class="divide-y divide-zinc-100">
-        <li v-for="ingredient in visible" :key="ingredient.id">
+        <li v-for="ingredient in pageItems" :key="ingredient.id">
           <button
             v-if="editing !== ingredient.id"
             type="button"
@@ -261,5 +264,7 @@ const input = 'block w-full rounded-md border bg-white px-3 py-2 text-sm text-zi
         </li>
       </ul>
     </div>
+
+    <AdminPagination :page="page" :page-size="pageSize" :total="visible.length" @change="p => { page = p; close() }" />
   </div>
 </template>

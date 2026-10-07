@@ -7,6 +7,8 @@ const { data: purposes, refresh } = await useFetch<AdminPurpose[]>('/api/admin/c
   default: () => [],
 })
 
+const { page, pageSize, offset, items: pageItems, reveal } = usePagedList(purposes)
+
 const notice = ref('')
 const busy = ref(false)
 
@@ -84,6 +86,7 @@ async function move(from: number, to: number) {
   const [item] = list.splice(from, 1)
   list.splice(to, 0, item!)
   purposes.value = list
+  reveal(to)
   busy.value = true
   notice.value = ''
   try {
@@ -180,18 +183,18 @@ const input = 'block w-full rounded-md border bg-white px-3 py-2 text-sm text-zi
         Još nema svrha.
       </p>
       <ol v-else class="divide-y divide-zinc-100">
-        <li v-for="(p, i) in purposes" :key="p.id" class="flex items-center gap-3 px-4 py-2.5 text-sm" :class="{ 'bg-zinc-50': editing === p.id }">
-          <span class="w-5 text-xs text-zinc-400 tabular-nums">{{ i + 1 }}.</span>
+        <li v-for="(p, n) in pageItems" :key="p.id" class="flex items-center gap-3 px-4 py-2.5 text-sm" :class="{ 'bg-zinc-50': editing === p.id }">
+          <span class="w-6 text-xs text-zinc-400 tabular-nums">{{ offset + n + 1 }}.</span>
           <div class="min-w-0 flex-1">
             <span class="font-medium text-zinc-900">{{ p.name }}</span>
             <span class="ml-2 text-xs text-zinc-500">?kategorija={{ p.slug }}</span>
           </div>
           <span class="hidden text-xs text-zinc-500 sm:inline">{{ p.productCount }} proizvoda</span>
           <div class="flex items-center gap-0.5">
-            <button type="button" class="rounded p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 disabled:opacity-30" :disabled="i === 0 || busy" :aria-label="`Pomeri ${p.name} gore`" @click="move(i, i - 1)">
+            <button type="button" class="rounded p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 disabled:opacity-30" :disabled="offset + n === 0 || busy" :aria-label="`Pomeri ${p.name} gore`" @click="move(offset + n, offset + n - 1)">
               <Icon name="lucide:chevron-up" class="size-4" />
             </button>
-            <button type="button" class="rounded p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 disabled:opacity-30" :disabled="i === purposes.length - 1 || busy" :aria-label="`Pomeri ${p.name} dole`" @click="move(i, i + 1)">
+            <button type="button" class="rounded p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 disabled:opacity-30" :disabled="offset + n === purposes.length - 1 || busy" :aria-label="`Pomeri ${p.name} dole`" @click="move(offset + n, offset + n + 1)">
               <Icon name="lucide:chevron-down" class="size-4" />
             </button>
             <button type="button" class="rounded p-1.5 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900" title="Uredi" :aria-label="`Uredi ${p.name}`" @click="open(p)">
@@ -204,5 +207,7 @@ const input = 'block w-full rounded-md border bg-white px-3 py-2 text-sm text-zi
         </li>
       </ol>
     </div>
+
+    <AdminPagination :page="page" :page-size="pageSize" :total="purposes.length" @change="p => (page = p)" />
   </div>
 </template>

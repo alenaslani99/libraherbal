@@ -41,7 +41,10 @@ const filterModel = computed({
   set: (value: string) => (filter.value = value as Filter),
 })
 
-const categories = computed(() => [...new Set(products.value.map(p => p.category))])
+const categoryOptions = computed(() => [
+  { value: '', label: 'Sve kategorije' },
+  ...[...new Set(products.value.map(p => p.category))].map(c => ({ value: c, label: c })),
+])
 
 const visible = computed(() => {
   const q = search.value.trim().toLowerCase()
@@ -50,6 +53,8 @@ const visible = computed(() => {
     && (!category.value || p.category === category.value)
     && (!q || p.name.toLowerCase().includes(q) || p.slug.includes(q)))
 })
+
+const { page, pageSize, items: pageItems } = usePagedList(visible, { resetOn: [filter, search, category] })
 
 const busy = ref<number | null>(null)
 const notice = ref('')
@@ -98,18 +103,7 @@ async function toggleActive(product: AdminProductListItem) {
         label="Pretraži proizvode"
         class="flex-1"
       />
-      <select
-        v-model="category"
-        aria-label="Kategorija"
-        class="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 focus:outline-none"
-      >
-        <option value="">
-          Sve kategorije
-        </option>
-        <option v-for="c in categories" :key="c" :value="c">
-          {{ c }}
-        </option>
-      </select>
+      <AdminSelect v-model="category" :options="categoryOptions" label="Kategorija" class="w-44" />
     </div>
 
     <p v-if="notice" class="mt-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
@@ -156,7 +150,7 @@ async function toggleActive(product: AdminProductListItem) {
           </tr>
         </thead>
         <tbody class="divide-y divide-zinc-100">
-          <tr v-for="p in visible" :key="p.id" class="hover:bg-zinc-50" :class="{ 'text-zinc-400': !p.isActive }">
+          <tr v-for="p in pageItems" :key="p.id" class="hover:bg-zinc-50" :class="{ 'text-zinc-400': !p.isActive }">
             <td class="max-w-0 px-4 py-2.5">
               <div class="flex items-center gap-3">
                 <div class="size-11 shrink-0 overflow-hidden rounded-md bg-zinc-100" :class="{ 'opacity-50': !p.isActive }">
@@ -227,5 +221,7 @@ async function toggleActive(product: AdminProductListItem) {
         </tbody>
       </table>
     </div>
+
+    <AdminPagination :page="page" :page-size="pageSize" :total="visible.length" @change="p => (page = p)" />
   </div>
 </template>
