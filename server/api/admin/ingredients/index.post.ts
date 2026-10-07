@@ -1,16 +1,18 @@
-import { adminIngredientSchema } from '#shared/schemas/product'
+import { ingredientSchema } from '#shared/schemas/catalog'
 
-// POST /api/admin/ingredients — { name }; adds an ingredient from the product form.
-// Names are unique regardless of case, so an existing one is returned instead of a duplicate.
+// POST /api/admin/ingredients — { name, description? }. Names are unique regardless of case:
+// for a name that exists it answers 200 with that ingredient and `existed: true` (the product form
+// just links it, the ingredients page reports it), otherwise 201 with the new one.
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)
-  const { name } = await readValidatedForm(event, adminIngredientSchema)
+  const { name, description } = await readValidatedForm(event, ingredientSchema)
   const db = useDb(event)
 
   const existing = await db.prepare('SELECT id, name FROM ingredients WHERE name = ?1').bind(name).first<{ id: number, name: string }>()
-  if (existing) return existing
+  if (existing) return { ...existing, existed: true }
 
-  const created = await db.prepare('INSERT INTO ingredients (name) VALUES (?1) RETURNING id, name').bind(name).first<{ id: number, name: string }>()
+  const created = await db.prepare('INSERT INTO ingredients (name, description) VALUES (?1, ?2) RETURNING id, name')
+    .bind(name, description || null).first<{ id: number, name: string }>()
   setResponseStatus(event, 201)
-  return created!
+  return { ...created!, existed: false }
 })

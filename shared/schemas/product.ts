@@ -60,8 +60,3 @@ export type AdminProductData = z.output<typeof adminProductSchema>
 
 // PATCH /api/admin/products/:id — quick show/hide from the list
 export const adminProductActiveSchema = z.object({ isActive: z.boolean() })
-
-// POST /api/admin/ingredients — a new ingredient from the product form (description comes later)
-export const adminIngredientSchema = z.object({
-  name: z.string().trim().min(1, 'Unesite naziv sastojka.').max(80, 'Naziv može imati najviše 80 karaktera.'),
-})
