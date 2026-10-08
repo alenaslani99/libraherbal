@@ -2,7 +2,8 @@
 import { contact, footerColumns, footerLegal, socials } from '~/data/footer'
 
 const year = new Date().getFullYear()
-const { email, website, error, pending, done, submit } = useNewsletter('footer')
+const { email, website, error, pending, done, doneMessage, submit } = useNewsletter('footer')
+const errorId = useId()
 
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -71,34 +72,51 @@ function scrollToTop() {
           <h3 class="font-sans text-2xl font-semibold leading-none text-sun sm:text-[28px]">
             Newsletter
           </h3>
-          <p v-if="done" class="mt-6 flex items-start gap-2 text-sm sm:max-w-[280px]" role="status">
-            <Icon name="lucide:circle-check" class="mt-0.5 size-4 shrink-0 text-sun" />
-            Hvala! Prijavili ste se na naš newsletter.
-          </p>
-          <form v-else class="relative mt-6 flex flex-col gap-3 sm:max-w-[280px]" novalidate @submit.prevent="submit">
-            <BaseInput
-              v-model="email"
-              type="email"
-              label="Email adresa"
-              placeholder="Vaša email adresa"
-              input-class="h-10 bg-white/50 text-white placeholder:text-white"
-            />
-            <!-- honeypot: off-screen and skipped by keyboard and screen readers; only bots fill it -->
-            <div class="absolute -left-[9999px] size-px overflow-hidden" aria-hidden="true">
-              <label>Website <input v-model="website" type="text" name="website" tabindex="-1" autocomplete="off"></label>
-            </div>
-            <p v-if="error" class="-mt-1 px-5 text-xs text-sun" role="alert">
-              {{ error }}
-            </p>
-            <BaseButton type="submit" size="lg" class="w-full" :disabled="pending">
-              Prijavite se
-              <Icon
-                :name="pending ? 'lucide:loader-circle' : 'lucide:arrow-right'"
-                class="size-4 transition-transform duration-200"
-                :class="pending ? 'animate-spin' : 'group-hover:translate-x-1'"
+          <!-- form and thank-you share one grid cell: the form stays (hidden) after sign-up so the
+               footer keeps its height instead of shifting the page -->
+          <div class="mt-6 grid sm:max-w-[280px]">
+            <form
+              class="relative flex flex-col [grid-area:1/1]"
+              :class="{ invisible: done }"
+              :inert="done"
+              novalidate
+              @submit.prevent="submit"
+            >
+              <BaseInput
+                v-model="email"
+                type="email"
+                label="Email adresa"
+                placeholder="Vaša email adresa"
+                :error="error"
+                :error-id="errorId"
+                error-icon-class="text-sun"
+                :input-class="`h-10 bg-white/50 text-white placeholder:text-white ${error ? 'ring-2 ring-sun' : ''}`"
               />
-            </BaseButton>
-          </form>
+              <!-- honeypot: off-screen and skipped by keyboard and screen readers; only bots fill it -->
+              <div class="absolute -left-[9999px] size-px overflow-hidden" aria-hidden="true">
+                <label>Website <input v-model="website" type="text" name="website" tabindex="-1" autocomplete="off"></label>
+              </div>
+              <!-- always rendered: the reserved line keeps the button from jumping when a message appears -->
+              <p :id="errorId" class="min-h-4 px-5 py-1 text-xs leading-4 text-sun" aria-live="polite">
+                {{ error }}
+              </p>
+              <BaseButton type="submit" size="lg" class="w-full" :disabled="pending">
+                Prijavite se
+                <Icon
+                  :name="pending ? 'lucide:loader-circle' : 'lucide:arrow-right'"
+                  class="size-4 transition-transform duration-200"
+                  :class="pending ? 'animate-spin' : 'group-hover:translate-x-1'"
+                />
+              </BaseButton>
+            </form>
+
+            <p class="flex items-start gap-2 self-start text-sm [grid-area:1/1]" role="status">
+              <template v-if="done">
+                <Icon name="lucide:circle-check" class="mt-0.5 size-4 shrink-0 text-sun" />
+                {{ doneMessage }}
+              </template>
+            </p>
+          </div>
         </div>
       </div>
     </div>

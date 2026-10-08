@@ -1,14 +1,15 @@
 import { newsletterSchema } from '#shared/schemas/engagement'
+import type { NewsletterResult } from '#shared/types/engagement'
 
-// POST /api/newsletter — { email, source }. Always the same answer, whether the address was new,
-// already on the list or a bot (honeypot), so the form can't be used to check who is subscribed.
-// Rate limited in the strict tier (00.ratelimit.ts).
+// POST /api/newsletter — { email, source }. Says whether the address was already on the list,
+// so the form can show "already subscribed"; a bot (honeypot) gets the plain success answer.
+// Rate limited in the strict tier (00.ratelimit.ts), which also limits checking who is subscribed.
 // TODO: welcome email + unsubscribe link via Resend (see PLAN.md, TODO)
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<NewsletterResult> => {
   const { email, source, website } = await readValidatedForm(event, newsletterSchema)
-  if (website) return sendNoContent(event)
+  if (website) return { alreadySubscribed: false }
 
   const user = await getSessionUser(event)
-  await subscribe(event, email, source, user?.email === email ? user.id : null)
-  return sendNoContent(event)
+  const alreadySubscribed = await subscribe(event, email, source, user?.email === email ? user.id : null)
+  return { alreadySubscribed }
 })

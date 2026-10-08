@@ -66,6 +66,12 @@ export interface AdminTestimonial extends Testimonial {
 
 // ----- newsletter -----------------------------------------------------------------------
 
+// POST /api/newsletter
+export interface NewsletterResult {
+  // the address was already subscribed before this request
+  alreadySubscribed: boolean
+}
+
 // GET /api/admin/newsletter
 export interface AdminSubscriber {
   id: number
