@@ -20,9 +20,13 @@ export interface UserRow {
   last_name: string | null
   phone: string | null
   role: AuthUser['role']
+  // 0|1, from the EXISTS in USER_COLUMNS
+  subscribed: number
 }
 
-export const USER_COLUMNS = 'u.id, u.email, u.first_name, u.last_name, u.phone, u.role'
+// `subscribed`: the user's email is on the newsletter list (unique index on email, so it's cheap)
+export const USER_COLUMNS = `u.id, u.email, u.first_name, u.last_name, u.phone, u.role,
+  EXISTS (SELECT 1 FROM newsletter_subscribers n WHERE n.email = u.email AND n.status = 'subscribed') AS subscribed`
 
 export function toAuthUser(row: UserRow): AuthUser {
   return {
@@ -32,6 +36,7 @@ export function toAuthUser(row: UserRow): AuthUser {
     lastName: row.last_name ?? '',
     phone: row.phone ?? '',
     role: row.role,
+    subscribed: row.subscribed === 1,
   }
 }
 

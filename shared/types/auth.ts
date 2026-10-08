@@ -6,6 +6,8 @@ export interface AuthUser {
   lastName: string
   phone: string
   role: 'customer' | 'admin'
+  // on the newsletter list — the newsletter forms show a one-click button or "already subscribed"
+  subscribed: boolean
 }
 
 // Set by getSessionUser() (server/utils/session.ts); the app reads it during SSR (plugins/auth.ts).

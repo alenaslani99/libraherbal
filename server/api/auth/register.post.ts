@@ -26,7 +26,7 @@ export default defineEventHandler(async (event): Promise<AuthUser> => {
       input.lastName,
       input.phone,
       input.newsletter ? 1 : 0,
-    ).first<UserRow>()
+    ).first<Omit<UserRow, 'subscribed'>>()
   }
   catch (error) {
     if (String(error).includes('UNIQUE')) throw formError(409, EMAIL_TAKEN)
@@ -36,7 +36,10 @@ export default defineEventHandler(async (event): Promise<AuthUser> => {
 
   // "Želim da primam novosti" → the same list as the newsletter forms
   if (input.newsletter) await subscribe(event, row.email, 'register', row.id)
+  // the address may already be on the list from a footer sign-up before registering
+  const subscribed = input.newsletter || !!(await db.prepare(`SELECT 1 FROM newsletter_subscribers WHERE email = ?1 AND status = 'subscribed'`)
+    .bind(row.email).first())
 
   await createSession(event, row.id, false)
-  return toAuthUser(row)
+  return toAuthUser({ ...row, subscribed: subscribed ? 1 : 0 })
 })

@@ -2,7 +2,7 @@
 import { contact, footerColumns, footerLegal, socials } from '~/data/footer'
 
 const year = new Date().getFullYear()
-const { email, website, error, pending, done, doneMessage, submit } = useNewsletter('footer')
+const { user, email, website, error, pending, done, subscribed, message, submit } = useNewsletter('footer')
 const errorId = useId()
 
 function scrollToTop() {
@@ -76,13 +76,19 @@ function scrollToTop() {
                footer keeps its height instead of shifting the page -->
           <div class="mt-6 grid sm:max-w-[280px]">
             <form
-              class="relative flex flex-col [grid-area:1/1]"
+              v-if="!subscribed"
+              class="relative flex flex-col gap-3 [grid-area:1/1]"
               :class="{ invisible: done }"
               :inert="done"
               novalidate
               @submit.prevent="submit"
             >
+              <!-- signed in: one click, for the account email -->
+              <p v-if="user" class="text-sm">
+                Šaljemo na <strong class="break-all font-semibold">{{ user.email }}</strong>
+              </p>
               <BaseInput
+                v-else
                 v-model="email"
                 type="email"
                 label="Email adresa"
@@ -96,10 +102,6 @@ function scrollToTop() {
               <div class="absolute -left-[9999px] size-px overflow-hidden" aria-hidden="true">
                 <label>Website <input v-model="website" type="text" name="website" tabindex="-1" autocomplete="off"></label>
               </div>
-              <!-- always rendered: the reserved line keeps the button from jumping when a message appears -->
-              <p :id="errorId" class="min-h-4 px-5 py-1 text-xs leading-4 text-sun" aria-live="polite">
-                {{ error }}
-              </p>
               <BaseButton type="submit" size="lg" class="w-full" :disabled="pending">
                 Prijavite se
                 <Icon
@@ -108,12 +110,17 @@ function scrollToTop() {
                   :class="pending ? 'animate-spin' : 'group-hover:translate-x-1'"
                 />
               </BaseButton>
+              <!-- out of the flow, in the footer's bottom padding: the column can be ~195px wide, where
+                   a reserved line wasn't enough — longer messages wrap and pushed the button down -->
+              <p :id="errorId" class="absolute left-0 top-full mt-2 px-5 text-xs leading-4 text-sun" aria-live="polite">
+                {{ error }}
+              </p>
             </form>
 
             <p class="flex items-start gap-2 self-start text-sm [grid-area:1/1]" role="status">
-              <template v-if="done">
+              <template v-if="message">
                 <Icon name="lucide:circle-check" class="mt-0.5 size-4 shrink-0 text-sun" />
-                {{ doneMessage }}
+                {{ message }}
               </template>
             </p>
           </div>

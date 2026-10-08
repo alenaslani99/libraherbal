@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { email, website, error, pending, done, doneMessage, submit } = useNewsletter('section')
+const { user, email, website, error, pending, done, subscribed, message, submit } = useNewsletter('section')
 const errorId = useId()
 </script>
 
@@ -23,14 +23,20 @@ const errorId = useId()
            on the 56px heading line -->
       <div class="grid w-full sm:max-w-lg xl:mb-1.5 xl:w-auto xl:max-w-none">
         <form
+          v-if="!subscribed"
           class="relative [grid-area:1/1]"
           :class="{ invisible: done }"
           :inert="done"
           novalidate
           @submit.prevent="submit"
         >
-          <div class="flex flex-col gap-2.5 sm:flex-row">
+          <div class="flex flex-col gap-2.5 sm:flex-row sm:items-center">
+            <!-- signed in: one click, for the account email -->
+            <p v-if="user" class="min-w-0 text-sm text-ink sm:mr-2.5">
+              Šaljemo na <strong class="break-all font-semibold">{{ user.email }}</strong>
+            </p>
             <BaseInput
+              v-else
               v-model="email"
               type="email"
               label="Email adresa"
@@ -41,7 +47,7 @@ const errorId = useId()
               :focus-class="error ? 'focus:ring-4 focus:ring-red-700/15' : 'focus:border-forest focus:ring-4 focus:ring-forest/20'"
               class="flex-1 xl:flex-none"
             />
-            <BaseButton type="submit" variant="forest" size="lg" :disabled="pending">
+            <BaseButton type="submit" variant="forest" size="lg" class="shrink-0" :disabled="pending">
               Prijavite se
               <Icon
                 :name="pending ? 'lucide:loader-circle' : 'lucide:arrow-right'"
@@ -64,9 +70,9 @@ const errorId = useId()
           class="flex items-center gap-2 self-start text-base text-ink [grid-area:1/1] sm:self-center"
           role="status"
         >
-          <template v-if="done">
+          <template v-if="message">
             <Icon name="lucide:circle-check" class="size-5 shrink-0 text-forest" />
-            {{ doneMessage }}
+            {{ message }}
           </template>
         </p>
       </div>
