@@ -50,7 +50,7 @@ export default defineNuxtConfig({
   // Switch domains with NUXT_PUBLIC_SITE_URL (wrangler.jsonc "vars") — no trailing slash.
   runtimeConfig: {
     public: {
-      siteUrl: 'https://libraherbal.aslani-alen29.workers.dev',
+      siteUrl: 'https://libraherbal.rs',
     },
   },
 

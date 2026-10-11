@@ -11,6 +11,11 @@
     "binding": "ASSETS"
   },
   "observability": { "enabled": true },
+  // Custom domains: Cloudflare creates the DNS records and certificates on deploy.
+  "routes": [
+    { "pattern": "libraherbal.rs", "custom_domain": true },
+    { "pattern": "www.libraherbal.rs", "custom_domain": true }
+  ],
   "d1_databases": [
     {
       "binding": "DB",
