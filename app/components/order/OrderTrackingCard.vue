@@ -76,6 +76,10 @@ const circle: Record<StepState, string> = {
           <dt>Proizvodi</dt>
           <dd>{{ order.subtotal }},00 RSD</dd>
         </div>
+        <div v-if="order.discount" class="flex justify-between gap-4">
+          <dt>Popust</dt>
+          <dd>−{{ order.discount }},00 RSD</dd>
+        </div>
         <div class="flex justify-between gap-4">
           <dt>Dostava</dt>
           <dd>{{ order.shipping ? `${order.shipping},00 RSD` : 'Besplatna' }}</dd>

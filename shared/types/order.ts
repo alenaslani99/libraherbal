@@ -26,6 +26,8 @@ export interface OrderRequest {
   paymentMethod: PaymentMethod
   // only ids + quantities: the server looks up current prices itself
   items: { productId: number, quantity: number }[]
+  // discount code applied on /placanje; the server checks it again
+  couponCode?: string
 }
 
 export type OrderStatus = 'received' | 'preparing' | 'in_transit' | 'delivered' | 'cancelled'
@@ -39,6 +41,8 @@ export interface OrderTracking {
   dates: Record<OrderStatus, string | null>
   items: { name: string, quantity: number, lineTotal: number }[]
   subtotal: number
+  // discount code; 0 = none
+  discount: number
   // 0 = free shipping
   shipping: number
   total: number
@@ -91,6 +95,10 @@ export interface AdminOrder {
   shipping: ShippingDetails
   items: { productId: number | null, name: string, unitPrice: number, regularPrice: number, quantity: number, lineTotal: number }[]
   subtotal: number
+  // discount code; 0 = none
+  discount: number
+  // null = no code used
+  couponCode: string | null
   // 0 = free shipping
   shippingCost: number
   total: number

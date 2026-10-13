@@ -152,6 +152,10 @@ const savings = computed(() => order.value?.items.reduce((sum, item) => sum + (i
               <dt>Ušteda na akcijama</dt>
               <dd>−{{ savings }},00 RSD</dd>
             </div>
+            <div v-if="order.discount" class="flex justify-between text-zinc-600">
+              <dt>Kod za popust <span class="font-mono text-xs text-zinc-500">{{ order.couponCode }}</span></dt>
+              <dd>−{{ order.discount }},00 RSD</dd>
+            </div>
             <div class="flex justify-between text-zinc-600">
               <dt>Dostava</dt>
               <dd>{{ order.shippingCost ? `${order.shippingCost},00 RSD` : 'Besplatna' }}</dd>

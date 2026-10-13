@@ -23,6 +23,8 @@ interface OrderRow {
   postal_code: string
   note: string | null
   subtotal: number
+  discount: number
+  coupon_code: string | null
   shipping_cost: number
   total: number
   admin_note: string | null
@@ -85,6 +87,8 @@ export async function loadAdminOrder(event: H3Event, id: number): Promise<AdminO
       lineTotal: item.line_total / 100,
     })),
     subtotal: row.subtotal / 100,
+    discount: row.discount / 100,
+    couponCode: row.coupon_code,
     shippingCost: row.shipping_cost / 100,
     total: row.total / 100,
     adminNote: row.admin_note ?? '',

@@ -45,6 +45,9 @@ withDefaults(defineProps<{
       </li>
     </ul>
 
+    <!-- /placanje: discount code -->
+    <slot />
+
     <div
       class="mt-4 h-1 overflow-hidden rounded-full bg-white/70"
       role="progressbar"
@@ -68,6 +71,10 @@ withDefaults(defineProps<{
       <div class="flex justify-between gap-4">
         <dt>Proizvodi ({{ summary.itemCount }})</dt>
         <dd>{{ summary.subtotal }},00 <span class="text-[9px]">RSD</span></dd>
+      </div>
+      <div v-if="summary.discount" class="flex justify-between gap-4 text-sun">
+        <dt>Popust ({{ summary.coupon?.percent }}%)</dt>
+        <dd>−{{ summary.discount }},00 <span class="text-[9px]">RSD</span></dd>
       </div>
       <div class="flex justify-between gap-4">
         <dt>Dostava</dt>

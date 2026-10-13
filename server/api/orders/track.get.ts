@@ -14,7 +14,7 @@ export default defineEventHandler(async (event): Promise<OrderTracking> => {
 
   const row = await useDb(event).prepare(`
     SELECT o.order_number, o.status, o.received_at, o.preparing_at, o.in_transit_at, o.delivered_at, o.cancelled_at,
-           o.subtotal, o.shipping_cost, o.total,
+           o.subtotal, o.discount, o.shipping_cost, o.total,
            (SELECT json_group_array(json_object('name', i.product_name, 'quantity', i.quantity, 'lineTotal', i.line_total))
             FROM order_items i WHERE i.order_id = o.id) AS items
     FROM orders o
@@ -28,6 +28,7 @@ export default defineEventHandler(async (event): Promise<OrderTracking> => {
     delivered_at: string | null
     cancelled_at: string | null
     subtotal: number
+    discount: number
     shipping_cost: number
     total: number
     items: string
@@ -53,6 +54,7 @@ export default defineEventHandler(async (event): Promise<OrderTracking> => {
     },
     items: (JSON.parse(row.items) as OrderTracking['items']).map(item => ({ ...item, lineTotal: item.lineTotal / 100 })),
     subtotal: row.subtotal / 100,
+    discount: row.discount / 100,
     shipping: row.shipping_cost / 100,
     total: row.total / 100,
   }

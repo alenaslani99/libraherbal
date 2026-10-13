@@ -8,7 +8,9 @@ useSeoMeta({
 })
 
 const { items } = useCart()
-const summary = useCartSummary()
+// applied discount code; the quote says whether it works
+const couponCode = ref('')
+const summary = useCartSummary(couponCode)
 
 const paymentMethods: { value: PaymentMethod, title: string, description: string }[] = [
   { value: 'pouzece', title: 'Plaćanje pouzećem', description: 'Platite kuriru prilikom preuzimanja.' },
@@ -57,6 +59,8 @@ async function onSubmit() {
     shipping: { ...shipping },
     paymentMethod: paymentMethod.value,
     items: items.value.map(({ productId, quantity }) => ({ productId, quantity })),
+    // only a code the server accepted; a rejected one is left out
+    couponCode: summary.value.coupon?.code,
   }
 
   try {
@@ -112,7 +116,9 @@ async function onSubmit() {
             </BaseButton>
           </form>
 
-          <CartSummaryCard :summary="summary" :items="items" :show-checkout="false" class="lg:sticky lg:top-24" />
+          <CartSummaryCard :summary="summary" :items="items" :show-checkout="false" class="lg:sticky lg:top-24">
+            <CouponField v-model="couponCode" :coupon="summary.coupon" :error="summary.couponError" />
+          </CartSummaryCard>
         </div>
       </div>
     </section>

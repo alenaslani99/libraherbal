@@ -17,6 +17,7 @@ export const orderSchema = z.object({
     note: z.string().trim().max(500, 'Napomena može imati najviše 500 karaktera.').default(''),
   }),
   paymentMethod: z.literal('pouzece'),
+  couponCode: z.string().trim().max(40).optional(),
   items: z.array(z.object({
     productId: z.number().int().positive(),
     quantity: z.number().int().min(1).max(99),
