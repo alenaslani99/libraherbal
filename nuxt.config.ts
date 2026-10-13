@@ -82,6 +82,13 @@ export default defineNuxtConfig({
   // nitro-cloudflare-dev exposes the local ones in `nuxt dev` (state in .wrangler/)
   nitro: {
     preset: 'cloudflare_module',
+    // server/tasks/**; the Worker's scheduled() runs the tasks whose cron matches the trigger that fired.
+    // Each cron here must also be in wrangler.jsonc "triggers", or Cloudflare never fires it.
+    // In `nuxt dev`, run one by hand: GET /_nitro/tasks/emails:reminders
+    experimental: { tasks: true },
+    scheduledTasks: {
+      '0 * * * *': ['emails:reminders'],
+    },
   },
 
   // Storefront: SSR (SEO), private pages and admin: SPA

@@ -16,6 +16,9 @@
     { "pattern": "libraherbal.rs", "custom_domain": true },
     { "pattern": "www.libraherbal.rs", "custom_domain": true }
   ],
+  // Cron Triggers (UTC) — must match nitro.scheduledTasks in nuxt.config.ts.
+  // Hourly: reminder emails (abandoned cart, viewed products), server/tasks/emails/reminders.ts
+  "triggers": { "crons": ["0 * * * *"] },
   "d1_databases": [
     {
       "binding": "DB",
