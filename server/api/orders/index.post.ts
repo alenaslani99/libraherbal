@@ -72,6 +72,8 @@ export default defineEventHandler(async (event): Promise<OrderConfirmation> => {
           ...(coupon
             ? [db.prepare('UPDATE coupons SET order_id = (SELECT id FROM orders WHERE order_number = ?1) WHERE id = ?2').bind(orderNumber, coupon.id)]
             : []),
+          // the order is placed, so the saved cart is no longer "abandoned"
+          ...(user ? [db.prepare('DELETE FROM carts WHERE user_id = ?1').bind(user.id)] : []),
         ])
         return { orderNumber }
       }

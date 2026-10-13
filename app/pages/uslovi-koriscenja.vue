@@ -25,7 +25,7 @@ const link = 'font-semibold text-forest underline underline-offset-4 transition-
 </script>
 
 <template>
-  <LegalPage title="Uslovi korišćenja" icon="lucide:file-text" updated="4. oktobar 2026." :sections="sections">
+  <LegalPage title="Uslovi korišćenja" icon="lucide:file-text" updated="13. oktobar 2026." :sections="sections">
     <LegalSection id="uvod">
       <p>
         Ovi Uslovi korišćenja uređuju odnos između Libra Herbal (u daljem tekstu „mi”) i korisnika (u daljem tekstu „vi”)
@@ -60,6 +60,8 @@ const link = 'font-semibold text-forest underline underline-offset-4 transition-
         :items="[
           { term: 'Odgovornost', text: 'vi ste odgovorni za čuvanje svoje lozinke i za sve aktivnosti pod vašim nalogom.' },
           { term: 'Tačnost podataka', text: 'obavezni ste da ažurirate svoje podatke u slučaju promene.' },
+          { term: 'Korpa', text: 'dok ste prijavljeni, korpa se čuva na nalogu i dostupna je na svim vašim uređajima.' },
+          { term: 'Podsetnici', text: 'ako ostavite proizvode u korpi ili pregledate proizvod bez poručivanja, možemo vam poslati email podsetnik (najviše jedan u nekoliko dana). Od podsetnika se odjavljujete linkom u svakom takvom emailu.' },
           { term: 'Brisanje naloga', text: 'možete zatražiti brisanje naloga u svakom trenutku.' },
         ]"
       />

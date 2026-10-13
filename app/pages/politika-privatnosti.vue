@@ -3,7 +3,7 @@ import { contact } from '~/data/footer'
 
 usePageSeo({
   title: 'Politika privatnosti',
-  description: 'Kako Libra Herbal prikuplja, koristi i čuva vaše lične podatke: porudžbine, korisnički nalog, newsletter, kolačići i vaša prava.',
+  description: 'Kako Libra Herbal prikuplja, koristi i čuva vaše lične podatke: porudžbine, korisnički nalog, newsletter, podsetnici, kolačići i vaša prava.',
 })
 
 const sections = [
@@ -24,7 +24,7 @@ const link = 'font-semibold text-forest underline underline-offset-4 transition-
 </script>
 
 <template>
-  <LegalPage title="Politika privatnosti" icon="lucide:shield-check" updated="4. oktobar 2026." :sections="sections">
+  <LegalPage title="Politika privatnosti" icon="lucide:shield-check" updated="13. oktobar 2026." :sections="sections">
     <LegalSection id="uvod">
       <p>
         Libra Herbal (u daljem tekstu „mi”) poštuje vašu privatnost i posvećena je zaštiti vaših ličnih podataka. Ova Politika
@@ -43,6 +43,7 @@ const link = 'font-semibold text-forest underline underline-offset-4 transition-
           { term: 'Podaci za dostavu', text: 'adresa, grad i poštanski broj.' },
           { term: 'Podaci o porudžbini', text: 'poručeni proizvodi, količina, iznos i napomena uz porudžbinu.' },
           { term: 'Poruke', text: 'sadržaj poruke i kontakt podaci koje pošaljete putem kontakt forme.' },
+          { term: 'Aktivnost na nalogu', text: 'sadržaj korpe i proizvodi koje pregledate dok ste prijavljeni na nalog.' },
           { term: 'Tehnički podaci', text: 'IP adresa i podaci o pokušajima prijave, radi zaštite od zloupotrebe.' },
         ]"
       />
@@ -59,10 +60,15 @@ const link = 'font-semibold text-forest underline underline-offset-4 transition-
           'Komunikaciju u vezi sa porudžbinom i odgovore na vaše poruke.',
           'Pristup korisničkom nalogu i pregled istorije porudžbina.',
           'Slanje newslettera i ponuda (samo uz vašu saglasnost).',
+          'Slanje podsetnika registrovanim korisnicima o proizvodima ostavljenim u korpi ili pregledanim na sajtu.',
           'Zaštitu sajta od zloupotrebe.',
           'Ispunjavanje zakonskih obaveza.',
         ]"
       />
+      <LegalCallout>
+        Podsetnike šaljemo samo registrovanim korisnicima, najviše jedan u nekoliko dana, i ne šaljemo ih ako ste u međuvremenu poručili.
+        Od podsetnika se možete odjaviti jednim klikom na link koji se nalazi u svakom takvom emailu.
+      </LegalCallout>
     </LegalSection>
 
     <LegalSection id="pravni-osnov">
@@ -73,19 +79,22 @@ const link = 'font-semibold text-forest underline underline-offset-4 transition-
           { term: 'Izvršenja ugovora', text: 'za obradu i isporuku porudžbine.' },
           { term: 'Saglasnosti', text: 'za newsletter i ponude; saglasnost možete povući u svakom trenutku.' },
           { term: 'Zakonske obaveze', text: 'za vođenje poslovne i poreske evidencije.' },
-          { term: 'Legitimnog interesa', text: 'za bezbednost sajta i sprečavanje prevara.' },
+          { term: 'Legitimnog interesa', text: 'za bezbednost sajta i sprečavanje prevara, kao i za podsetnike registrovanim korisnicima o korpi i pregledanim proizvodima; ovoj obradi možete se usprotiviti u svakom trenutku.' },
         ]"
       />
     </LegalSection>
 
     <LegalSection id="deljenje-podataka">
       <p>Vaše podatke ne prodajemo. Delimo ih samo sa partnerima neophodnim za pružanje usluge:</p>
-      <div class="grid gap-3 sm:grid-cols-3">
+      <div class="grid gap-3 sm:grid-cols-2">
         <LegalCard icon="lucide:truck" title="Kurirska služba">
           Ime, adresa i telefon, radi isporuke porudžbine.
         </LegalCard>
         <LegalCard icon="lucide:server" title="Hosting">
           Sajt i baza podataka se nalaze na Cloudflare infrastrukturi.
+        </LegalCard>
+        <LegalCard icon="lucide:mail" title="Slanje emailova">
+          Email adresa i sadržaj poruke, radi slanja potvrda, kodova za popust i podsetnika (servis Resend).
         </LegalCard>
         <LegalCard icon="lucide:landmark" title="Državni organi">
           Samo na zakonit zahtev nadležnog organa.
@@ -102,6 +111,8 @@ const link = 'font-semibold text-forest underline underline-offset-4 transition-
           { term: 'Podaci o nalogu', text: 'dok je nalog aktivan ili do zahteva za brisanje.' },
           { term: 'Poruke', text: 'dok je potrebno da odgovorimo na vaš upit.' },
           { term: 'Newsletter', text: 'do odjave.' },
+          { term: 'Korpa', text: 'dok ne poručite, ne ispraznite korpu ili ne obrišete nalog.' },
+          { term: 'Pregledani proizvodi', text: '30 dana od pregleda.' },
         ]"
       />
       <p>Po isteku ovih rokova podaci se trajno brišu ili anonimizuju.</p>
@@ -144,7 +155,7 @@ const link = 'font-semibold text-forest underline underline-offset-4 transition-
         :items="[
           { term: 'Kolačić sesije', text: 'čuva vašu prijavu na nalog; briše se odjavom ili istekom sesije.' },
           { term: 'Kolačić porudžbine', text: 'pamti broj upravo poslate porudžbine za stranicu zahvalnosti; briše se posle 30 minuta.' },
-          { term: 'Lokalno skladište pregledača', text: 'pamti sadržaj korpe na vašem uređaju.' },
+          { term: 'Lokalno skladište pregledača', text: 'pamti sadržaj korpe na vašem uređaju i koje ste proizvode već pregledali tog dana.' },
         ]"
       />
       <p>Ne koristimo kolačiće za analitiku ni oglašavanje. Kolačiće možete obrisati u podešavanjima pregledača, ali tada se odjavljujete sa naloga.</p>
