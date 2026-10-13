@@ -18,7 +18,7 @@ export default defineEventHandler(async (event): Promise<AuthUser> => {
     row = await db.prepare(`
       INSERT INTO users (email, password_hash, first_name, last_name, phone, newsletter, terms_accepted_at)
       VALUES (?1, ?2, ?3, ?4, ?5, ?6, datetime('now'))
-      RETURNING id, email, first_name, last_name, phone, role
+      RETURNING id, email, first_name, last_name, phone, role, reminder_emails
     `).bind(
       input.email,
       await hashPassword(input.password),

@@ -8,6 +8,8 @@ export interface AuthUser {
   role: 'customer' | 'admin'
   // on the newsletter list — the newsletter forms show a one-click button or "already subscribed"
   subscribed: boolean
+  // gets reminder emails (abandoned cart, viewed products); off after "odjavi se" in such an email
+  reminders: boolean
 }
 
 // Set by getSessionUser() (server/utils/session.ts); the app reads it during SSR (plugins/auth.ts).
