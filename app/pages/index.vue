@@ -10,7 +10,6 @@ const { data: popularProducts } = await useFetch<Product[]>('/api/products/popul
 usePageSeo({
   title: 'Prirodni med, biljni čajevi i melemi',
   description: 'Libra Herbal: domaći med sa lekovitim biljem, prirodni biljni čajevi i melemi iz male porodične proizvodnje. Dostava širom Srbije, plaćanje pouzećem.',
-  image: '/og-image.jpg',
 })
 
 // Who we are, for Google's knowledge panel and sitelinks
@@ -19,7 +18,7 @@ useJsonLd('organization', {
   '@type': 'Organization',
   'name': 'Libra Herbal',
   'url': absolute('/'),
-  'logo': absolute('/web-app-manifest-512x512.png'),
+  'logo': absolute('/logo.png'),
   'description': footerAbout,
   'email': contact.email,
   'telephone': contact.phone.replace(/\s/g, ''),

@@ -30,12 +30,21 @@ async function maskable(size) {
   return sharp(canvas).removeAlpha().png({ compressionLevel: 9 })
 }
 
-// Social preview (Facebook, Viber, WhatsApp): the wordmark logo centred on beige, 1200×630
+// Stacked "LIBRA / HERBAL" lockup, 1080×1080 with its own beige background
+const STACKED = 'design/assets/logo-stacked.svg'
+
+// Social preview (Facebook, Viber, WhatsApp), 1200×630. WhatsApp and Viber crop the preview to a
+// centred square, so the logo stays inside the middle 630×630.
 async function ogImage() {
-  const logo = await sharp('public/assets/img/logo.svg', { density: 300 }).resize({ width: 760 }).png().toBuffer()
+  const logo = await sharp(STACKED, { density: 300 }).trim({ background: BEIGE }).resize({ width: 560 }).png().toBuffer()
   return sharp({ create: { width: 1200, height: 630, channels: 3, background: BEIGE } })
     .composite([{ input: logo, gravity: 'center' }])
     .jpeg({ quality: 88, mozjpeg: true })
+}
+
+// Organization / publisher logo for Google (public/logo.png), square and readable with the full name
+function logoPng(size) {
+  return sharp(STACKED, { density: 150 }).resize(size, size).flatten({ background: BEIGE }).png({ compressionLevel: 9 })
 }
 
 // .ico with PNG entries (supported by every current browser)
@@ -72,6 +81,7 @@ await Promise.all([
   png(512).toFile(`${OUT}/web-app-manifest-512x512.png`),
   maskable(512).then(img => img.toFile(`${OUT}/web-app-manifest-maskable-512x512.png`)),
   ogImage().then(img => img.toFile(`${OUT}/og-image.jpg`)),
+  logoPng(512).toFile(`${OUT}/logo.png`),
 ])
 
 console.log('Icons written to public/')

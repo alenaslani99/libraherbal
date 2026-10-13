@@ -34,6 +34,10 @@ export function usePageSeo(seo: PageSeo) {
     ogDescription: () => toValue(seo.description),
     ogUrl: canonical,
     ogImage: () => absolute(toValue(seo.image) || '/og-image.jpg'),
+    // size known only for the default image; lets Facebook show the preview on the first share
+    ogImageWidth: () => toValue(seo.image) ? undefined : 1200,
+    ogImageHeight: () => toValue(seo.image) ? undefined : 630,
+    ogImageAlt: () => toValue(seo.image) ? toValue(seo.title) : 'Libra Herbal',
     robots: seo.noindex ? 'noindex, follow' : undefined,
   })
 

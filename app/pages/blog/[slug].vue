@@ -31,7 +31,7 @@ useJsonLd('article', {
   'image': absolute(post.value.image),
   'datePublished': post.value.date,
   'author': { '@type': 'Organization', 'name': post.value.author },
-  'publisher': { '@type': 'Organization', 'name': 'Libra Herbal', 'logo': absolute('/assets/img/logo.svg') },
+  'publisher': { '@type': 'Organization', 'name': 'Libra Herbal', 'logo': absolute('/logo.png') },
   'mainEntityOfPage': url,
 })
 useJsonLd('breadcrumb', breadcrumbLd([['Početna', '/'], ['Blog', '/blog'], [post.value.title, route.path]], absolute))
