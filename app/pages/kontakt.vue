@@ -3,8 +3,8 @@ import { contactSchema } from '#shared/schemas/contact'
 import { contact, socials } from '~/data/footer'
 
 usePageSeo({
-  title: 'Kontakt',
-  description: 'Kontaktirajte Libra Herbal: pozovite nas, pišite nam na email ili pošaljite poruku. Nalazimo se u Velikoj Plani, Miloša Velikog BB.',
+  title: 'Kontakt: telefon, email i adresa',
+  description: 'Pitanje o proizvodu ili porudžbini? Pozovite +381 62 607444, pišite na info@libraherbal.rs ili pošaljite poruku. Velika Plana, Miloša Velikog BB.',
 })
 
 const absolute = useAbsoluteUrl()

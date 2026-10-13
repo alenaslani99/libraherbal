@@ -1,7 +1,8 @@
 import type { ProductDetail } from '#shared/types/product'
 import { categoryBySlug } from '~/data/categories'
 
-const DELIVERY = 'Dostava širom Srbije, plaćanje pouzećem.'
+// threshold = FREE_SHIPPING_FROM in server/utils/shipping.ts
+const DELIVERY = 'Pouzećem, besplatna dostava od 4.000 RSD.'
 // Google shows ~60 characters of a title; titleTemplate adds " | Libra Herbal" (15)
 const TITLE_MAX = 45
 const DESCRIPTION_MAX = 160
@@ -17,12 +18,21 @@ function productTitle(product: ProductDetail, kind: string) {
   return title.length <= TITLE_MAX ? title : product.name
 }
 
-// product text cut on a word boundary + the delivery line, ≤ 160 characters
+// "{first sentence of the product text}. 370 ml, 1490,00 RSD. Pouzećem, besplatna dostava od 4.000 RSD."
+// ≤ 160 characters: the first sentence when it fits, else cut at its last comma that fits
+// ("…sa propolisom, nanom i divljim origanom."), else on a word boundary with "…"
 function productDescription(product: ProductDetail) {
-  const room = DESCRIPTION_MAX - DELIVERY.length - 2
-  let text = product.description.trim()
-  if (text.length > room) text = `${text.slice(0, room - 1).replace(/[\s,.;:–-]+\S*$/, '')}…`
-  return text ? `${text} ${DELIVERY}` : `${product.name} (${product.weight}). ${DELIVERY}`
+  const tail = `${product.weight ? `${product.weight}, ` : ''}${product.price},00 RSD. ${DELIVERY}`
+  const room = DESCRIPTION_MAX - tail.length - 1
+  const sentence = product.description.trim().match(/^.+?[.!?](?=\s|$)/s)?.[0] ?? product.description.trim()
+  let text = sentence
+  if (text.length > room) {
+    const comma = sentence.lastIndexOf(',', room - 1)
+    text = comma > room / 2
+      ? `${sentence.slice(0, comma)}.`
+      : `${sentence.slice(0, room - 1).replace(/[\s,.;:–-]+\S*$/, '')}…`
+  }
+  return text ? `${text} ${tail}` : `${product.name}, ${tail}`
 }
 
 // Product page SEO: title with ingredients, description, canonical, og:image,

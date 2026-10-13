@@ -2,8 +2,8 @@
 import { faqCategories } from '~/data/faq'
 
 usePageSeo({
-  title: 'Česta pitanja',
-  description: 'Odgovori na česta pitanja o poručivanju, plaćanju pouzećem, dostavi širom Srbije, povraćaju robe i proizvodima Libra Herbal.',
+  title: 'Česta pitanja: dostava, plaćanje, povraćaj',
+  description: 'Odgovori na česta pitanja: kako poručiti, koliko košta dostava (besplatna od 4.000 RSD), plaćanje pouzećem, povraćaj robe i zašto se med kristališe.',
 })
 
 const absolute = useAbsoluteUrl()

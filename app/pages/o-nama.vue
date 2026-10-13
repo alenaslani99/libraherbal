@@ -2,8 +2,8 @@
 import { heroFeatures } from '~/data/home'
 
 usePageSeo({
-  title: 'O nama',
-  description: 'Libra Herbal je nastala iz jedne jednostavne ideje: ono što je dobro za svaki dan treba da bude zdravo i domaće. Med i bilje od porodičnih pčelara i berača iz Srbije.',
+  title: 'O nama: porodična proizvodnja iz Velike Plane',
+  description: 'Libra Herbal je mala porodična proizvodnja iz Velike Plane, osnovana 2025. Med od domaćih pčelara i bilje od berača iz Srbije, pakovano u malim serijama.',
 })
 
 const absolute = useAbsoluteUrl()

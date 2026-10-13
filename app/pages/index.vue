@@ -8,8 +8,8 @@ const { data: hero } = await useFetch<Hero>('/api/hero', { key: 'home-hero' })
 const { data: popularProducts } = await useFetch<Product[]>('/api/products/popular', { default: () => [] })
 
 usePageSeo({
-  title: 'Prirodni med, biljni čajevi i melemi',
-  description: 'Libra Herbal: domaći med sa lekovitim biljem, prirodni biljni čajevi i melemi iz male porodične proizvodnje. Dostava širom Srbije, plaćanje pouzećem.',
+  title: 'Domaći med sa biljem, čajevi i melemi',
+  description: 'Domaći med sa lekovitim biljem, biljni čajevi i ručno pravljeni melemi iz porodične proizvodnje. Plaćanje pouzećem, besplatna dostava od 4.000 RSD.',
 })
 
 // Who we are, for Google's knowledge panel and sitelinks

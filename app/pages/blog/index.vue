@@ -20,8 +20,8 @@ const page = computed(() => {
 const pagePosts = computed(() => rest.value.slice((page.value - 1) * PAGE_SIZE, page.value * PAGE_SIZE))
 
 usePageSeo({
-  title: 'Blog',
-  description: 'Praktični vodiči o medu, bilju i malim navikama za svakodnevnu ravnotežu. Saveti, recepti i priče iz Libra Herbal kuhinje.',
+  title: 'Blog o medu, bilju i biljnim čajevima',
+  description: 'Saveti o medu i lekovitom bilju: kako se pravi i pije biljni čaj, koji med izabrati, recepti i male navike za svaki dan. Iz Libra Herbal kuhinje.',
 })
 
 const absolute = useAbsoluteUrl()

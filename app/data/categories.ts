@@ -31,8 +31,8 @@ export const categoryPages: CategoryPage[] = [
     path: '/med',
     name: 'Med',
     productKind: 'prirodni med',
-    title: 'Prirodni med sa lekovitim biljem',
-    description: 'Domaći prirodni med obogaćen lekovitim biljem: propolis, đumbir, ehinacea, kurkuma, nana. Tegle od 370 ml, dostava širom Srbije, plaćanje pouzećem.',
+    title: 'Med sa lekovitim biljem i propolisom',
+    description: 'Domaći med sa propolisom, đumbirom, ehinaceom, kurkumom i nanom, u staklenim teglama od 370 ml. Bez dodatog šećera. Plaćanje pouzećem širom Srbije.',
     hero: {
       eyebrow: 'Prirodni med',
       titleLine1: 'Med sa',
@@ -54,8 +54,8 @@ export const categoryPages: CategoryPage[] = [
     path: '/cajevi',
     name: 'Čajevi',
     productKind: 'biljni čaj',
-    title: 'Prirodni biljni čajevi od lekovitog bilja',
-    description: 'Prirodni biljni čajevi od lekovitog bilja: za varenje, smirenje, detoks, disajne puteve i krvni pritisak. Pakovanja od 80 g, plaćanje pouzećem.',
+    title: 'Biljni čajevi od lekovitog bilja',
+    description: 'Mešavine lekovitog bilja za varenje, smirenje i san, disajne puteve i detoks: kamilica, nana, matičnjak, valerijana. Pakovanja 80 g, plaćanje pouzećem.',
     hero: {
       eyebrow: 'Biljni čajevi',
       titleLine1: 'Prirodni čajevi',
@@ -77,8 +77,8 @@ export const categoryPages: CategoryPage[] = [
     path: '/melemi',
     name: 'Melemi',
     productKind: 'prirodni melem',
-    title: 'Prirodni melemi od biljnih ulja i voska',
-    description: 'Prirodni melemi od biljnih ulja, pčelinjeg voska i vitamina E: za zglobove, vene, disajne puteve i osetljivu kožu. Domaća izrada, dostava širom Srbije.',
+    title: 'Prirodni melemi za zglobove, vene i kožu',
+    description: 'Ručno pravljeni melemi od pčelinjeg voska, shea butera i ulja kantariona i nevena, za zglobove, umorne noge i osetljivu kožu. Bez veštačkih mirisa.',
     hero: {
       eyebrow: 'Prirodni melemi',
       titleLine1: 'Melemi od',

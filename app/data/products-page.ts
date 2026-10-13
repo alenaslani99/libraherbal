@@ -3,8 +3,8 @@ import type { CategoryHero } from './categories'
 // Copy for /proizvodi (all products). Category pages have their own in ./categories.ts
 export const productsPage = {
   // <title> without the brand, ≤ 45 characters
-  title: 'Prirodni čajevi, med i melemi',
-  description: 'Prodavnica prirodnih proizvoda: domaći med sa lekovitim biljem, biljni čajevi i melemi od prirodnih ulja. Dostava širom Srbije, plaćanje pouzećem.',
+  title: 'Prodavnica: med, biljni čajevi i melemi',
+  description: 'Svi Libra Herbal proizvodi na jednom mestu: med sa propolisom i đumbirom, čajevi za varenje i san, melemi za zglobove. Pouzećem, dostava širom Srbije.',
   hero: {
     eyebrow: 'Pronađite svoj dobar ritual',
     titleLine1: 'Prirodni med,',
