@@ -35,7 +35,7 @@ defineProps<{
       </p>
       <p class="mt-8 flex items-center gap-1.5 text-xs font-medium transition-colors group-hover:text-sun" aria-hidden="true">
         Pročitajte više
-        <Icon name="lucide:arrow-right" class="size-3.5" />
+        <Icon name="lucide:arrow-right" class="size-3.5 transition-transform duration-200 group-hover:translate-x-1" />
       </p>
     </div>
   </article>

@@ -59,7 +59,7 @@ async function copyLink() {
     <section class="bg-forest text-white">
       <div class="mx-auto max-w-[1440px] px-4 py-12 sm:px-6 lg:px-16 lg:py-[72px] xl:px-32">
         <ul v-if="post.tags.length" class="flex flex-wrap gap-2">
-          <li v-for="tag in post.tags" :key="tag" class="rounded-full bg-brown-200 px-3 py-1 text-[11px] leading-none text-ink">
+          <li v-for="tag in post.tags" :key="tag" class="rounded-full bg-sun px-3.5 py-1.5 text-xs font-medium leading-none text-ink">
             {{ tag }}
           </li>
         </ul>
