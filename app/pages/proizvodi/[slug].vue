@@ -16,6 +16,7 @@ if (!product.value) {
 }
 
 useProductSeo(product)
+useTrackProductView(() => product.value?.slug)
 
 const cart = useCart()
 
