@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { OrderTracking } from '#shared/types/order'
 
-usePageSeo({
+// just a lookup form, nothing for search to rank; reached from the footer and /hvala
+useSeoMeta({
   title: 'Prati porudžbinu',
-  description: 'Unesite broj porudžbine i pogledajte gde je vaša Libra Herbal porudžbina: primljena, u pripremi, u transportu ili isporučena.',
+  robots: 'noindex',
 })
 
 const route = useRoute()
