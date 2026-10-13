@@ -1,11 +1,42 @@
 import type { ProductDetail } from '#shared/types/product'
 import { categoryBySlug } from '~/data/categories'
 
-// threshold = FREE_SHIPPING_FROM in server/utils/shipping.ts
+// threshold = FREE_SHIPPING_FROM in shared/utils/shipping.ts (also written out in the page descriptions)
 const DELIVERY = 'Pouzećem, besplatna dostava od 4.000 RSD.'
 // Google shows ~60 characters of a title; titleTemplate adds " | Libra Herbal" (15)
 const TITLE_MAX = 45
 const DESCRIPTION_MAX = 160
+
+const days = (min: number, max: number) => ({ '@type': 'QuantitativeValue', 'minValue': min, 'maxValue': max, 'unitCode': 'DAY' })
+
+// Offer shipping for one unit, as /uslovi-koriscenja#dostava says: courier within Serbia,
+// 1–3 working days from confirmation, 350 RSD (free from 4.000 RSD, shared/utils/shipping.ts)
+function shippingDetails(price: number) {
+  return {
+    '@type': 'OfferShippingDetails',
+    'shippingDestination': { '@type': 'DefinedRegion', 'addressCountry': 'RS' },
+    'shippingRate': { '@type': 'MonetaryAmount', 'value': (shippingFor(price * 100) / 100).toFixed(2), 'currency': 'RSD' },
+    'deliveryTime': {
+      '@type': 'ShippingDeliveryTime',
+      'handlingTime': days(0, 0),
+      'transitTime': days(1, 3),
+      'businessDays': {
+        '@type': 'OpeningHoursSpecification',
+        'dayOfWeek': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map(d => `https://schema.org/${d}`),
+      },
+    },
+  }
+}
+
+// /uslovi-koriscenja#povracaj-robe: 14 days from receipt, by courier, return shipping paid by the customer
+const RETURN_POLICY = {
+  '@type': 'MerchantReturnPolicy',
+  'applicableCountry': 'RS',
+  'returnPolicyCategory': 'https://schema.org/MerchantReturnFiniteReturnWindow',
+  'merchantReturnDays': 14,
+  'returnMethod': 'https://schema.org/ReturnByMail',
+  'returnFees': 'https://schema.org/ReturnFeesCustomerResponsibility',
+}
 
 // "Bronhi Med – prirodni med: propolis, nana" — ingredients are added while they fit
 function productTitle(product: ProductDetail, kind: string) {
@@ -70,6 +101,17 @@ export function useProductSeo(product: Ref<ProductDetail | null | undefined>) {
         'itemCondition': 'https://schema.org/NewCondition',
         // promotion end: Google shows the sale price only until then
         ...(p.regularPrice && p.saleEndsAt && { priceValidUntil: p.saleEndsAt.slice(0, 10) }),
+        // during a promotion: the regular price, shown struck through next to `price` in results
+        ...(p.regularPrice && {
+          priceSpecification: {
+            '@type': 'UnitPriceSpecification',
+            'priceType': 'https://schema.org/StrikethroughPrice',
+            'price': p.regularPrice.toFixed(2),
+            'priceCurrency': 'RSD',
+          },
+        }),
+        'shippingDetails': shippingDetails(p.price),
+        'hasMerchantReturnPolicy': RETURN_POLICY,
       },
       // only with real, approved reviews: Google penalises made-up ratings
       ...(p.reviewCount > 0 && {
