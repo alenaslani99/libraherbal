@@ -96,7 +96,7 @@ function scrollToTop() {
                 :error="error"
                 :error-id="errorId"
                 error-icon-class="text-sun"
-                :input-class="`h-10 bg-white/50 text-white placeholder:text-white ${error ? 'ring-2 ring-sun' : ''}`"
+                :input-class="`h-10 bg-white/15 text-white placeholder:text-white ${error ? 'ring-2 ring-sun' : ''}`"
               />
               <!-- honeypot: off-screen and skipped by keyboard and screen readers; only bots fill it -->
               <div class="absolute -left-[9999px] size-px overflow-hidden" aria-hidden="true">

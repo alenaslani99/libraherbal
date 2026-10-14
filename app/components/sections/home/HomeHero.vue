@@ -57,7 +57,7 @@ const decimal = (n: number) => n.toFixed(1).replace('.', ',')
       height="1024"
       sizes="xs:100vw sm:100vw md:100vw lg:100vw xl:100vw xxl:100vw"
       format="webp"
-      preload
+      :preload="{ fetchPriority: 'high' }"
       fetchpriority="high"
       class="absolute inset-0 -z-10 h-full w-full object-cover object-[70%_center]"
     />
