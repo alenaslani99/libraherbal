@@ -60,7 +60,8 @@ export default defineNuxtConfig({
   // a provider every srcset entry was the full-size original. Transformations must be enabled on the
   // libraherbal.rs zone (Dashboard → Images → Transformations), or every image 404s.
   image: {
-    quality: 75,
+    // 65: ~20% smaller than 75 for photos, no visible difference at phone sizes (Lighthouse "compression")
+    quality: 65,
   },
   $production: {
     image: { provider: 'cloudflare' },
@@ -69,6 +70,15 @@ export default defineNuxtConfig({
   features: {
     // Tailwind CSS goes into the HTML instead of a render-blocking <link> (~16 KB gzipped)
     inlineStyles: true,
+  },
+
+  experimental: {
+    // NuxtLink prefetched the page code of every link that scrolled into view (login, products, blog…)
+    // and ran it in the background — ~45 extra scripts on the home page and most of the main-thread
+    // blocking on phones. Now only on hover/focus, i.e. just before a click.
+    defaults: {
+      nuxtLink: { prefetchOn: { visibility: false, interaction: true } },
+    },
   },
 
   hooks: {

@@ -37,7 +37,7 @@ function addToCart() {
         width="259"
         height="248"
         format="webp"
-        sizes="xs:42vw sm:42vw md:42vw lg:25vw xl:300px"
+        sizes="xs:180px sm:180px md:42vw lg:25vw xl:300px"
         loading="lazy"
         class="aspect-[259/248] w-full rounded-2xl object-cover transition-transform duration-300 ease-out group-hover:-rotate-3 group-hover:scale-[1.04]"
       />

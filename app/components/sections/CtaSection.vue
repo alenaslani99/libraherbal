@@ -39,7 +39,7 @@ withDefaults(defineProps<{
           width="314"
           height="392"
           format="webp"
-          sizes="xs:50vw sm:50vw md:320px lg:320px"
+          sizes="xs:210px sm:210px md:320px lg:320px"
           loading="lazy"
           class="aspect-[314/392] min-w-0 flex-[314] rounded-xl object-cover"
         />
@@ -49,7 +49,7 @@ withDefaults(defineProps<{
           width="265"
           height="353"
           format="webp"
-          sizes="xs:42vw sm:42vw md:270px lg:270px"
+          sizes="xs:180px sm:180px md:270px lg:270px"
           loading="lazy"
           class="aspect-[265/353] min-w-0 flex-[265] rounded-xl object-cover"
         />
