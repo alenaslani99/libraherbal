@@ -42,21 +42,24 @@ useJsonLd('website', {
 <template>
   <div>
     <HomeHero v-if="hero" :hero="hero" />
-    <HomeFeatures />
-    <HomeCategories />
-    <ProductShowcase
+    <!-- below the hero: server-rendered HTML right away, JS only once scrolled into view (less startup work on phones) -->
+    <LazyHomeFeatures hydrate-on-visible />
+    <LazyHomeCategories hydrate-on-visible />
+    <LazyProductShowcase
+      hydrate-on-visible
       title="Popularni artikli"
       subtitle="Pogledajte naše kategorije proizvoda."
       :products="popularProducts"
     />
-    <CtaSection
+    <LazyCtaSection
+      hydrate-on-visible
       eyebrow="Proširite svoje znanje"
       title="Kako prirodnim putem do zdravlja?"
       text="Saznajte više o prirodnim metodama lečenja i njihovoj naučnoj osnovi."
       button-label="Posetite naš blog"
       to="/blog"
     />
-    <HomeTestimonials />
-    <NewsletterSection />
+    <LazyHomeTestimonials hydrate-on-visible />
+    <LazyNewsletterSection hydrate-on-visible />
   </div>
 </template>

@@ -4,7 +4,8 @@
     <main class="flex-1">
       <slot />
     </main>
-    <AppFooter />
-    <CookieBar />
+    <!-- footer JS (newsletter form) only once it's on screen; cookie notice after the page is idle -->
+    <LazyAppFooter hydrate-on-visible />
+    <LazyCookieBar hydrate-on-idle />
   </div>
 </template>
