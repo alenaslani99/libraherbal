@@ -1,4 +1,3 @@
-import { newsletterSchema } from '#shared/schemas/engagement'
 import type { NewsletterResult } from '#shared/types/engagement'
 
 // One newsletter form (footer or the yellow section). Each form has its own state.
@@ -33,6 +32,8 @@ export function useNewsletter(source: 'footer' | 'section') {
 
   async function submit() {
     error.value = ''
+    // loaded on submit: the footer form is on every page, and zod is ~25 KB gzipped
+    const { newsletterSchema } = await import('#shared/schemas/engagement')
     const result = newsletterSchema.safeParse({ email: user.value?.email ?? email.value, source, website: website.value })
     if (!result.success) {
       error.value = result.error.issues[0]!.message

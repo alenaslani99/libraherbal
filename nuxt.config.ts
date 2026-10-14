@@ -58,6 +58,31 @@ export default defineNuxtConfig({
     defaults: { weights: [300, 400, 500, 600, 700], styles: ['normal', 'italic'] },
   },
 
+  // <NuxtImg> resizes + converts to webp. Dev: ipx. Production: Cloudflare image transformations
+  // (/cdn-cgi/image/w=640,f=webp,q=75/assets/...) — the Worker can't run ipx (no sharp), and without
+  // a provider every srcset entry was the full-size original. Transformations must be enabled on the
+  // libraherbal.rs zone (Dashboard → Images → Transformations), or every image 404s.
+  image: {
+    quality: 75,
+  },
+  $production: {
+    image: { provider: 'cloudflare' },
+  },
+
+  features: {
+    // Tailwind CSS goes into the HTML instead of a render-blocking <link> (~16 KB gzipped)
+    inlineStyles: true,
+  },
+
+  hooks: {
+    // No <link rel="prefetch"> for every lazy chunk (admin, account, editor…): wasted mobile bandwidth,
+    // and Cloudflare Speed Brain answers uncached prefetches with 503, which shows up as console errors.
+    // Chunks still load on navigation as usual.
+    'build:manifest': (manifest) => {
+      for (const chunk of Object.values(manifest)) chunk.prefetch = false
+    },
+  },
+
   // Only icons actually used in app/ are bundled (scanned from .vue and .ts, e.g. app/data/*.ts).
   // No runtime JSON loading or Iconify API calls: small bundle for Cloudflare Workers, and it
   // avoids the createRequire crash in the Windows prerender step.
@@ -94,6 +119,8 @@ export default defineNuxtConfig({
   // Storefront: SSR (SEO), private pages and admin: SPA
   // Static content pages (/o-nama, /kontakt, /dostava, /blog/**) get `prerender: true` once they exist
   routeRules: {
+    // public/assets files aren't content-hashed, so a week instead of immutable (default was max-age=0)
+    '/assets/**': { headers: { 'cache-control': 'public, max-age=604800, stale-while-revalidate=86400' } },
     '/korpa': { ssr: false },
     '/placanje': { ssr: false },
     '/hvala': { ssr: false },

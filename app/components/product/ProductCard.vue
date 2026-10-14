@@ -44,7 +44,7 @@ function addToCart() {
     </NuxtLink>
 
     <div class="flex flex-1 flex-col px-2">
-      <p class="text-[10px] uppercase leading-3 text-brown-200">
+      <p class="text-[10px] uppercase leading-3 text-brown-400">
         {{ product.category }} • <span class="normal-case">{{ product.weight }}</span>
       </p>
       <h3 class="mt-1 font-heading text-lg font-semibold leading-6 text-forest">
@@ -54,7 +54,7 @@ function addToCart() {
       </h3>
       <div class="mt-auto flex items-end justify-between pt-1">
         <div>
-          <p v-if="product.regularPrice" class="mb-1 text-[11px] leading-none text-brown-200">
+          <p v-if="product.regularPrice" class="mb-1 text-[11px] leading-none text-brown-400">
             <span class="sr-only">Stara cena: </span><del>{{ product.regularPrice }},00 RSD</del>
           </p>
           <p class="text-sm font-semibold leading-none text-ink">

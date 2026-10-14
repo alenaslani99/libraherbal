@@ -25,6 +25,8 @@
   /* Figma: Foundation/Main Beige — Product Card bg */
   --color-main-beige: #ded6c1;
   --color-brown-200: #9a918d;
+  /* darker brown for small text on Main Beige (brown-200 there is 2.1:1, this is 5:1, WCAG AA) */
+  --color-brown-400: #5e5450;
   /* Figma: Foundation/Brown/brown-500 — O nama "Naši principi" bg */
   --color-brown-500: #230f08;
   --color-cream: #e9e3d1;
