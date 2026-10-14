@@ -5,7 +5,8 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
-  modules: ['@nuxt/fonts', '@nuxt/icon', '@nuxt/image', '@nuxtjs/mdc', 'nitro-cloudflare-dev'],
+  // fonts are self-hosted in assets/css/main.css (smaller Serbian subsets than @nuxt/fonts downloads)
+  modules: ['@nuxt/icon', '@nuxt/image', '@nuxtjs/mdc', 'nitro-cloudflare-dev'],
 
   css: ['~/assets/css/main.css'],
 
@@ -52,10 +53,6 @@ export default defineNuxtConfig({
     public: {
       siteUrl: 'https://libraherbal.rs',
     },
-  },
-
-  fonts: {
-    defaults: { weights: [300, 400, 500, 600, 700], styles: ['normal', 'italic'] },
   },
 
   // <NuxtImg> resizes + converts to webp. Dev: ipx. Production: Cloudflare image transformations

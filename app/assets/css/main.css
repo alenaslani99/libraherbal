@@ -1,12 +1,81 @@
 @import "tailwindcss";
 
 /*
+ * Self-hosted fonts (variable, one file per style covers every weight).
+ * *-latin: Google's latin subset as is. *-sr: only the Serbian letters outside basic Latin
+ * (Ć ć Č č Đ đ Š š Ž ž), cut from Google's latin-ext subset — ~4 KB instead of 16–40 KB,
+ * which matters on mobile. Other latin-ext characters fall back to the system font.
+ * To rebuild a *-sr file: subset-font (npm) on the latin-ext woff2 with text "ĆćČčĐđŠšŽž".
+ */
+@font-face {
+  font-family: "Sora";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url("~/assets/fonts/sora-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Sora";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url("~/assets/fonts/sora-sr.woff2") format("woff2");
+  unicode-range: U+0106-0107, U+010C-010D, U+0110-0111, U+0160-0161, U+017D-017E;
+}
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("~/assets/fonts/fraunces-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("~/assets/fonts/fraunces-sr.woff2") format("woff2");
+  unicode-range: U+0106-0107, U+010C-010D, U+0110-0111, U+0160-0161, U+017D-017E;
+}
+@font-face {
+  font-family: "Fraunces";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("~/assets/fonts/fraunces-italic-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Fraunces";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("~/assets/fonts/fraunces-italic-sr.woff2") format("woff2");
+  unicode-range: U+0106-0107, U+010C-010D, U+0110-0111, U+0160-0161, U+017D-017E;
+}
+
+/*
+ * Metric-matched fallbacks (values from @nuxt/fonts): while the web font loads, system fonts are
+ * scaled to Sora/Fraunces proportions so the text doesn't jump when it swaps (CLS 0).
+ */
+@font-face { font-family: "Sora Fallback: BlinkMacSystemFont"; src: local(BlinkMacSystemFont); size-adjust: 121.728%; ascent-override: 79.6862%; descent-override: 23.8237%; line-gap-override: 0%; }
+@font-face { font-family: "Sora Fallback: Segoe UI"; src: local("Segoe UI"); size-adjust: 114.354%; ascent-override: 84.8242%; descent-override: 25.3598%; line-gap-override: 0%; }
+@font-face { font-family: "Sora Fallback: Helvetica Neue"; src: local("Helvetica Neue"); size-adjust: 112.667%; ascent-override: 86.0947%; descent-override: 25.7396%; line-gap-override: 0%; }
+@font-face { font-family: "Sora Fallback: Arial"; src: local(Arial); size-adjust: 113.728%; ascent-override: 85.2913%; descent-override: 25.4995%; line-gap-override: 0%; }
+@font-face { font-family: "Sora Fallback: Noto Sans"; src: local("Noto Sans"); size-adjust: 106.962%; ascent-override: 90.6864%; descent-override: 27.1124%; line-gap-override: 0%; }
+@font-face { font-family: "Fraunces Fallback: Times New Roman"; src: local("Times New Roman"); size-adjust: 115.446%; ascent-override: 84.7148%; descent-override: 22.0882%; line-gap-override: 0%; }
+@font-face { font-family: "Fraunces Fallback: Georgia"; src: local(Georgia); size-adjust: 105.204%; ascent-override: 92.9623%; descent-override: 24.2386%; line-gap-override: 0%; }
+@font-face { font-family: "Fraunces Fallback: Noto Serif"; src: local("Noto Serif"); size-adjust: 97.5052%; ascent-override: 100.302%; descent-override: 26.1525%; line-gap-override: 0%; }
+
+/*
  * Design tokens — taken from Figma (design/assets/*.png).
  * Change colors/fonts here only; components use these tokens.
  */
 @theme {
-  --font-sans: "Sora", ui-sans-serif, system-ui, sans-serif;
-  --font-heading: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Sora", "Sora Fallback: BlinkMacSystemFont", "Sora Fallback: Segoe UI", "Sora Fallback: Helvetica Neue", "Sora Fallback: Arial", "Sora Fallback: Noto Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Fraunces", "Fraunces Fallback: Times New Roman", "Fraunces Fallback: Georgia", "Fraunces Fallback: Noto Serif", ui-serif, Georgia, serif;
 
   /* Figma: Foundation/Off-Black */
   --color-ink: #1b1b1b;
