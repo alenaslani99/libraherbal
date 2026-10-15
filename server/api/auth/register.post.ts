@@ -19,8 +19,8 @@ export default defineEventHandler(async (event): Promise<AuthUser> => {
   let row
   try {
     row = await db.prepare(`
-      INSERT INTO users (email, password_hash, first_name, last_name, phone, newsletter, terms_accepted_at, unsubscribe_token)
-      VALUES (?1, ?2, ?3, ?4, ?5, ?6, datetime('now'), ?7)
+      INSERT INTO users (email, password_hash, first_name, last_name, phone, newsletter, terms_accepted_at, unsubscribe_token, birth_date)
+      VALUES (?1, ?2, ?3, ?4, ?5, ?6, datetime('now'), ?7, ?8)
       RETURNING id, email, first_name, last_name, phone, role, reminder_emails
     `).bind(
       input.email,
@@ -30,6 +30,8 @@ export default defineEventHandler(async (event): Promise<AuthUser> => {
       input.phone,
       input.newsletter ? 1 : 0,
       unsubscribeToken,
+      // already checked by the schema; set only here, there is no way to change it later
+      birthDateToIso(input.birthDate),
     ).first<Omit<UserRow, 'subscribed'>>()
   }
   catch (error) {

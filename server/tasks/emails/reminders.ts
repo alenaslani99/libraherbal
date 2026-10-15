@@ -133,12 +133,7 @@ async function send(db: D1Database, siteUrl: string, kind: 'cart' | 'browse', re
   const due = recipients.filter(r => products.get(r.id)?.length)
   if (!due.length) return 0
 
-  // the unsubscribe link must work before the email arrives
-  const newTokens = due.filter(r => !r.unsubscribe_token).map((r) => {
-    r.unsubscribe_token = toHex(crypto.getRandomValues(new Uint8Array(32)))
-    return db.prepare('UPDATE users SET unsubscribe_token = ?2 WHERE id = ?1 AND unsubscribe_token IS NULL').bind(r.id, r.unsubscribe_token)
-  })
-  if (newTokens.length) await db.batch(newTokens)
+  await ensureUnsubscribeTokens(db, due)
 
   const ids = await sendEmails(due.map((r) => {
     const unsubscribeUrl = `${siteUrl}/odjava-podsetnika?t=${r.unsubscribe_token}`
@@ -147,11 +142,7 @@ async function send(db: D1Database, siteUrl: string, kind: 'cart' | 'browse', re
       from: EMAIL_FROM.reminders,
       to: r.email,
       ...email,
-      // one-click unsubscribe from the mail app itself (RFC 8058), required by Gmail and Yahoo for bulk senders
-      headers: {
-        'List-Unsubscribe': `<${siteUrl}/api/email/unsubscribe?t=${r.unsubscribe_token}>`,
-        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-      },
+      headers: unsubscribeHeaders(siteUrl, r.unsubscribe_token!),
     }
   }))
   // no API key (local dev): logged, not sent, so not recorded either

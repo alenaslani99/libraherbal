@@ -49,15 +49,16 @@ export async function releaseCoupon(db: D1Database, id: number) {
 const ALPHABET = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ'
 const CODE_LENGTH = 8
 
-function newCouponCode() {
+function newCouponCode(prefix: string) {
   const random = crypto.getRandomValues(new Uint8Array(CODE_LENGTH))
-  return Array.from(random, byte => ALPHABET[byte % ALPHABET.length]).join('')
+  return prefix + Array.from(random, byte => ALPHABET[byte % ALPHABET.length]).join('')
 }
 
-// New code for one user, e.g. 7K3FQ9MA; retries on the rare UNIQUE collision
-export async function createCoupon(db: D1Database, input: { kind: 'welcome' | 'birthday', percent: number, userId: number, days: number }) {
+// New code for one user, e.g. 7K3FQ9MA (welcome) or BTHD7K3FQ9MA (birthday, prefix "BTHD");
+// retries on the rare UNIQUE collision
+export async function createCoupon(db: D1Database, input: { kind: 'welcome' | 'birthday', prefix?: string, percent: number, userId: number, days: number }) {
   for (let attempt = 0; attempt < 3; attempt++) {
-    const code = newCouponCode()
+    const code = newCouponCode(input.prefix ?? '')
     try {
       await db.prepare(`
         INSERT INTO coupons (code, kind, percent, user_id, expires_at)

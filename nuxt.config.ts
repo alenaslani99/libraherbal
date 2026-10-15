@@ -126,7 +126,8 @@ export default defineNuxtConfig({
     // In `nuxt dev`, run one by hand: GET /_nitro/tasks/emails:reminders
     experimental: { tasks: true },
     scheduledTasks: {
-      '0 * * * *': ['emails:reminders'],
+      // hourly; the birthday task itself waits for 12:00 Belgrade time
+      '0 * * * *': ['emails:reminders', 'emails:birthdays'],
     },
   },
 

@@ -124,6 +124,21 @@ export function productFeature(product: FeaturedProduct, siteUrl: string, imageF
     <tr><td style="padding:8px 32px 0;">${button(url, 'PORUČITE ODMAH&nbsp;&nbsp;→', true)}</td></tr>`
 }
 
+// Rows: offer heading and line, the discount code in a dashed box, its expiry, a shop button
+export function couponRows(input: { siteUrl: string, heading: string, text: string, code: string, validUntil: string }) {
+  return `<tr><td align="center" style="padding:40px 32px 0;">
+          <div class="c-forest" style="${SERIF}font-size:26px;line-height:32px;font-weight:600;color:${COLOR.forest};">${input.heading}</div>
+          <div class="c-ink" style="${SANS}font-size:13px;line-height:20px;color:${COLOR.ink};padding-top:6px;">${input.text}</div>
+        </td></tr>
+        <tr><td align="center" style="padding:24px 32px 0;">
+          <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+            <td class="bg-ink c-white" style="background:${COLOR.ink};border:2px dashed ${COLOR.sun};border-radius:6px;padding:12px 24px;${SANS}font-size:24px;line-height:30px;font-weight:bold;letter-spacing:3px;color:${COLOR.white};">${escapeHtml(input.code)}</td>
+          </tr></table>
+          <div class="c-muted" style="${SANS}font-size:11px;line-height:16px;color:${COLOR.muted};padding-top:8px;">Kod važi do ${input.validUntil} i može se iskoristiti jednom.</div>
+        </td></tr>
+        <tr><td align="center" style="padding:20px 32px 0;">${button(`${input.siteUrl}/proizvodi`, 'POGLEDAJTE PRODAVNICU')}</td></tr>`
+}
+
 // "1290,00 RSD" with a smaller RSD
 export function rsd(amount: number, size: number) {
   return `${amount},00 <span style="font-size:${Math.round(size * 0.6)}px;">RSD</span>`

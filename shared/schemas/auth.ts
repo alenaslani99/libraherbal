@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { birthDateToIso, formatBirthDate } from '../utils/birthDate'
 
 // Auth forms, validated with the same rules in the browser (instant field errors)
 // and on the server (readValidatedBody) — the server never trusts what the form already checked.
@@ -32,6 +33,18 @@ function confirms<T extends Record<string, unknown>>(
   ]
 }
 
+// Typed as day.month.year; stays in that form (normalized to "05.03.1990."), so the browser can send the
+// parsed form and the server parses it again. The server stores birthDateToIso() of it.
+const birthDate = z.string().trim().min(1, 'Unesite datum rođenja.').transform((value, ctx) => {
+  const iso = birthDateToIso(value)
+  const year = iso ? Number(iso.slice(0, 4)) : 0
+  if (!iso || year < 1900 || iso > new Date().toISOString().slice(0, 10)) {
+    ctx.addIssue({ code: 'custom', message: 'Unesite datum u obliku dan.mesec.godina, npr. 15.03.1990.' })
+    return z.NEVER
+  }
+  return formatBirthDate(iso)
+})
+
 export const loginSchema = z.object({
   email: emailSchema,
   // no length rules on login: only the stored hash decides
@@ -44,6 +57,7 @@ const registerFields = z.object({
   lastName: z.string().trim().min(1, 'Unesite prezime.').max(50, 'Prezime može imati najviše 50 karaktera.'),
   email: emailSchema,
   phone: z.string().trim().regex(PHONE_PATTERN, 'Unesite ispravan broj telefona.'),
+  birthDate,
   password: newPassword,
   passwordConfirm: z.string(),
   terms: z.literal(true, 'Morate prihvatiti uslove korišćenja.'),

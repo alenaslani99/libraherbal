@@ -1,9 +1,12 @@
+import type { D1Database } from '@cloudflare/workers-types'
+
 // Sending email through Resend (domain libraherbal.rs, region eu-west-1).
 // The API key is the Worker secret RESEND_API_KEY (`wrangler secret put RESEND_API_KEY`; locally in .dev.vars).
 // All senders live here, so marketing mail can move to a subdomain (news.libraherbal.rs) in one place.
 export const EMAIL_FROM = {
   reminders: 'Libra Herbal <podsetnik@libraherbal.rs>',
   welcome: 'Libra Herbal <dobrodosli@libraherbal.rs>',
+  birthday: 'Libra Herbal <rodjendan@libraherbal.rs>',
   orders: 'Libra Herbal <porudzbine@libraherbal.rs>',
 }
 
@@ -16,6 +19,24 @@ export interface EmailMessage {
   html: string
   text: string
   headers?: Record<string, string>
+}
+
+// Users registered before the welcome email have no unsubscribe token yet; it's made on their first
+// marketing email, before sending, so the link works when the email arrives. Fills in r.unsubscribe_token.
+export async function ensureUnsubscribeTokens(db: D1Database, recipients: { id: number, unsubscribe_token: string | null }[]) {
+  const updates = recipients.filter(r => !r.unsubscribe_token).map((r) => {
+    r.unsubscribe_token = toHex(crypto.getRandomValues(new Uint8Array(32)))
+    return db.prepare('UPDATE users SET unsubscribe_token = ?2 WHERE id = ?1 AND unsubscribe_token IS NULL').bind(r.id, r.unsubscribe_token)
+  })
+  if (updates.length) await db.batch(updates)
+}
+
+// one-click unsubscribe from the mail app itself (RFC 8058), required by Gmail and Yahoo for bulk senders
+export function unsubscribeHeaders(siteUrl: string, token: string) {
+  return {
+    'List-Unsubscribe': `<${siteUrl}/api/email/unsubscribe?t=${token}>`,
+    'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+  }
 }
 
 // Resend takes at most 100 emails per batch call

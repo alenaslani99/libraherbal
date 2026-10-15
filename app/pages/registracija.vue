@@ -14,6 +14,7 @@ const form = reactive({
   lastName: '',
   email: '',
   phone: '',
+  birthDate: '',
   password: '',
   passwordConfirm: '',
   terms: false,
@@ -98,6 +99,19 @@ async function onSubmit() {
           :error="errors.phone"
           class="sm:col-span-2"
         />
+        <div class="sm:col-span-2">
+          <FormField
+            v-model="form.birthDate"
+            label="Datum rođenja"
+            placeholder="dd.mm.gggg, npr. 15.03.1990"
+            autocomplete="bday"
+            required
+            :error="errors.birthDate"
+          />
+          <p class="-mt-2 text-xs text-brown-200">
+            Za rođendan Vam šaljemo poklon. Datum rođenja kasnije nije moguće promeniti.
+          </p>
+        </div>
       </div>
 
       <h2 class="mt-12 text-2xl leading-tight text-ink">
