@@ -85,8 +85,15 @@ export default defineNuxtConfig({
     // No <link rel="prefetch"> for every lazy chunk (admin, account, editor…): wasted mobile bandwidth,
     // and Cloudflare Speed Brain answers uncached prefetches with 503, which shows up as console errors.
     // Chunks still load on navigation as usual.
+    // No <link rel="modulepreload"> for the ~20 chunks behind the entry either: they all started
+    // downloading at top priority next to the HTML and hero image, and on a slow phone connection that
+    // pushed the first paint back. The page is server-rendered, so it shows without them; the entry
+    // script pulls its imports in right after.
     'build:manifest': (manifest) => {
-      for (const chunk of Object.values(manifest)) chunk.prefetch = false
+      for (const chunk of Object.values(manifest)) {
+        chunk.prefetch = false
+        if (!chunk.isEntry) chunk.preload = false
+      }
     },
   },
 
