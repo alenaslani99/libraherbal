@@ -1,0 +1,14 @@
+/*
+ * Utilities that only admin markup uses (main.css skips these folders with `@source not`).
+ * Imported by layouts/admin.vue, so it loads with the admin chunk; main.css is still there
+ * (global), so here only the theme and utilities, no preflight/base/fonts.
+ * Theme variables aren't `reference`: a color used only in admin must get its var emitted here.
+ */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@import "./theme.css";
+
+@source "../../pages/admin";
+@source "../../components/admin";
+@source "../../layouts/admin.vue";
+@source "../../editor";

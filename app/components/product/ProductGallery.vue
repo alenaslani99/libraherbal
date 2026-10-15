@@ -37,7 +37,7 @@ const current = computed(() => props.images[active.value] ?? props.images[0])
       height="440"
       format="webp"
       sizes="xs:100vw sm:100vw md:440px lg:440px"
-      preload
+      :preload="{ fetchPriority: 'high' }"
       fetchpriority="high"
       class="aspect-square w-full min-w-0 rounded-3xl object-cover lg:max-w-[440px]"
     />

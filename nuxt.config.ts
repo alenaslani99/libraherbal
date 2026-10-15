@@ -12,6 +12,22 @@ export default defineNuxtConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    $client: {
+      build: {
+        rolldownOptions: {
+          output: {
+            // Without modulepreload (see hooks below) every level of imports is another round trip.
+            // By default the entry's static imports were split into ~10 chunks fetched only after the
+            // entry arrived; this keeps them in one file, so the page chunk starts one round trip sooner.
+            // (A group merging small shared modules was tried too: every page then loaded ~150 KB of
+            // other pages' code, so page chunks keep the default split.)
+            codeSplitting: {
+              groups: [{ name: 'entry-deps', tags: ['$initial'] }],
+            },
+          },
+        },
+      },
+    },
   },
 
   // components/content first: global, so Markdown can use them (::note in a blog post)

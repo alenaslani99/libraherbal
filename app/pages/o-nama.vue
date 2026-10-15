@@ -37,7 +37,8 @@ useJsonLd('about', {
           height="665"
           sizes="xs:100vw sm:100vw md:100vw lg:496px"
           format="webp"
-          loading="lazy"
+          :preload="{ fetchPriority: 'high' }"
+          fetchpriority="high"
           class="aspect-[4/3] w-full rounded-xl object-cover"
         />
         <div>

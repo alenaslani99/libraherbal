@@ -31,7 +31,7 @@ defineProps<{ hero: CategoryHero }>()
           height="392"
           format="webp"
           sizes="xs:55vw sm:55vw md:320px lg:320px"
-          preload
+          :preload="{ fetchPriority: 'high' }"
           fetchpriority="high"
           class="aspect-[314/392] min-w-0 flex-[314] rounded-xl object-cover"
         />

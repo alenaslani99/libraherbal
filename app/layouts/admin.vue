@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { adminNav } from '~/data/admin'
+// admin-only Tailwind utilities, kept out of the storefront's inline CSS
+import '~/assets/css/admin.css'
 
 useSeoMeta({ robots: 'noindex, nofollow' })
 
