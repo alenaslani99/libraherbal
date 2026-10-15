@@ -1,21 +1,8 @@
 import type { D1Database } from '@cloudflare/workers-types'
+import { type FeaturedProduct, button, COLOR, divider, emailDocument, escapeHtml, hero, productFeature, SANS, SERIF, textFooter } from './emailLayout'
 
 // HTML + plain-text welcome email with the 10% code, sent right after registration (server/api/auth/register.post.ts).
-// Email clients ignore <style> and modern CSS, so it's tables and inline styles, in the site's colors.
-// Fraunces/Sora load only where web fonts work (Apple Mail, iOS); Gmail and Outlook show the fallbacks.
-// Images are PNG/JPG (no SVG in Gmail/Outlook) from public/email, at 2x the size they're shown.
-
-export interface WelcomeProduct {
-  name: string
-  slug: string
-  description: string
-  // as stored: a site path (/assets/...) or a full URL
-  image: string
-  // RSD
-  price: number
-  rating: number
-  ratingCount: number
-}
+// Header, footer, colors and dark mode come from emailLayout.ts.
 
 export interface Welcome {
   code: string
@@ -23,122 +10,19 @@ export interface Welcome {
   // already formatted, e.g. "14.11.2026."
   validUntil: string
   // null = the featured product isn't available, the block is left out
-  product: WelcomeProduct | null
+  product: FeaturedProduct | null
   unsubscribeUrl: string
 }
 
-const COLOR = { ink: '#1b1b1b', beige: '#e8e2d0', sun: '#ffc30b', forest: '#2d3a1f', line: '#e3d6b8', muted: '#6b6560', star: '#d9d3c4', white: '#ffffff', page: '#f4f1ea' }
-// The same light design in dark mode: "light only" keeps Apple Mail, iOS Mail and Outlook for Mac from
-// recoloring it; Outlook.com recolors anyway and marks what it changed with data-ogsc (text) / data-ogsb
-// (background), so the c-* / bg-* classes put the original colors back. The Gmail apps (Android, iOS) recolor
-// on their own, ignore all of this, and can't be stopped; they keep the email readable, just darker.
-const DARK_MODE_STYLE = `<style>
-:root{color-scheme:light only;supported-color-schemes:light only}
-${(['page', 'white', 'beige', 'forest', 'ink', 'sun'] as const).map(c => `[data-ogsb] .bg-${c}{background-color:${COLOR[c]}!important}`).join('\n')}
-${(['ink', 'forest', 'muted', 'white', 'sun', 'star'] as const).map(c => `[data-ogsc] .c-${c}{color:${COLOR[c]}!important}`).join('\n')}
-</style>`
-const SERIF = `font-family:Fraunces,Georgia,'Times New Roman',serif;`
-const SANS = `font-family:Sora,Arial,Helvetica,sans-serif;`
-
-// TODO: real profile URLs (also placeholders in app/data/footer.ts, see PLAN.md)
-const SOCIALS = [
-  { label: 'Facebook', icon: 'facebook', href: 'https://facebook.com' },
-  { label: 'Instagram', icon: 'instagram', href: 'https://instagram.com' },
-  { label: 'TikTok', icon: 'tiktok', href: 'https://tiktok.com' },
-]
-
 const SUBJECT = 'Dobrodošli u Libra Herbal: poklon od 10% za Vas'
-
-function escape(text: string) {
-  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-}
-
-function absolute(siteUrl: string, path: string) {
-  return /^https?:\/\//.test(path) ? path : `${siteUrl}${path.startsWith('/') ? '' : '/'}${path}`
-}
-
-// 1 recenzija, 2–4 recenzije, 5+ recenzija (11–14 too)
-function reviewsWord(count: number) {
-  const tens = count % 100
-  return count % 10 >= 2 && count % 10 <= 4 && (tens < 12 || tens > 14) ? 'recenzije' : 'recenzija'
-}
-
-function button(href: string, label: string, fullWidth = false) {
-  return `<a href="${href}" class="bg-sun c-ink" style="display:${fullWidth ? 'block' : 'inline-block'};background:${COLOR.sun};color:${COLOR.ink};${SANS}font-size:14px;line-height:20px;font-weight:bold;letter-spacing:0.5px;text-align:center;text-decoration:none;padding:12px 24px;border-radius:6px;">${label}</a>`
-}
-
-function productBlock(product: WelcomeProduct, siteUrl: string) {
-  const url = `${siteUrl}/proizvodi/${product.slug}`
-  const full = Math.round(product.rating)
-  const stars = `<span class="c-sun" style="color:${COLOR.sun};">${'★'.repeat(full)}</span><span class="c-star" style="color:${COLOR.star};">${'★'.repeat(5 - full)}</span>`
-  const rating = product.ratingCount
-    ? `<div style="${SANS}font-size:14px;line-height:16px;letter-spacing:1px;">${stars}</div>
-       <div class="c-muted" style="${SANS}font-size:11px;line-height:16px;color:${COLOR.muted};padding-top:2px;">${product.rating.toFixed(1).replace('.', ',')} · ${product.ratingCount} ${reviewsWord(product.ratingCount)}</div>`
-    : ''
-
-  // two columns that stack on phones without media queries (Gmail app); Outlook gets a real table
-  return `
-    <tr><td style="padding:32px 32px 0;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="border-top:1px solid ${COLOR.line};font-size:0;line-height:0;">&nbsp;</td></tr></table>
-    </td></tr>
-    <tr><td align="center" style="padding:24px 22px 0;font-size:0;">
-      <!--[if mso]><table role="presentation" width="556" cellpadding="0" cellspacing="0"><tr><td width="288" valign="top"><![endif]-->
-      <div style="display:inline-block;width:100%;max-width:288px;vertical-align:top;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:0 10px 16px;text-align:left;">
-          <a href="${url}" class="c-forest" style="${SERIF}font-size:26px;line-height:32px;font-weight:600;color:${COLOR.forest};text-decoration:none;">${escape(product.name)}</a>
-          ${rating}
-          <div class="c-ink" style="${SANS}font-size:13px;line-height:20px;color:${COLOR.ink};padding-top:16px;">${escape(product.description)}</div>
-          <div class="c-ink" style="${SANS}font-size:24px;line-height:30px;font-weight:bold;color:${COLOR.ink};padding-top:16px;">${product.price},00 <span style="font-size:14px;">RSD</span></div>
-        </td></tr></table>
-      </div>
-      <!--[if mso]></td><td width="268" valign="top"><![endif]-->
-      <div style="display:inline-block;width:100%;max-width:268px;vertical-align:top;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:0 10px 16px;">
-          <a href="${url}"><img src="${escape(absolute(siteUrl, product.image))}" width="248" alt="${escape(product.name)}" style="display:block;width:100%;max-width:248px;height:auto;border-radius:12px;background:${COLOR.beige};border:0;"></a>
-        </td></tr></table>
-      </div>
-      <!--[if mso]></td></tr></table><![endif]-->
-    </td></tr>
-    <tr><td style="padding:8px 32px 0;">${button(url, 'PORUČITE ODMAH&nbsp;&nbsp;→', true)}</td></tr>`
-}
+const INTRO = 'Hvala Vam što ste se registrovali i napravili korak više ka zdravijoj svakodnevici. Želimo Vam srdačnu dobrodošlicu, a tim povodom smo Vam spremili mali poklon.'
 
 export function welcomeEmail(welcome: Welcome, siteUrl: string) {
   const shopUrl = `${siteUrl}/proizvodi`
-  const img = (name: string) => `${siteUrl}/email/${name}.png`
-  const link = `class="c-white" style="color:${COLOR.white};text-decoration:underline;"`
+  const product = welcome.product
 
-  const socials = SOCIALS.map(s =>
-    `<a href="${s.href}" style="text-decoration:none;"><img src="${img(s.icon)}" width="20" height="20" alt="${s.label}" style="display:inline-block;width:20px;height:20px;border:0;vertical-align:middle;"></a>`,
-  ).join(`<span class="c-white" style="color:${COLOR.white};padding:0 10px;vertical-align:middle;">|</span>`)
-
-  const html = `<!doctype html>
-<html lang="sr">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only">
-<title>${SUBJECT}</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Sora:wght@400;700&display=swap" rel="stylesheet">
-${DARK_MODE_STYLE}
-</head>
-<body class="bg-page" style="margin:0;padding:0;background:${COLOR.page};">
-  <div style="display:none;max-height:0;overflow:hidden;">Hvala što ste se registrovali. Vaš kod za ${welcome.percent}% popusta je unutra.</div>
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="bg-page" style="background:${COLOR.page};">
-    <tr><td align="center" style="padding:24px 0;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="bg-white" style="max-width:600px;background:${COLOR.white};">
-
-        <tr><td align="center" class="bg-forest" style="background:${COLOR.forest};padding:14px 24px;">
-          <a href="${siteUrl}"><img src="${img('logo')}" width="88" height="33" alt="Libra Herbal" style="display:block;width:88px;height:33px;border:0;"></a>
-        </td></tr>
-
-        <tr><td align="center" class="bg-beige" style="background:${COLOR.beige};padding:32px 32px 36px;">
-          <div class="c-muted" style="${SANS}font-size:10px;line-height:14px;letter-spacing:1.5px;color:${COLOR.muted};">SAMO ZA VAS</div>
-          <div class="c-forest" style="${SERIF}font-size:30px;line-height:38px;font-weight:600;color:${COLOR.forest};padding-top:4px;">Poklon dobrodošlice</div>
-          <img src="${img('gift')}" width="96" height="96" alt="" style="display:block;width:96px;height:96px;border:0;margin:20px auto;">
-          <div class="c-ink" style="${SANS}font-size:13px;line-height:20px;color:${COLOR.ink};max-width:440px;">
-            Hvala Vam što ste se registrovali i napravili korak više ka zdravijoj svakodnevici.
-            Želimo Vam srdačnu dobrodošlicu, a tim povodom smo Vam spremili mali poklon.
-          </div>
-        </td></tr>
+  const rows = `
+        ${hero({ siteUrl, icon: 'gift', iconSize: 96, iconBelowHeading: true, eyebrow: 'SAMO ZA VAS', heading: 'Poklon dobrodošlice', text: INTRO })}
 
         <tr><td align="center" style="padding:40px 32px 0;">
           <div class="c-forest" style="${SERIF}font-size:26px;line-height:32px;font-weight:600;color:${COLOR.forest};">${welcome.percent}% popusta na sledeću porudžbinu</div>
@@ -146,41 +30,26 @@ ${DARK_MODE_STYLE}
         </td></tr>
         <tr><td align="center" style="padding:24px 32px 0;">
           <table role="presentation" cellpadding="0" cellspacing="0"><tr>
-            <td class="bg-ink c-white" style="background:${COLOR.ink};border:2px dashed ${COLOR.sun};border-radius:6px;padding:12px 24px;${SANS}font-size:24px;line-height:30px;font-weight:bold;letter-spacing:3px;color:${COLOR.white};">${escape(welcome.code)}</td>
+            <td class="bg-ink c-white" style="background:${COLOR.ink};border:2px dashed ${COLOR.sun};border-radius:6px;padding:12px 24px;${SANS}font-size:24px;line-height:30px;font-weight:bold;letter-spacing:3px;color:${COLOR.white};">${escapeHtml(welcome.code)}</td>
           </tr></table>
           <div class="c-muted" style="${SANS}font-size:11px;line-height:16px;color:${COLOR.muted};padding-top:8px;">Kod važi do ${welcome.validUntil} i može se iskoristiti jednom.</div>
         </td></tr>
         <tr><td align="center" style="padding:20px 32px 0;">${button(shopUrl, 'POGLEDAJTE PRODAVNICU')}</td></tr>
 
-        ${welcome.product ? productBlock(welcome.product, siteUrl) : ''}
+        ${product ? divider() + productFeature(product, siteUrl) : ''}`
 
-        <tr><td style="padding:40px 0 0;font-size:0;line-height:0;">&nbsp;</td></tr>
+  const html = emailDocument({
+    siteUrl,
+    title: SUBJECT,
+    preheader: `Hvala što ste se registrovali. Vaš kod za ${welcome.percent}% popusta je unutra.`,
+    rows,
+    unsubscribeUrl: welcome.unsubscribeUrl,
+  })
 
-        <tr><td align="center" class="bg-forest c-white" style="background:${COLOR.forest};padding:40px 32px;${SANS}font-size:13px;line-height:20px;color:${COLOR.white};">
-          <a href="${siteUrl}"><img src="${img('logo')}" width="120" height="45" alt="Libra Herbal" style="display:block;width:120px;height:45px;border:0;margin:0 auto;"></a>
-          <div style="font-weight:bold;padding-top:28px;">Zapratite nas:<br>@libraherbal.rs</div>
-          <div style="padding-top:12px;">${socials}</div>
-          <div style="padding-top:28px;">
-            Ukoliko ne želite da primate naše podsetnike i ponude, odjavite se klikom na <a href="${escape(welcome.unsubscribeUrl)}" ${link}>ovaj link</a>.
-          </div>
-          <div style="padding-top:8px;">
-            <a href="${siteUrl}/politika-privatnosti" ${link}>Zaštita podataka</a>
-            <span style="padding:0 8px;">|</span>
-            <a href="${siteUrl}/uslovi-koriscenja" ${link}>Uslovi korišćenja</a>
-          </div>
-        </td></tr>
-
-      </table>
-    </td></tr>
-  </table>
-</body>
-</html>`
-
-  const product = welcome.product
   const text = [
     'Poklon dobrodošlice',
     '',
-    'Hvala Vam što ste se registrovali i napravili korak više ka zdravijoj svakodnevici. Želimo Vam srdačnu dobrodošlicu, a tim povodom smo Vam spremili mali poklon.',
+    INTRO,
     '',
     `${welcome.percent}% popusta na sledeću porudžbinu. Unesite kod prilikom plaćanja:`,
     '',
@@ -190,9 +59,7 @@ ${DARK_MODE_STYLE}
     `Pogledajte prodavnicu: ${shopUrl}`,
     ...(product ? ['', `${product.name}, ${product.price},00 RSD`, product.description, `Poručite odmah: ${siteUrl}/proizvodi/${product.slug}`] : []),
     '',
-    `Zaštita podataka: ${siteUrl}/politika-privatnosti`,
-    `Uslovi korišćenja: ${siteUrl}/uslovi-koriscenja`,
-    `Odjava od podsetnika i ponuda: ${welcome.unsubscribeUrl}`,
+    ...textFooter(siteUrl, welcome.unsubscribeUrl),
   ].join('\n')
 
   return { subject: SUBJECT, html, text }

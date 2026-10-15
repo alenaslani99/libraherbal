@@ -20,7 +20,6 @@ const MAX_BROWSE_PRODUCTS = 3
 interface Recipient {
   id: number
   email: string
-  first_name: string | null
   unsubscribe_token: string | null
 }
 
@@ -28,10 +27,16 @@ interface ProductRow {
   owner: number
   name: string
   slug: string
+  description: string | null
   primary_image: string | null
   final_price: number
+  rating_avg: number
+  rating_count: number
   quantity?: number
 }
+
+// p = v_product_card, d = products (the view has no description)
+const PRODUCT_COLUMNS = 'p.name, p.slug, d.description, p.primary_image, p.final_price, p.rating_avg, p.rating_count'
 
 const NO_RECENT_REMINDER = `
   NOT EXISTS (SELECT 1 FROM email_sends s WHERE s.user_id = u.id AND s.sent_at > datetime('now', '-3 days'))`
@@ -57,7 +62,7 @@ export default defineTask({
 
 async function cartReminders(db: D1Database, siteUrl: string) {
   const { results: recipients } = await db.prepare(`
-    SELECT u.id, u.email, u.first_name, u.unsubscribe_token, c.id AS cart_id
+    SELECT u.id, u.email, u.unsubscribe_token, c.id AS cart_id
     FROM carts c JOIN users u ON u.id = c.user_id
     WHERE c.updated_at <= datetime('now', '-2 hours') AND c.updated_at > datetime('now', '-48 hours')
       AND u.reminder_emails = 1
@@ -74,8 +79,8 @@ async function cartReminders(db: D1Database, siteUrl: string) {
 
   const owners = new Map(recipients.map(r => [r.cart_id, r.id]))
   const { results: rows } = await db.prepare(`
-    SELECT i.cart_id AS owner, p.name, p.slug, p.primary_image, p.final_price, i.quantity
-    FROM cart_items i JOIN v_product_card p ON p.id = i.product_id
+    SELECT i.cart_id AS owner, ${PRODUCT_COLUMNS}, i.quantity
+    FROM cart_items i JOIN v_product_card p ON p.id = i.product_id JOIN products d ON d.id = p.id
     WHERE i.cart_id IN (${placeholders(recipients.length)}) AND p.final_price IS NOT NULL
     ORDER BY i.created_at, i.product_id
   `).bind(...recipients.map(r => r.cart_id)).all<ProductRow>()
@@ -87,7 +92,7 @@ async function cartReminders(db: D1Database, siteUrl: string) {
 
 async function browseReminders(db: D1Database, siteUrl: string) {
   const { results: recipients } = await db.prepare(`
-    SELECT u.id, u.email, u.first_name, u.unsubscribe_token
+    SELECT u.id, u.email, u.unsubscribe_token
     FROM users u
     WHERE u.id IN (
         SELECT v.user_id FROM product_views v
@@ -107,8 +112,8 @@ async function browseReminders(db: D1Database, siteUrl: string) {
   if (!recipients.length) return 0
 
   const { results: rows } = await db.prepare(`
-    SELECT v.user_id AS owner, p.name, p.slug, p.primary_image, p.final_price
-    FROM product_views v JOIN v_product_card p ON p.id = v.product_id
+    SELECT v.user_id AS owner, ${PRODUCT_COLUMNS}
+    FROM product_views v JOIN v_product_card p ON p.id = v.product_id JOIN products d ON d.id = p.id
     WHERE v.user_id IN (${placeholders(recipients.length)})
       AND v.viewed_at > datetime('now', '-24 hours')
       AND p.final_price IS NOT NULL
@@ -137,7 +142,7 @@ async function send(db: D1Database, siteUrl: string, kind: 'cart' | 'browse', re
 
   const ids = await sendEmails(due.map((r) => {
     const unsubscribeUrl = `${siteUrl}/odjava-podsetnika?t=${r.unsubscribe_token}`
-    const email = reminderEmail({ kind, firstName: r.first_name ?? '', products: products.get(r.id)!, unsubscribeUrl }, siteUrl)
+    const email = reminderEmail({ kind, products: products.get(r.id)!, unsubscribeUrl }, siteUrl)
     return {
       from: EMAIL_FROM.reminders,
       to: r.email,
@@ -161,7 +166,16 @@ function groupProducts(rows: ProductRow[]) {
   for (const row of rows) {
     const list = grouped.get(row.owner) ?? []
     // amounts are in para (1 RSD = 100), the email shows RSD
-    list.push({ name: row.name, slug: row.slug, image: row.primary_image ?? '', price: row.final_price / 100, quantity: row.quantity })
+    list.push({
+      name: row.name,
+      slug: row.slug,
+      description: row.description ?? '',
+      image: row.primary_image ?? '',
+      price: row.final_price / 100,
+      rating: row.rating_avg,
+      ratingCount: row.rating_count,
+      quantity: row.quantity,
+    })
     grouped.set(row.owner, list)
   }
   return grouped
