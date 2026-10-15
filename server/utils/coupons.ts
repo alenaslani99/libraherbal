@@ -44,18 +44,20 @@ export async function releaseCoupon(db: D1Database, id: number) {
   await db.prepare(`UPDATE coupons SET used_at = NULL, order_id = NULL, updated_at = datetime('now') WHERE id = ?1`).bind(id).run()
 }
 
-// No 0/O/1/I, so a code read off a phone screen can't be mistyped; 32^6 ≈ 1 billion codes per prefix
+// No 0/O/1/I, so a code read off a phone screen can't be mistyped; 32^8 ≈ 1 trillion codes
+// (32 divides 256, so byte % 32 picks every character equally often)
 const ALPHABET = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ'
+const CODE_LENGTH = 8
 
-function newCouponCode(prefix: string) {
-  const random = crypto.getRandomValues(new Uint8Array(6))
-  return `${prefix}-${Array.from(random, byte => ALPHABET[byte % ALPHABET.length]).join('')}`
+function newCouponCode() {
+  const random = crypto.getRandomValues(new Uint8Array(CODE_LENGTH))
+  return Array.from(random, byte => ALPHABET[byte % ALPHABET.length]).join('')
 }
 
-// New code for one user, e.g. DOBRODOSLI-7K3FQ9; retries on the rare UNIQUE collision
-export async function createCoupon(db: D1Database, input: { kind: 'welcome' | 'birthday', prefix: string, percent: number, userId: number, days: number }) {
+// New code for one user, e.g. 7K3FQ9MA; retries on the rare UNIQUE collision
+export async function createCoupon(db: D1Database, input: { kind: 'welcome' | 'birthday', percent: number, userId: number, days: number }) {
   for (let attempt = 0; attempt < 3; attempt++) {
-    const code = newCouponCode(input.prefix)
+    const code = newCouponCode()
     try {
       await db.prepare(`
         INSERT INTO coupons (code, kind, percent, user_id, expires_at)

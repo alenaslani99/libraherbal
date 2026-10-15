@@ -48,7 +48,7 @@ function remove() {
           autocapitalize="characters"
           spellcheck="false"
           maxlength="40"
-          placeholder="npr. DOBRODOSLI-7K3FQ9"
+          placeholder="npr. 7K3FQ9MA"
           class="h-9 min-w-0 flex-1 rounded-md border bg-white/10 px-3 text-xs uppercase tracking-wide text-white placeholder:normal-case placeholder:tracking-normal placeholder:text-white/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-sun"
           :class="shownError ? 'border-sun' : 'border-white/20'"
           :aria-invalid="!!shownError"

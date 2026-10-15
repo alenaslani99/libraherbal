@@ -3,6 +3,7 @@
 // All senders live here, so marketing mail can move to a subdomain (news.libraherbal.rs) in one place.
 export const EMAIL_FROM = {
   reminders: 'Libra Herbal <podsetnik@libraherbal.rs>',
+  welcome: 'Libra Herbal <dobrodosli@libraherbal.rs>',
 }
 
 export interface EmailMessage {

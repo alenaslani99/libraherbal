@@ -13,11 +13,14 @@ export default defineEventHandler(async (event): Promise<AuthUser> => {
     throw formError(409, EMAIL_TAKEN)
   }
 
+  // for the unsubscribe link in the welcome email (and later reminders)
+  const unsubscribeToken = toHex(crypto.getRandomValues(new Uint8Array(32)))
+
   let row
   try {
     row = await db.prepare(`
-      INSERT INTO users (email, password_hash, first_name, last_name, phone, newsletter, terms_accepted_at)
-      VALUES (?1, ?2, ?3, ?4, ?5, ?6, datetime('now'))
+      INSERT INTO users (email, password_hash, first_name, last_name, phone, newsletter, terms_accepted_at, unsubscribe_token)
+      VALUES (?1, ?2, ?3, ?4, ?5, ?6, datetime('now'), ?7)
       RETURNING id, email, first_name, last_name, phone, role, reminder_emails
     `).bind(
       input.email,
@@ -26,6 +29,7 @@ export default defineEventHandler(async (event): Promise<AuthUser> => {
       input.lastName,
       input.phone,
       input.newsletter ? 1 : 0,
+      unsubscribeToken,
     ).first<Omit<UserRow, 'subscribed'>>()
   }
   catch (error) {
@@ -39,6 +43,10 @@ export default defineEventHandler(async (event): Promise<AuthUser> => {
   // the address may already be on the list from a footer sign-up before registering
   const subscribed = input.newsletter || !!(await db.prepare(`SELECT 1 FROM newsletter_subscribers WHERE email = ?1 AND status = 'subscribed'`)
     .bind(row.email).first())
+
+  // after the response, so Resend doesn't slow down registration; a failed email doesn't fail the account
+  const user = { id: row.id, email: row.email, unsubscribeToken }
+  event.waitUntil(sendWelcomeEmail(db, user).catch(error => console.error('[email] welcome failed', user.id, error)))
 
   await createSession(event, row.id, false)
   return toAuthUser({ ...row, subscribed: subscribed ? 1 : 0 })
