@@ -17,6 +17,9 @@ ${(['page', 'white', 'beige', 'forest', 'ink', 'sun'] as const).map(c => `[data-
 ${(['ink', 'forest', 'muted', 'white', 'sun', 'star'] as const).map(c => `[data-ogsc] .c-${c}{color:${COLOR[c]}!important}`).join('\n')}
 </style>`
 
+// the same address as app/data/footer.ts
+export const CONTACT_EMAIL = 'info@libraherbal.rs'
+
 // TODO: real profile URLs (also placeholders in app/data/footer.ts, see PLAN.md)
 const SOCIALS = [
   { label: 'Facebook', icon: 'facebook', href: 'https://facebook.com' },
@@ -49,16 +52,20 @@ export function divider(padding = '32px 32px 0') {
 }
 
 // A full-width row: beige block with an icon (public/email/<icon>.png), small caps line, heading and a
-// short text. The icon goes above the lines (reminders) or between the heading and the text (welcome).
-export function hero(input: { siteUrl: string, icon: string, iconSize: number, iconBelowHeading?: boolean, eyebrow: string, heading: string, text: string }) {
+// short text (all may hold HTML). The icon goes first (reminders), after the small caps line (order)
+// or between the heading and the text (welcome).
+export function hero(input: { siteUrl: string, icon: string, iconSize: number, iconAt?: 'top' | 'afterEyebrow' | 'afterHeading', eyebrow: string, heading: string, text: string }) {
   const size = input.iconSize
-  const icon = `<img src="${emailImage(input.siteUrl, input.icon)}" width="${size}" height="${size}" alt="" style="display:block;width:${size}px;height:${size}px;border:0;margin:${input.iconBelowHeading ? '20px auto' : '0 auto 16px'};">`
+  const at = input.iconAt ?? 'top'
+  const margin = { top: '0 auto 16px', afterEyebrow: '16px auto', afterHeading: '20px auto' }[at]
+  const icon = `<img src="${emailImage(input.siteUrl, input.icon)}" width="${size}" height="${size}" alt="" style="display:block;width:${size}px;height:${size}px;border:0;margin:${margin};">`
   return `<tr><td align="center" class="bg-beige" style="background:${COLOR.beige};padding:32px 32px 36px;">
-          ${input.iconBelowHeading ? '' : icon}
+          ${at === 'top' ? icon : ''}
           <div class="c-muted" style="${SANS}font-size:10px;line-height:14px;letter-spacing:1.5px;color:${COLOR.muted};">${input.eyebrow}</div>
-          <div class="c-forest" style="${SERIF}font-size:30px;line-height:38px;font-weight:600;color:${COLOR.forest};padding-top:4px;">${input.heading}</div>
-          ${input.iconBelowHeading ? icon : ''}
-          <div class="c-ink" style="${SANS}font-size:13px;line-height:20px;color:${COLOR.ink};max-width:440px;padding-top:${input.iconBelowHeading ? 0 : 12}px;">${input.text}</div>
+          ${at === 'afterEyebrow' ? icon : ''}
+          <div class="c-forest" style="${SERIF}font-size:30px;line-height:38px;font-weight:600;color:${COLOR.forest};padding-top:${at === 'afterEyebrow' ? 0 : 4}px;">${input.heading}</div>
+          ${at === 'afterHeading' ? icon : ''}
+          <div class="c-ink" style="${SANS}font-size:13px;line-height:20px;color:${COLOR.ink};max-width:440px;padding-top:${at === 'afterHeading' ? 0 : 12}px;">${input.text}</div>
         </td></tr>`
 }
 
@@ -117,9 +124,84 @@ export function productFeature(product: FeaturedProduct, siteUrl: string, imageF
     <tr><td style="padding:8px 32px 0;">${button(url, 'PORUČITE ODMAH&nbsp;&nbsp;→', true)}</td></tr>`
 }
 
+// "1290,00 RSD" with a smaller RSD
+export function rsd(amount: number, size: number) {
+  return `${amount},00 <span style="font-size:${Math.round(size * 0.6)}px;">RSD</span>`
+}
+
+export interface ItemLine {
+  name: string
+  // null = the product no longer exists (old order), so no link
+  slug: string | null
+  image: string
+  // RSD, per piece
+  price: number
+  quantity: number
+}
+
+// Rows: one line per item (photo, name + quantity, unit price × quantity, line total), lines between
+export function itemRows(items: ItemLine[], siteUrl: string) {
+  return items.map((item, i) => {
+    const url = item.slug ? `${siteUrl}/proizvodi/${item.slug}` : siteUrl
+    return `${i ? divider('0 32px') : ''}
+    <tr><td style="padding:20px 32px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+        <td width="80" valign="middle" style="padding-right:16px;">
+          <a href="${url}"><img src="${escapeHtml(absolute(siteUrl, item.image || '/assets/img/placeholder.svg'))}" width="80" height="80" alt="${escapeHtml(item.name)}" style="display:block;width:80px;height:80px;object-fit:cover;border-radius:10px;background:${COLOR.beige};border:0;"></a>
+        </td>
+        <td valign="middle">
+          <a href="${url}" class="c-forest" style="${SERIF}font-size:22px;line-height:28px;font-weight:600;color:${COLOR.forest};text-decoration:none;">${escapeHtml(item.name)}</a>
+          <div class="c-ink" style="${SANS}font-size:12px;line-height:18px;color:${COLOR.ink};padding-top:2px;">Količina: ${item.quantity}</div>
+        </td>
+        <td valign="middle" align="right" style="white-space:nowrap;padding-left:8px;">
+          <div class="c-muted" style="${SANS}font-size:12px;line-height:18px;color:${COLOR.muted};">${item.price},00 RSD&nbsp;×${item.quantity}</div>
+          <div class="c-ink" style="${SANS}font-size:18px;line-height:24px;font-weight:bold;color:${COLOR.ink};">${rsd(item.price * item.quantity, 18)}</div>
+        </td>
+      </tr></table>
+    </td></tr>`
+  }).join('')
+}
+
+// Rows: subtotal, discount, shipping and total, in RSD. The courier's price isn't known in advance,
+// so shipping is either free or "by the courier's price list", and the total says "+ dostava".
+export function totalsRows(input: { subtotal: number, discount?: number, couponCode?: string | null, freeShipping: boolean }) {
+  const line = (label: string, value: string, strong = false) => `<tr>
+        <td class="c-ink" style="${SANS}font-size:${strong ? 15 : 13}px;line-height:22px;${strong ? 'font-weight:bold;' : ''}color:${COLOR.ink};padding:6px 0;">${label}</td>
+        <td class="c-ink" align="right" style="${SANS}font-size:${strong ? 20 : 15}px;line-height:22px;font-weight:bold;color:${COLOR.ink};padding:6px 0;white-space:nowrap;">${value}</td>
+      </tr>`
+  const discount = input.discount ?? 0
+  const total = input.subtotal - discount
+  const plusShipping = input.freeShipping ? '' : `<br><span class="c-muted" style="font-size:12px;font-weight:normal;color:${COLOR.muted};">+ dostava</span>`
+
+  return `${divider('0 32px')}
+    <tr><td style="padding:12px 32px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        ${line('Međuzbir', rsd(input.subtotal, 15))}
+        ${discount ? line(`Popust${input.couponCode ? ` (${escapeHtml(input.couponCode)})` : ''}`, `−${rsd(discount, 15)}`) : ''}
+        ${line('Dostava', input.freeShipping ? 'Besplatna' : `<span style="font-size:13px;font-weight:normal;">Po cenovniku kurira</span>`)}
+      </table>
+    </td></tr>
+    ${divider('0 32px')}
+    <tr><td style="padding:12px 32px 16px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${line('UKUPNO', rsd(total, 20) + plusShipping, true)}</table>
+    </td></tr>`
+}
+
+// the same lines for the plain-text version
+export function totalsText(input: { subtotal: number, discount?: number, couponCode?: string | null, freeShipping: boolean }) {
+  const discount = input.discount ?? 0
+  return [
+    `Međuzbir: ${input.subtotal},00 RSD`,
+    ...(discount ? [`Popust${input.couponCode ? ` (${input.couponCode})` : ''}: −${discount},00 RSD`] : []),
+    `Dostava: ${input.freeShipping ? 'Besplatna' : 'po cenovniku kurira'}`,
+    `UKUPNO: ${input.subtotal - discount},00 RSD${input.freeShipping ? '' : ' + dostava'}`,
+  ]
+}
+
 // The whole email around `rows` (<tr>s of the white column): forest header with the logo, footer with
-// socials, unsubscribe and legal links.
-export function emailDocument(input: { siteUrl: string, title: string, preheader: string, rows: string, unsubscribeUrl: string }) {
+// socials, unsubscribe and legal links. Without unsubscribeUrl (order emails, which aren't marketing)
+// the footer says where to ask instead.
+export function emailDocument(input: { siteUrl: string, title: string, preheader: string, rows: string, unsubscribeUrl?: string }) {
   const { siteUrl } = input
   const link = `class="c-white" style="color:${COLOR.white};text-decoration:underline;"`
   const socials = SOCIALS.map(s =>
@@ -154,7 +236,9 @@ ${DARK_MODE_STYLE}
           <div style="font-weight:bold;padding-top:28px;">Zapratite nas:<br>@libraherbal.rs</div>
           <div style="padding-top:12px;">${socials}</div>
           <div style="padding-top:28px;">
-            Ukoliko ne želite da primate naše podsetnike i ponude, odjavite se klikom na <a href="${escapeHtml(input.unsubscribeUrl)}" ${link}>ovaj link</a>.
+            ${input.unsubscribeUrl
+              ? `Ukoliko ne želite da primate naše podsetnike i ponude, odjavite se klikom na <a href="${escapeHtml(input.unsubscribeUrl)}" ${link}>ovaj link</a>.`
+              : `Imate pitanje? Odgovorite na ovaj email ili pišite na <a href="mailto:${CONTACT_EMAIL}" ${link}>${CONTACT_EMAIL}</a>.`}
           </div>
           <div style="padding-top:8px;">
             <a href="${siteUrl}/politika-privatnosti" ${link}>Zaštita podataka</a>
@@ -171,10 +255,12 @@ ${DARK_MODE_STYLE}
 }
 
 // the footer of the plain-text version
-export function textFooter(siteUrl: string, unsubscribeUrl: string) {
+export function textFooter(siteUrl: string, unsubscribeUrl?: string) {
   return [
     `Zaštita podataka: ${siteUrl}/politika-privatnosti`,
     `Uslovi korišćenja: ${siteUrl}/uslovi-koriscenja`,
-    `Odjava od podsetnika i ponuda: ${unsubscribeUrl}`,
+    unsubscribeUrl
+      ? `Odjava od podsetnika i ponuda: ${unsubscribeUrl}`
+      : `Imate pitanje? Odgovorite na ovaj email ili pišite na ${CONTACT_EMAIL}.`,
   ]
 }

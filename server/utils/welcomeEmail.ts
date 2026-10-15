@@ -22,7 +22,7 @@ export function welcomeEmail(welcome: Welcome, siteUrl: string) {
   const product = welcome.product
 
   const rows = `
-        ${hero({ siteUrl, icon: 'gift', iconSize: 96, iconBelowHeading: true, eyebrow: 'SAMO ZA VAS', heading: 'Poklon dobrodošlice', text: INTRO })}
+        ${hero({ siteUrl, icon: 'gift', iconSize: 96, iconAt: 'afterHeading', eyebrow: 'SAMO ZA VAS', heading: 'Poklon dobrodošlice', text: INTRO })}
 
         <tr><td align="center" style="padding:40px 32px 0;">
           <div class="c-forest" style="${SERIF}font-size:26px;line-height:32px;font-weight:600;color:${COLOR.forest};">${welcome.percent}% popusta na sledeću porudžbinu</div>

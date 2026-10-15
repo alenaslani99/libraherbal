@@ -4,11 +4,14 @@
 export const EMAIL_FROM = {
   reminders: 'Libra Herbal <podsetnik@libraherbal.rs>',
   welcome: 'Libra Herbal <dobrodosli@libraherbal.rs>',
+  orders: 'Libra Herbal <porudzbine@libraherbal.rs>',
 }
 
 export interface EmailMessage {
   from: string
   to: string
+  // where a reply goes, e.g. a question about an order
+  reply_to?: string
   subject: string
   html: string
   text: string

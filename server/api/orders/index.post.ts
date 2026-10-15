@@ -75,6 +75,8 @@ export default defineEventHandler(async (event): Promise<OrderConfirmation> => {
           // the order is placed, so the saved cart is no longer "abandoned"
           ...(user ? [db.prepare('DELETE FROM carts WHERE user_id = ?1').bind(user.id)] : []),
         ])
+        // after the response; a failed email doesn't undo the order
+        event.waitUntil(sendOrderEmail(db, orderNumber).catch(error => console.error('[email] order confirmation failed', orderNumber, error)))
         return { orderNumber }
       }
       catch (error) {
