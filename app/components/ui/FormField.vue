@@ -8,9 +8,6 @@ const props = withDefaults(defineProps<{
   inputmode?: 'text' | 'numeric' | 'tel' | 'email'
   required?: boolean
   error?: string
-  // type="date": earliest and latest day, YYYY-MM-DD
-  min?: string
-  max?: string
 }>(), {
   type: 'text',
   required: false,
@@ -39,8 +36,6 @@ const inputType = computed(() =>
         :placeholder="placeholder"
         :autocomplete="autocomplete"
         :inputmode="inputmode"
-        :min="min"
-        :max="max"
         :required="required"
         :aria-invalid="!!error"
         :aria-describedby="error ? `${id}-error` : undefined"

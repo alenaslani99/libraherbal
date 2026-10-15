@@ -20,7 +20,7 @@ const form = reactive({
   terms: false,
   newsletter: false,
 })
-// the date picker's latest day (no birthdays in the future); its value is YYYY-MM-DD, the schema takes that too
+// the date picker's latest day (no birthdays in the future); its value is YYYY-MM-DD, which the schema takes
 const today = new Date().toISOString().slice(0, 10)
 const errors = ref<Record<string, string>>({})
 const notice = ref('')
@@ -101,13 +101,11 @@ async function onSubmit() {
           :error="errors.phone"
           class="sm:col-span-2"
         />
-        <FormField
+        <FormDatePicker
           v-model="form.birthDate"
           label="Datum rođenja"
-          type="date"
           min="1900-01-01"
           :max="today"
-          autocomplete="bday"
           required
           :error="errors.birthDate"
           class="sm:col-span-2"
