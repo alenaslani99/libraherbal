@@ -12,7 +12,10 @@ const props = withDefaults(defineProps<{
   max?: string
   // the year the panel opens on while nothing is picked
   startYear?: number
+  // from sm up the panel is wider than a half-width field: which edge of the field it lines up with
+  align?: 'left' | 'right'
 }>(), {
+  align: 'left',
   placeholder: 'dd.mm.gggg.',
   required: false,
   startYear: 1990,
@@ -241,7 +244,8 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onOutsidePoint
         ref="panel"
         role="dialog"
         :aria-label="label"
-        class="absolute inset-x-0 z-30 mt-2 rounded-2xl border border-line bg-paper p-4 shadow-lg shadow-black/10 sm:right-auto sm:w-80"
+        class="absolute inset-x-0 z-30 mt-2 rounded-2xl border border-line bg-paper p-4 shadow-lg shadow-black/10 sm:w-80"
+        :class="align === 'right' ? 'sm:left-auto' : 'sm:right-auto'"
       >
         <div class="flex items-center justify-between gap-2">
           <button

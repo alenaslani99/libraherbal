@@ -99,16 +99,16 @@ async function onSubmit() {
           autocomplete="tel"
           required
           :error="errors.phone"
-          class="sm:col-span-2"
         />
+        <!-- right column: the panel opens toward the form, not over the sidebar -->
         <FormDatePicker
           v-model="form.birthDate"
           label="Datum rođenja"
           min="1900-01-01"
           :max="today"
+          align="right"
           required
           :error="errors.birthDate"
-          class="sm:col-span-2"
         />
       </div>
 
