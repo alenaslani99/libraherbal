@@ -33,13 +33,13 @@ function confirms<T extends Record<string, unknown>>(
   ]
 }
 
-// Typed as day.month.year; stays in that form (normalized to "05.03.1990."), so the browser can send the
-// parsed form and the server parses it again. The server stores birthDateToIso() of it.
-const birthDate = z.string().trim().min(1, 'Unesite datum rođenja.').transform((value, ctx) => {
+// The date picker gives YYYY-MM-DD; the parsed value is day.month.year ("05.03.1990."), which this also
+// accepts, so the browser can send the parsed form and the server parses it again. Stored as birthDateToIso().
+const birthDate = z.string().trim().min(1, 'Izaberite datum rođenja.').transform((value, ctx) => {
   const iso = birthDateToIso(value)
   const year = iso ? Number(iso.slice(0, 4)) : 0
   if (!iso || year < 1900 || iso > new Date().toISOString().slice(0, 10)) {
-    ctx.addIssue({ code: 'custom', message: 'Unesite datum u obliku dan.mesec.godina, npr. 15.03.1990.' })
+    ctx.addIssue({ code: 'custom', message: 'Izaberite ispravan datum rođenja.' })
     return z.NEVER
   }
   return formatBirthDate(iso)
