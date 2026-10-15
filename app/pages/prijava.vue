@@ -73,13 +73,10 @@ async function onSubmit() {
         />
       </div>
 
-      <div class="mt-1 flex flex-wrap items-center justify-between gap-3">
+      <div class="mt-1">
         <FormCheckbox v-model="form.remember">
           Zapamti me
         </FormCheckbox>
-        <NuxtLink to="/zaboravljena-lozinka" class="text-sm text-ink underline underline-offset-4 hover:text-forest">
-          Zaboravili ste lozinku?
-        </NuxtLink>
       </div>
 
       <p v-if="notice" class="mt-6 rounded-md border border-sun bg-sun-light/60 px-4 py-3 text-sm text-ink" role="alert">
