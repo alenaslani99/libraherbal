@@ -60,6 +60,22 @@ export default defineNuxtConfig({
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
         { rel: 'manifest', href: '/site.webmanifest' },
       ],
+      // Google Tag Manager: script as high in <head> as possible, noscript fallback right after <body>.
+      // Replace GTM-XXXXXXX with the container ID (same ID in both places).
+      script: [
+        {
+          key: 'gtm',
+          tagPriority: 'critical',
+          innerHTML: "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id=GTM-NMK4QZX2'+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-NMK4QZX2');",
+        },
+      ],
+      noscript: [
+        {
+          key: 'gtm-noscript',
+          tagPosition: 'bodyOpen',
+          innerHTML: '<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NMK4QZX2" height="0" width="0" style="display:none;visibility:hidden"></iframe>',
+        },
+      ],
     },
   },
 
