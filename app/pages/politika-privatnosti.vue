@@ -24,7 +24,7 @@ const link = 'font-semibold text-forest underline underline-offset-4 transition-
 </script>
 
 <template>
-  <LegalPage title="Politika privatnosti" icon="lucide:shield-check" updated="13. oktobar 2026." :sections="sections">
+  <LegalPage title="Politika privatnosti" icon="lucide:shield-check" updated="19. oktobar 2026." :sections="sections">
     <LegalSection id="uvod">
       <p>
         Libra Herbal (u daljem tekstu „mi”) poštuje vašu privatnost i posvećena je zaštiti vaših ličnih podataka. Ova Politika
@@ -96,6 +96,9 @@ const link = 'font-semibold text-forest underline underline-offset-4 transition-
         <LegalCard icon="lucide:mail" title="Slanje emailova">
           Email adresa i sadržaj poruke, radi slanja potvrda, kodova za popust i podsetnika (servis Resend).
         </LegalCard>
+        <LegalCard icon="lucide:chart-line" title="Analitika i oglasi">
+          Samo uz vašu saglasnost: podaci o korišćenju sajta za Google, Microsoft i Metu (vidi Kolačići).
+        </LegalCard>
         <LegalCard icon="lucide:landmark" title="Državni organi">
           Samo na zakonit zahtev nadležnog organa.
         </LegalCard>
@@ -149,16 +152,27 @@ const link = 'font-semibold text-forest underline underline-offset-4 transition-
     </LegalSection>
 
     <LegalSection id="kolacici">
-      <p>Sajt koristi samo ono što je neophodno za njegov rad:</p>
+      <p>Neophodni kolačići, bez kojih sajt ne radi i za koje nije potrebna saglasnost:</p>
       <LegalList
         variant="dot"
         :items="[
           { term: 'Kolačić sesije', text: 'čuva vašu prijavu na nalog; briše se odjavom ili istekom sesije.' },
           { term: 'Kolačić porudžbine', text: 'pamti broj upravo poslate porudžbine za stranicu zahvalnosti; briše se posle 30 minuta.' },
-          { term: 'Lokalno skladište pregledača', text: 'pamti sadržaj korpe na vašem uređaju i koje ste proizvode već pregledali tog dana.' },
+          { term: 'Lokalno skladište pregledača', text: 'pamti sadržaj korpe na vašem uređaju, koje ste proizvode već pregledali tog dana i vaš izbor kolačića.' },
         ]"
       />
-      <p>Ne koristimo kolačiće za analitiku ni oglašavanje. Kolačiće možete obrisati u podešavanjima pregledača, ali tada se odjavljujete sa naloga.</p>
+      <p>Samo uz vašu saglasnost:</p>
+      <LegalList
+        variant="dot"
+        :items="[
+          { term: 'Analitika', text: 'Google Analytics (Google) i Microsoft Clarity (Microsoft) beleže kako se sajt koristi: posećene stranice, klikove i pomeranje stranice, bez vašeg imena i kontakt podataka.' },
+          { term: 'Marketing', text: 'Meta Pixel (Meta Platforms) meri efekat oglasa i omogućava prikaz relevantnih oglasa na Facebooku i Instagramu.' },
+        ]"
+      />
+      <p>
+        Dok ne date saglasnost, ovi alati ne čuvaju kolačiće na vašem uređaju. Izbor možete promeniti ili povući u bilo kom trenutku
+        preko linka „Podešavanja kolačića” u dnu svake stranice. Kolačiće možete obrisati i u podešavanjima pregledača, ali tada se odjavljujete sa naloga.
+      </p>
     </LegalSection>
 
     <LegalSection id="izmene-politike">

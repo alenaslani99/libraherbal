@@ -4,6 +4,7 @@ import { contact, footerColumns, footerLegal, socials } from '~/data/footer'
 const year = new Date().getFullYear()
 const { user, email, website, error, pending, done, subscribed, message, submit } = useNewsletter('footer')
 const errorId = useId()
+const cookieSettingsRequest = useCookieSettingsRequest()
 
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -146,6 +147,11 @@ function scrollToTop() {
           <NuxtLink :to="link.to" class="transition-colors duration-200 hover:text-sun">
             {{ link.label }}
           </NuxtLink>
+        </li>
+        <li>
+          <button type="button" class="transition-colors duration-200 hover:text-sun" @click="cookieSettingsRequest++">
+            Podešavanja kolačića
+          </button>
         </li>
       </ul>
     </div>
