@@ -27,6 +27,7 @@ export function readCookieConsent(): CookieConsent | null {
 // Saves the choice and tells Google Consent Mode v2. The consent_update event is what GTM triggers
 // for Meta Pixel and Clarity listen to (the head script sends the same event for a saved choice).
 export function saveCookieConsent(consent: CookieConsent) {
+  const prev = readCookieConsent()
   try {
     localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify({ ...consent, date: new Date().toISOString() }))
   }
@@ -42,6 +43,9 @@ export function saveCookieConsent(consent: CookieConsent) {
     ad_personalization: marketing,
   })
   window.dataLayer?.push({ event: 'consent_update', consent_analytics: analytics, consent_marketing: marketing })
+  // Consent withdrawn: Meta Pixel and Clarity are already loaded and ignore Consent Mode, so reload to drop them
+  if (prev && ((prev.analytics && !consent.analytics) || (prev.marketing && !consent.marketing)))
+    location.reload()
 }
 
 // "Podešavanja kolačića" in the footer reopens the bar with the settings expanded

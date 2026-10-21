@@ -69,7 +69,7 @@ export default defineNuxtConfig({
           key: 'gtm',
           tagPriority: 'critical',
           innerHTML: "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}"
-            + "gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});"
+            + "gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',functionality_storage:'granted',security_storage:'granted',wait_for_update:500});"
             + "try{var c=JSON.parse(localStorage.getItem('libraherbal:cookie-consent:v2'));if(c){var a=c.analytics?'granted':'denied',m=c.marketing?'granted':'denied';"
             + "gtag('consent','update',{analytics_storage:a,ad_storage:m,ad_user_data:m,ad_personalization:m});"
             + "dataLayer.push({event:'consent_update',consent_analytics:a,consent_marketing:m})}}catch(e){}"
