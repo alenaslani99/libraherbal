@@ -63,7 +63,8 @@ export default defineNuxtConfig({
       // Google Tag Manager: script as high in <head> as possible, noscript fallback right after <body>.
       // Container ID in both places. The script first sets Consent Mode v2 defaults (all denied), then applies a
       // saved choice (same localStorage key as app/composables/useCookieConsent.ts), then loads GTM — one script,
-      // so the consent defaults always come before GTM.
+      // so the consent defaults always come before GTM. The consent_update event for a saved choice is pushed after
+      // the snippet so it queues behind gtm.js — otherwise tags on it fire before Container Loaded.
       script: [
         {
           key: 'gtm',
@@ -71,9 +72,9 @@ export default defineNuxtConfig({
           innerHTML: "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}"
             + "gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',functionality_storage:'granted',security_storage:'granted',wait_for_update:500});"
             + "try{var c=JSON.parse(localStorage.getItem('libraherbal:cookie-consent:v2'));if(c){var a=c.analytics?'granted':'denied',m=c.marketing?'granted':'denied';"
-            + "gtag('consent','update',{analytics_storage:a,ad_storage:m,ad_user_data:m,ad_personalization:m});"
-            + "dataLayer.push({event:'consent_update',consent_analytics:a,consent_marketing:m})}}catch(e){}"
-            + "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-NMK4QZX2');",
+            + "gtag('consent','update',{analytics_storage:a,ad_storage:m,ad_user_data:m,ad_personalization:m})}}catch(e){}"
+            + "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-NMK4QZX2');"
+            + "if(c)dataLayer.push({event:'consent_update',consent_analytics:a,consent_marketing:m});",
         },
       ],
       noscript: [
