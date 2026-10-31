@@ -12,8 +12,8 @@ const discount = computed(() => {
 const cart = useCart()
 
 function addToCart() {
-  const { id, slug, name, weight, price, image } = props.product
-  cart.add({ productId: id, slug, name, weight, price, image })
+  const { id, slug, name, weight, price, regularPrice, category, image } = props.product
+  cart.add({ productId: id, slug, name, weight, price, regularPrice, category, image })
 }
 </script>
 

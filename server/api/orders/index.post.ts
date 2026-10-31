@@ -17,9 +17,9 @@ export default defineEventHandler(async (event): Promise<OrderConfirmation> => {
   for (const item of items) quantities.set(item.productId, (quantities.get(item.productId) ?? 0) + item.quantity)
 
   const { results: products } = await db.prepare(`
-    SELECT id, name, regular_price, final_price FROM v_product_card
+    SELECT id, name, slug, category_name, weight_label, regular_price, final_price FROM v_product_card
     WHERE id IN (SELECT value FROM json_each(?1))
-  `).bind(JSON.stringify([...quantities.keys()])).all<{ id: number, name: string, regular_price: number | null, final_price: number | null }>()
+  `).bind(JSON.stringify([...quantities.keys()])).all<Pick<ProductCardRow, 'id' | 'name' | 'slug' | 'category_name' | 'weight_label' | 'regular_price' | 'final_price'>>()
 
   // a product that is gone (deleted, inactive) or has no price can't be ordered
   const priced = products.filter(p => p.final_price !== null && p.regular_price !== null)
@@ -77,7 +77,22 @@ export default defineEventHandler(async (event): Promise<OrderConfirmation> => {
         ])
         // after the response; a failed email doesn't undo the order
         event.waitUntil(sendOrderEmail(db, orderNumber).catch(error => console.error('[email] order confirmation failed', orderNumber, error)))
-        return { orderNumber }
+        return {
+          orderNumber,
+          subtotal: subtotal / 100,
+          discount: discount / 100,
+          coupon: coupon?.code ?? null,
+          shipping: shippingCost / 100,
+          items: priced.map(p => ({
+            slug: p.slug,
+            name: p.name,
+            category: p.category_name,
+            weight: p.weight_label ?? '',
+            price: p.final_price! / 100,
+            regularPrice: p.regular_price! / 100,
+            quantity: quantities.get(p.id)!,
+          })),
+        }
       }
       catch (error) {
         if (!String(error).includes('UNIQUE constraint failed: orders.order_number')) throw error

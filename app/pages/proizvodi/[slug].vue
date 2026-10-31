@@ -18,6 +18,15 @@ if (!product.value) {
 useProductSeo(product)
 useTrackProductView(() => product.value?.slug)
 
+// view_item once per product: on the first load and on every client-side move to another product
+// (the page component is reused between products, so the slug is watched)
+onMounted(() => {
+  watch(() => product.value?.slug, () => {
+    const p = product.value
+    if (p) trackEcommerce('view_item', { items: [analyticsItem(p, 1)] })
+  }, { immediate: true })
+})
+
 const cart = useCart()
 
 function onAdd(quantity: number) {
@@ -29,6 +38,8 @@ function onAdd(quantity: number) {
     name: p.name,
     weight: p.weight,
     price: p.price,
+    regularPrice: p.regularPrice,
+    category: p.category,
     image: p.images[0]?.src ?? p.image,
   }, quantity)
 }

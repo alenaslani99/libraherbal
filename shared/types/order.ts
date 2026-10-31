@@ -19,6 +19,14 @@ export interface ShippingDetails {
 export interface OrderConfirmation {
   // shown to the customer, e.g. "LH-2026-48213907"
   orderNumber: string
+  // the rest is for the purchase event on /hvala (dataLayer); amounts in RSD, nothing personal
+  subtotal: number
+  // discount code; 0 = none
+  discount: number
+  coupon: string | null
+  // 0 = free shipping
+  shipping: number
+  items: { slug: string, name: string, category: string, weight: string, price: number, regularPrice: number, quantity: number }[]
 }
 
 export interface OrderRequest {

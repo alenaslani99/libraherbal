@@ -44,6 +44,7 @@ export function useNewsletter(source: 'footer' | 'section') {
       const res = await $fetch<NewsletterResult>('/api/newsletter', { method: 'POST', body: result.data })
       alreadySubscribed.value = res.alreadySubscribed
       done.value = true
+      if (!res.alreadySubscribed) trackEvent('newsletter_signup', { form_location: source === 'footer' ? 'footer' : 'page' })
       if (user.value) user.value.subscribed = true
     }
     catch (e) {

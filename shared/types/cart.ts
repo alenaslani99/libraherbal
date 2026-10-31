@@ -8,6 +8,10 @@ export interface CartItem {
   weight: string
   // RSD per piece, e.g. 1290
   price: number
+  // only while a promotion is active: the price before the discount (RSD)
+  regularPrice?: number
+  // "Med", "Čaj", "Melem" — for the dataLayer events; missing on carts saved before it was added
+  category?: string
   image: string
   quantity: number
 }

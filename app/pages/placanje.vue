@@ -12,6 +12,11 @@ const { items } = useCart()
 const couponCode = ref('')
 const summary = useCartSummary(couponCode)
 
+// once per visit to the page; with purchase it measures abandoned checkouts. No coupon yet: it's typed on this page
+onMounted(() => {
+  if (items.value.length) trackEcommerce('begin_checkout', { items: items.value.map(item => analyticsItem(item, item.quantity)) })
+})
+
 const paymentMethods: { value: PaymentMethod, title: string, description: string }[] = [
   { value: 'pouzece', title: 'Plaćanje pouzećem', description: 'Platite kuriru prilikom preuzimanja.' },
 ]

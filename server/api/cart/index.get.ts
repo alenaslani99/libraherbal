@@ -23,6 +23,8 @@ export default defineEventHandler(async (event): Promise<CartItem[]> => {
       name: product.name,
       weight: product.weight,
       price: product.price,
+      regularPrice: product.regularPrice,
+      category: product.category,
       image: product.image,
       quantity: row.quantity,
     }

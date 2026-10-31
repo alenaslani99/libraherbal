@@ -8,6 +8,42 @@ useSeoMeta({
 
 // the middleware already checked it against ORDER_NUMBER_PATTERN
 const orderNumber = useLastOrder()
+
+// purchase, from what POST /api/orders answered (the cart is already empty). Only once per order: the data
+// lives in memory, so a refresh has none, and sent order numbers are remembered in case of a back / forward
+const TRACKED_ORDERS_KEY = 'lh_tracked_orders'
+const placedOrder = usePlacedOrder()
+
+onMounted(() => {
+  const order = placedOrder.value
+  placedOrder.value = null
+  if (!order) return
+
+  let tracked: string[] = []
+  try {
+    tracked = JSON.parse(localStorage.getItem(TRACKED_ORDERS_KEY) ?? '[]') || []
+  }
+  catch {
+    // blocked or corrupted storage — the in-memory check above still holds
+  }
+  if (tracked.includes(order.orderNumber)) return
+
+  trackEcommerce('purchase', {
+    transaction_id: order.orderNumber,
+    // products after the discount, without shipping
+    value: order.subtotal - order.discount,
+    shipping: order.shipping,
+    ...(order.coupon ? { coupon: order.coupon } : {}),
+    payment_type: 'pouzecem',
+    items: order.items.map(item => analyticsItem(item, item.quantity)),
+  })
+  try {
+    localStorage.setItem(TRACKED_ORDERS_KEY, JSON.stringify([...tracked, order.orderNumber].slice(-20)))
+  }
+  catch {
+    // storage full or blocked
+  }
+})
 </script>
 
 <!-- Figma "Main": padding 72/553 (narrow centered column), gap 64, centered content -->

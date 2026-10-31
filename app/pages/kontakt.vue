@@ -47,6 +47,7 @@ async function onSubmit() {
     await $fetch('/api/contact', { method: 'POST', body: data })
     form.message = ''
     sent.value = true
+    trackEvent('contact_form_submit', { form_location: 'page' })
   }
   catch (error) {
     const { fields, message } = apiError(error)

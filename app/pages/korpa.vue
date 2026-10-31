@@ -7,6 +7,11 @@ useSeoMeta({
 
 const { items, setQuantity, remove } = useCart()
 const summary = useCartSummary()
+
+// the cart is already restored from localStorage here (plugins/cart.client.ts); an empty cart sends nothing
+onMounted(() => {
+  if (items.value.length) trackEcommerce('view_cart', { items: items.value.map(item => analyticsItem(item, item.quantity)) })
+})
 </script>
 
 <!-- Figma "Main": padding 64/128/96/128, gap 96 between heading and content; items left, summary card right -->
